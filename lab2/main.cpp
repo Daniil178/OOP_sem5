@@ -9,59 +9,83 @@ int main(){
     int fl1 = 1;
     double rad;
     while(fl1) {
-        std::cout << "Your deltoid is:\n" << std::endl;
+        std::cout << "Your deltoid is:" << std::endl;
+        std::cout << "----------------------------" << std::endl;
         char *s = d.formula();
         std::cout << s << std::endl;
         delete [] s;
-        std::cout << "\n----------------------------" << std::endl;
         std::cout << "coordinates of center: (" << d.getP().x << ", " << d.getP().y << ")" << std::endl;
         std::cout << "radius: " << d.getR() << std::endl;
         std::cout << "area_with_tangent: " << d.area_with_tangent() << std::endl;
         std::cout << "perimeter: " << d.perimeter() << std::endl;
         std::cout << "area: " << d.area() << std::endl;
-        std::cout << "----------------------------" << std::endl;
+
         int fl2 = 1;
-        while(fl2) {
-            std::cout << "Enter t for calculate value x(t), y(t) or enter any symbol to quit:" << std::endl;
-            double t;
-            point xy_t;
-            std::cin >> t;
-            fl2 = std::cin.good();
-            if (!fl2){
+        while(fl2 == 1) {
+            std::cout << "----------------------------" << std::endl;
+            std::cout << "0 - quit\n1 - calculate x(t) and y(t)\n2 - enter new parameters" << std::endl;
+            std::cout << "----------------------------" << std::endl;
+            std::cout << "Your choice:" << std::endl;
+            std::cin >> fl2;
+            if(!std::cin.good() or (fl2 != 0 and fl2 != 1 and fl2 != 2)){
                 std::cin.clear();
                 std::cin.sync();
-                continue;
+                std::cout << "False input, try again" << std::endl;
+                fl2 = 1;
             }
-            try{
-                xy_t = d.f(t);
-                std::cout << "x = " << xy_t.x << ", y = " << xy_t.y << std::endl;
+            else{
+                if (fl2 == 1) {
+                    std::cin.clear();
+                    std::cin.sync();
+                    std::cout << "Enter t for calculate value x(t), y(t):" << std::endl;
+                    double t;
+                    point xy_t;
+                    std::cin >> t;
+                    while (!std::cin.good()) {
+                        std::cin.clear();
+                        std::cin.sync();
+                        std::cout << "Error, enter real number:" << std::endl;
+                        std::cin >> t;
+                    }
+                    std::cin.clear();
+                    std::cin.sync();
+                    try {
+                        xy_t = d.f(t);
+                        std::cout << "x = " << xy_t.x << ", y = " << xy_t.y << std::endl;
+                    }
+                    catch (std::exception &ex) {
+                        std::cout << ex.what() << std::endl;
+                    }
+                } else if (fl2 == 2) {
+                    std::cin.clear();
+                    std::cin.sync();
+                    std::cout << "Enter new x, y and r to continue or enter any symbol to quit:" << std::endl;
+                    std::cin >> p.x >> p.y >> rad;
+                    while (!std::cin.good()) {
+                        std::cin.clear();
+                        std::cin.sync();
+                        std::cout << "Error, enter real numbers x,y and positive real number r" << std::endl;
+                        std::cin >> p.x >> p.y >> rad;
+                    }
+                    while (rad <= 0 or !std::cin.good()) {
+                        std::cin.clear();
+                        std::cin.sync();
+                        std::cout << "Error, radius must be number > 0\nPlease, repeat enter radius:" << std::endl;
+                        std::cin >> rad;
+                    }
+                    std::cin.clear();
+                    std::cin.sync();
+                    d.setP(p);
+                    try {
+                        d.setR(rad);
+                    }
+                    catch (std::exception &ex) {
+                        std::cout << ex.what() << std::endl;
+                    }
+                }
+                else
+                    fl1 = 0;
             }
-            catch(std::exception &ex){
-                std::cout << ex.what() << std::endl;
-            }
-        }
-        std::cin.clear();
-        std::cout << "Enter new x, y and r to continue or enter any symbol to quit:" << std::endl;
-        std::cin >> p.x >> p.y >> rad;
-        if(std::cin.good()){
-            while(rad <= 0 or !std::cin.good()){
-                std::cout << "Error, radius must be number > 0\nPlease, repeat enter radius:" << std::endl;
-                std::cin.clear();
-                std::cin.sync();
-                std::cin >> rad;
-            }
-            d.setP(p);
-            try {
-                d.setR(rad);
-            }
-            catch (std::exception &ex) {
-                std::cout << ex.what() << std::endl;
-            }
-        }
-        else {
-            fl1 = 0;
-            std::cin.clear();
-            std::cin.sync();
         }
     }
     return 0;

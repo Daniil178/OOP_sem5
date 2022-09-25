@@ -20,7 +20,7 @@ namespace Prog2{
             throw std::invalid_argument( "received negative value" );
         r = r0;
     }
-    //set
+    //setters
     void Deltoid::setR(double r0){
         if (r0 <= 0)
             throw std::invalid_argument( "received negative value" );
@@ -29,14 +29,14 @@ namespace Prog2{
     void Deltoid::setP(const point &p0){
         p = p0;
     }
-    //get
+    //getters
     double Deltoid::getR() const{
         return r;
     }
     point Deltoid::getP() const{
         return p;
     }
-    //others
+    //tasks
     double Deltoid::area_with_tangent() const{
         return 4 * r;
     }
@@ -44,7 +44,7 @@ namespace Prog2{
         return 16 * r;
     }
     double Deltoid::area() const{
-        return 2 * 3.1415926535 * r * r;
+        return 2 * M_PI * r * r;
     }
     point Deltoid::f(double t) const{
         point p1;

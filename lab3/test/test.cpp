@@ -24,7 +24,7 @@ TEST(ContactConstructor, Init) {
 TEST(ContactConstructor, TestException) {
     PCB::point p;
     EXPECT_THROW(PCB::contact(p, (PCB::type) 3), std::invalid_argument);
-    EXPECT_THROW(PCB::contact(p, (PCB::type) -1), std::invalid_argument);
+    EXPECT_THROW(PCB::contact(-1, 2, (PCB::type) -1), std::invalid_argument);
 }
 
 TEST(IO, Input) {
@@ -122,6 +122,34 @@ TEST(Operations, contact_distance) {
     EXPECT_EQ(1, circ.contact_dist(0, 2));
     EXPECT_EQ(2, circ.contact_dist(0, 1));
     EXPECT_EQ(0, circ.contact_dist(1, 2));
+}
+
+TEST(Operations, group_contacts) {
+    PCB::pcb circ;
+    PCB::contact c, c1(1, 1, (PCB::type) 1), c2(2, 3, (PCB::type) 1);
+    const PCB::contact *tst;
+
+    EXPECT_THROW(tst = circ.group_cont((PCB::type) 0), std::logic_error);
+
+    circ.add_contact(c);
+    tst = circ.group_cont((PCB::type) 1);
+    EXPECT_EQ(nullptr, tst);
+
+    circ.add_contact(c1), circ.add_contact(c2);
+    tst = circ.group_cont((PCB::type) 0);
+    EXPECT_EQ(0, tst[0].type_contact);
+    EXPECT_EQ(0, tst[0].p.x);
+    EXPECT_EQ(0, tst[0].p.y);
+    delete [] tst;
+    tst = circ.group_cont((PCB::type) 1);
+    EXPECT_EQ(1, tst[0].type_contact);
+    EXPECT_EQ(2, tst[1].p.x);
+    EXPECT_EQ(3, tst[1].p.y);
+    delete [] tst;
+
+    EXPECT_THROW(tst = circ.group_cont((PCB::type) 2), std::invalid_argument);
+    EXPECT_THROW(tst = circ.group_cont((PCB::type) -1), std::invalid_argument);
+
 }
 
 int main(int argc, char* argv[]) {

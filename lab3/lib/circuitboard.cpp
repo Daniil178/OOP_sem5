@@ -91,31 +91,34 @@ namespace PCB{
         else if (plat[to].type_contact == input)
             throw std::logic_error("Error, contact 2 has input type");
         int dist = 0, i = from;
-        while (plat[i].link_contact != -1 or plat[i].link_contact != to) {
+        while (plat[i].link_contact != -1 and plat[i].link_contact != to) {
             i = plat[i].link_contact;
-            ++ dist;
+            ++dist;
         }
-        if (plat[i].link_contact != -1)
+        if (plat[i].link_contact == -1)
             return 0;
         else {
-            return dist;
+            return ++dist;
         }
     }
     const contact* pcb::group_cont(type filter) const {
         contact *res = nullptr;
-        int num = 0;
+        int num = 0, m;
+        if (filter !=0 and filter != 1)
+            throw std::invalid_argument("invalid type of contact");
         if (n == 0)
             throw std::logic_error("Error, this circuit board is empty");
         else {
             for (int i = 0; i < n; ++ i)
-                num += (plat[i].type_contact == filter);
+                if (plat[i].type_contact == filter)
+                    ++num;
             if (num != 0) {
                 res = new contact[num];
-                num = 0;
+                m = 0;
                 for (int i = 0; i < n; ++i)
                     if (plat[i].type_contact == filter) {
-                        res[num] = plat[i];
-                        ++num;
+                        res[m] = plat[i];
+                        ++m;
                     }
             }
         }

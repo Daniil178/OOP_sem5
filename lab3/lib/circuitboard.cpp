@@ -20,7 +20,7 @@ namespace PCB{
         link_contact = -1;
     }
     std::istream& contact::input_contact(std::istream &in) {
-        in.exceptions(std::istream::failbit | std::istream::badbit | std::istream::eofbit);
+//in.exceptions(std::istream::failbit | std::istream::badbit | std::istream::eofbit);
         int t;
         in >> p.x >> p.y >> t;
         if (t != 0 and t != 1) {
@@ -102,7 +102,6 @@ namespace PCB{
         }
     }
     pcb pcb::group_cont(type filter) const {
-        contact *res = nullptr;
         PCB::pcb circ2;
         int num = 0;
         if (filter !=0 and filter != 1)

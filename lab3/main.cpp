@@ -17,7 +17,7 @@ int dialog(const char *msgs[], int n) {
         for (int i = 0; i < n; ++i) {
             std::cout << msgs[i] << std::endl;
         }
-        std::cout << "Make your choice: " << std::endl;
+        std::cout << "---------------------\n" << "Make your choice: " << std::endl;
         std::cin >> choice;
     } while (!std::cin.good() or choice < 0 || choice >= n);
     return choice;

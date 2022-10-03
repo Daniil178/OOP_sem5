@@ -22,16 +22,16 @@ namespace PCB{
     std::istream& contact::input_contact(std::istream &in) {
         in.exceptions(std::istream::failbit | std::istream::badbit | std::istream::eofbit);
         int t;
-        in >> p.x >> p.y;
-        in >> t;
+        in >> p.x >> p.y >> t;
         if (t != 0 and t != 1) {
-            in.setstate(std::ios::failbit);
+            throw std::invalid_argument("invalid type of contact");
+            //in.setstate(std::ios::failbit);
         }
         type_contact = (type) t;
         return in;
     }
     pcb::pcb(int n0) :n(n0) {}
-    void pcb::add_contact(contact &c) {
+    void pcb::add_contact(contact c) {
         if (n < N) {
             plat[n] = c;
             n += 1;
@@ -101,9 +101,10 @@ namespace PCB{
             return ++dist;
         }
     }
-    const contact* pcb::group_cont(type filter) const {
+    pcb pcb::group_cont(type filter) const {
         contact *res = nullptr;
-        int num = 0, m;
+        PCB::pcb circ2;
+        int num = 0;
         if (filter !=0 and filter != 1)
             throw std::invalid_argument("invalid type of contact");
         if (n == 0)
@@ -113,15 +114,12 @@ namespace PCB{
                 if (plat[i].type_contact == filter)
                     ++num;
             if (num != 0) {
-                res = new contact[num];
-                m = 0;
                 for (int i = 0; i < n; ++i)
                     if (plat[i].type_contact == filter) {
-                        res[m] = plat[i];
-                        ++m;
+                        circ2.add_contact(plat[i]);
                     }
             }
         }
-        return res;
+        return circ2;
     }
 }

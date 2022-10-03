@@ -30,14 +30,14 @@ namespace PCB{
         int n; //number of busy blocks
     public:
         explicit pcb(int n0 = 0);
-        void add_contact(contact &c);
+        void add_contact(contact c);
         //getters
         [[nodiscard]] int getSize() const noexcept;
         //tasks
         std::ostream& print_pcb(std::ostream &out) const noexcept;
         [[nodiscard]] int check_correctly(int num) const;
         void add_link(int from, int to);
-        [[nodiscard]] const contact *group_cont(type filter) const;
+        [[nodiscard]] pcb group_cont(type filter) const;
         [[nodiscard]] int contact_dist(int from, int to) const;
     };
 }

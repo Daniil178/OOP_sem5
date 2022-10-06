@@ -19,7 +19,7 @@ namespace PCB{
         int link_contact;
     public:
         contact();
-        contact(const point &p0, type t0 = input);
+        explicit contact(const point &p0, type t0 = input);
         contact(double x0, double y0, type t0);
         std::istream& input_contact(std::istream &in);
 

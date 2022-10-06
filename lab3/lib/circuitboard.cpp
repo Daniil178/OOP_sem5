@@ -18,7 +18,6 @@ namespace PCB{
         link_contact = -1;
     }
     std::istream& contact::input_contact(std::istream &in) {
-    //in.exceptions(std::istream::failbit | std::istream::badbit | std::istream::eofbit);
         int t;
         point p0;
         in >> p0.x >> p0.y >> t;
@@ -26,7 +25,6 @@ namespace PCB{
             throw std::invalid_argument("invalid point");
         if (t != 0 and t != 1) {
             throw std::invalid_argument("invalid type of contact");
-            //in.setstate(std::ios::failbit);
         }
         p.x = p0.x, p.y = p0.y;
         type_contact = (type) t;
@@ -41,6 +39,7 @@ namespace PCB{
         else
             throw std::out_of_range("Error, circuit board is busy");
     }
+
     int pcb::getSize() const noexcept {
         return n;
     }

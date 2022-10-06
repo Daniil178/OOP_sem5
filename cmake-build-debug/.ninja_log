@@ -1,0 +1,22 @@
+# ninja log v5
+0	1181	6867506623519406	lab3/CMakeFiles/lib_circuitboard.dir/lib/circuitboard.cpp.obj	f28ace968d67bdf1
+1184	1340	6867506625106062	lab3/liblib_circuitboard.a	886be2c0d2d05986
+7	2204	6867506633750391	Google_tests/googletest-main/googletest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.obj	b1c28a7defc62acc
+3	2383	6867506635543323	Google_tests/CMakeFiles/Google_Tests_run_lab3.dir/__/lab3/test/test.cpp.obj	712682f7438654d9
+10	6788	6867506679490829	Google_tests/googletest-main/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.obj	1692d320493a28e3
+6789	8359	6867506695300244	lib/libgtest.a	ca73b7361e160c7c
+8360	8411	6867506695814300	lib/libgtest_main.a	7fcf18cb6a794533
+8411	10582	6867506717472082	Google_tests/Google_Tests_run_lab3.exe	4c733d6d16b11ee0
+4	334	6867507714261538	lab3/CMakeFiles/lab3.dir/main.cpp.obj	36cb6fb95503da5b
+334	407	6867507714964268	lab3/lab3.exe	d856dd1cc1356819
+3	222	6867509802790258	lab3/CMakeFiles/lib_circuitboard.dir/lib/circuitboard.cpp.obj	f28ace968d67bdf1
+222	275	6867509803313262	lab3/liblib_circuitboard.a	886be2c0d2d05986
+275	344	6867509803977797	lab3/lab3.exe	d856dd1cc1356819
+3	2326	6867509943640393	Google_tests/Google_Tests_run_lab3.exe	4c733d6d16b11ee0
+3	359	6867511315803727	lab2/CMakeFiles/lab2.dir/main.cpp.obj	f4cdb06b906566b6
+0	361	6867511315813720	lab2/CMakeFiles/lib_deltoid.dir/lib/deltoid.cpp.obj	78fea7bfa927cb14
+361	426	6867511316464378	lab2/liblib_deltoid.a	6111d6809503b299
+426	499	6867511317167219	lab2/lab2.exe	78a7c0cc21141683
+0	275	6867511440790180	lab1/CMakeFiles/lab1.dir/lab1.cpp.obj	626971e07cb4ab6d
+4	292	6867511440940224	lab1/CMakeFiles/lab1.dir/func.cpp.obj	419be167995aa2cc
+292	363	6867511441631868	lab1/lab1.exe	203921114c5ee99e

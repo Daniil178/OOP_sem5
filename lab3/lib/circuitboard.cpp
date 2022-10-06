@@ -1,10 +1,8 @@
 #include "circuitboard.hpp"
 
 namespace PCB{
-    contact::contact(type t0) :p(0, 0){
-        if (t0 !=0 and t0 != 1)
-            throw std::invalid_argument("invalid type of contact");
-        type_contact = t0;
+    contact::contact() :p(0, 0){
+        type_contact = input;
         link_contact = -1;
     }
     contact::contact(const point &p0, type t0) :p(p0) {
@@ -20,17 +18,21 @@ namespace PCB{
         link_contact = -1;
     }
     std::istream& contact::input_contact(std::istream &in) {
-//in.exceptions(std::istream::failbit | std::istream::badbit | std::istream::eofbit);
+    //in.exceptions(std::istream::failbit | std::istream::badbit | std::istream::eofbit);
         int t;
-        in >> p.x >> p.y >> t;
+        point p0;
+        in >> p0.x >> p0.y >> t;
+        if (!in.good())
+            throw std::invalid_argument("invalid point");
         if (t != 0 and t != 1) {
             throw std::invalid_argument("invalid type of contact");
             //in.setstate(std::ios::failbit);
         }
+        p.x = p0.x, p.y = p0.y;
         type_contact = (type) t;
         return in;
     }
-    pcb::pcb(int n0) :n(n0) {}
+    pcb::pcb() :n(0) {}
     void pcb::add_contact(contact c) {
         if (n < N) {
             plat[n] = c;

@@ -1,0 +1,5 @@
+"C:\Program Files\JetBrains\CLion 2022.2.3\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=C:/Program Files/JetBrains/CLion 2022.2.3/bin/ninja/win/ninja.exe" -G Ninja -S C:\Users\danii\CLionProjects\OOP_sem5 -B C:\Users\danii\CLionProjects\OOP_sem5\cmake-build-debug
+-- Found Python: C:/Users/danii/AppData/Local/Programs/Python/Python310/python.exe (found version "3.10.7") found components: Interpreter 
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Users/danii/CLionProjects/OOP_sem5/cmake-build-debug

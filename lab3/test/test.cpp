@@ -43,13 +43,18 @@ TEST(IO, Input) {
 }
 
 TEST(PCBConstructos, Init) {
-    PCB::pcb circ;
-    EXPECT_EQ(0, circ.getSize());
+    PCB::pcb circ1;
+    PCB::contact c, c1(1, 1, (PCB::type) 1);
+    EXPECT_EQ(0, circ1.getSize());
+    circ1.add_contact(c), circ1.add_contact(c1);
+    PCB::pcb circ2(circ1);
+    EXPECT_EQ(2, circ2.getSize());
 }
 
 TEST(Operations, add_and_print) {
     PCB::pcb circ;
-    PCB::contact c, c5, c1(1, 1, (PCB::type) 1), c2(2, 3, (PCB::type) 0), c3(10, 11, (PCB::type) 1);
+    PCB::contact c, c6, c1(1, 1, (PCB::type) 1), c2(2, 3, (PCB::type) 0), c3(10, 11, (PCB::type) 1);
+    PCB::contact c4(100, 100, (PCB::type) 1), c5(-1, -1, (PCB::type) 0);
     std::ostringstream ostr_0, ostr_1, ostr_2, ostr_3;
 
     circ.print_pcb(ostr_0);
@@ -61,15 +66,15 @@ TEST(Operations, add_and_print) {
     EXPECT_EQ(1, circ.getSize());
     EXPECT_EQ(ostr_1.str(), "0 --> input, (0;0), -1;\n");
 
-    EXPECT_THROW(circ.add_contact(c5), std::invalid_argument);
+    EXPECT_THROW(circ.add_contact(c6), std::invalid_argument);
 
     circ.add_contact(c1);
     circ.print_pcb(ostr_2);
     EXPECT_EQ(2, circ.getSize());
     EXPECT_EQ(ostr_2.str(), "0 --> input, (0;0), -1;\n1 --> output, (1;1), -1;\n");
 
-    circ.add_contact(c2);
-    EXPECT_THROW(circ.add_contact(c3), std::out_of_range);
+    circ.add_contact(c2), circ.add_contact(c3), circ.add_contact(c4);
+    EXPECT_THROW(circ.add_contact(c5), std::out_of_range);
 }
 
 TEST(Operations, Checkcorrectly) {
@@ -147,6 +152,73 @@ TEST(Operations, group_contacts) {
     EXPECT_THROW(tst = circ.group_cont((PCB::type) -1), std::invalid_argument);
 
 }
+
+TEST(Operations, pop) {
+    PCB::pcb circ;
+    PCB::contact c, c1(1, 1, (PCB::type) 1), c2(2, 3, (PCB::type) 1);
+    circ.add_contact(c);
+    circ.add_contact(c1), circ.add_contact(c2);
+
+    EXPECT_EQ(3, circ.getSize());
+    circ.pcb_pop();
+    EXPECT_EQ(2, circ.getSize());
+    circ.pcb_pop();
+    EXPECT_EQ(1, circ.getSize());
+    circ.pcb_pop();
+    EXPECT_THROW(circ.pcb_pop(), std::invalid_argument);
+}
+
+TEST(Operators, element) {
+    PCB::pcb circ;
+    PCB::contact c, c1(1, 1, (PCB::type) 1), c2(2, 3, (PCB::type) 1), c3(10, 11, (PCB::type) 1);
+    circ.add_contact(c);
+    circ.add_contact(c1), circ.add_contact(c2);
+    EXPECT_EQ(0, circ[0].type_contact);
+    EXPECT_EQ(2, circ[2].p.x);
+
+    EXPECT_THROW(circ[3], std::out_of_range);
+    EXPECT_THROW(circ[-1], std::out_of_range);
+    circ[2] = c3;
+
+    EXPECT_EQ(10, circ[2].p.x);
+}
+
+TEST(Operators, decrement) {
+    PCB::pcb circ;
+    PCB::contact c, c1(1, 1, (PCB::type) 1), c2(2, 3, (PCB::type) 1);
+    circ.add_contact(c);
+    circ.add_contact(c1), circ.add_contact(c2);
+
+    EXPECT_EQ(3, circ.getSize());
+    int n0 = (circ--).getSize();
+    EXPECT_EQ(3, n0);
+    EXPECT_EQ(2, circ.getSize());
+    EXPECT_EQ(1, (--circ).getSize());
+    circ--;
+    EXPECT_THROW(--circ, std::invalid_argument);
+}
+
+TEST(Operators, input_output) {
+    PCB::pcb circ;
+    std::ostringstream ostr_0, ostr_1;
+    std::istringstream istr_1("3\n1 1 0\n2 3 0\n10 11 1\n");
+
+    ostr_0 << circ;
+    EXPECT_EQ(ostr_0.str(), "Circuit broad is empty\n");
+    istr_1 >> circ;
+    EXPECT_EQ(3, circ.getSize());
+
+    ostr_1 << circ;
+    EXPECT_EQ(ostr_1.str(), "0 --> input, (1;1), -1;\n1 --> input, (2;3), -1;\n2 --> output, (10;11), -1;\n");
+
+    std::istringstream istr_2("1\n1 1 0\n");
+    EXPECT_THROW(istr_2 >> circ, std::invalid_argument);
+
+    std::istringstream istr_3("2\n1 1 0\n2 3 0\n");
+    EXPECT_THROW(istr_3 >> circ, std::invalid_argument);
+}
+
+
 
 int main(int argc, char* argv[]) {
     ::testing::InitGoogleTest(&argc, argv);

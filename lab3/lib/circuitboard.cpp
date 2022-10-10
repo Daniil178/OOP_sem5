@@ -33,6 +33,9 @@ namespace PCB{
     pcb::pcb() :n(0) {}
     void pcb::add_contact(contact c) {
         if (n < N) {
+            for(int i = 0; i < n; ++i)
+                if(plat[i].p.x == c.p.x and plat[i].p.y == c.p.y)
+                    throw std::invalid_argument("Place with similar coordinates is busy");
             plat[n] = c;
             n += 1;
         }
@@ -63,7 +66,7 @@ namespace PCB{
         int res = 0;
         if (n == 0)
             throw std::logic_error("Error, this board is empty");
-        if (num >= n)
+        if (num >= n or num < 0)
             throw std::invalid_argument("Error, this contact dont`t exist");
         for (int i = 0; i < n; ++i) {
             if (i != num and plat[i].link_contact == num)

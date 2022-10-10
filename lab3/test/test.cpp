@@ -47,9 +47,9 @@ TEST(PCBConstructos, Init) {
     EXPECT_EQ(0, circ.getSize());
 }
 
-TEST(Operations, add_print) {
+TEST(Operations, add_and_print) {
     PCB::pcb circ;
-    PCB::contact c, c1(1, 1, (PCB::type) 1), c2(2, 3, (PCB::type) 0), c3(10, 11, (PCB::type) 1);
+    PCB::contact c, c5, c1(1, 1, (PCB::type) 1), c2(2, 3, (PCB::type) 0), c3(10, 11, (PCB::type) 1);
     std::ostringstream ostr_0, ostr_1, ostr_2, ostr_3;
 
     circ.print_pcb(ostr_0);
@@ -60,6 +60,8 @@ TEST(Operations, add_print) {
     circ.print_pcb(ostr_1);
     EXPECT_EQ(1, circ.getSize());
     EXPECT_EQ(ostr_1.str(), "0 --> input, (0;0), -1;\n");
+
+    EXPECT_THROW(circ.add_contact(c5), std::invalid_argument);
 
     circ.add_contact(c1);
     circ.print_pcb(ostr_2);

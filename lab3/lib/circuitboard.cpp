@@ -215,14 +215,15 @@ namespace PCB{
 
     pcb operator !(const pcb &circ) {
         pcb res(circ);
+        int n0 = res.getSize();
         int link_to, link_next, j;
         unsigned int check[N] = {};
-        for(int i = 0; i < res.getSize(); ++i) {
+        for(int i = 0; i < n0; ++i) {
             if (check[i] == 0) {
                 link_to = i;
                 link_next = res[i].link_contact;
                 check[i] = 1;
-                if (link_to != -1) {
+                if (link_next != -1) {
                     if (res[i].type_contact == input) {
                         res[i].type_contact = (PCB::type) 1;
                         res[i].link_contact = -1;
@@ -242,12 +243,15 @@ namespace PCB{
     }
 
     pcb& pcb::operator += (const pcb& pcb1) {
+        int n0 = n;
         if (pcb1.getSize() + n > N) {
             throw std::out_of_range("These pcb`s have a lot of contacts");
         }
         for(int i = 0; i < pcb1.getSize(); ++i) {
             (*this).add_contact(pcb1[i]);
-            (*this)[n + i].link_contact += n;
+            if ((*this)[n - 1].link_contact != -1) {
+                (*this)[n - 1].link_contact += n0;
+            }
         }
         return (*this);
     }

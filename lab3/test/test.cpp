@@ -218,7 +218,97 @@ TEST(Operators, input_output) {
     EXPECT_THROW(istr_3 >> circ, std::invalid_argument);
 }
 
+TEST(Operators, invert) {
+    PCB::pcb circ;
+    PCB::contact c, c1(1, 1, (PCB::type) 1), c2(2, 3, (PCB::type) 1);
+    circ.add_contact(c);
+    circ.add_contact(c1), circ.add_contact(c2);
+    circ.add_link(0, 2), circ.add_link(2, 1);
+    std::ostringstream ostr_before, ostr_after, ostr_before1, ostr_after1;
 
+    ostr_before << circ;
+    EXPECT_EQ(ostr_before.str(), "0 --> input, (0;0), 2;\n1 --> output, (1;1), -1;\n2 --> output, (2;3), 1;\n");
+
+    circ = !circ;
+    ostr_after << circ;
+    EXPECT_EQ(ostr_after.str(), "0 --> output, (0;0), -1;\n1 --> input, (1;1), 2;\n2 --> output, (2;3), 0;\n");
+
+    PCB::contact c3(3, 4, (PCB::type) 0), c4(4, 5, (PCB::type) 1);
+    circ.add_contact(c3), circ.add_contact(c4);
+    circ.add_link(3, 4);
+
+    ostr_before1 << circ;
+    EXPECT_EQ(ostr_before1.str(), "0 --> output, (0;0), -1;\n1 --> input, (1;1), 2;\n2 --> output, (2;3), 0;\n3 --> input, (3;4), 4;\n4 --> output, (4;5), -1;\n");
+
+    circ = !circ;
+    ostr_after1 << circ;
+    EXPECT_EQ(ostr_after1.str(), "0 --> input, (0;0), 2;\n1 --> output, (1;1), -1;\n2 --> output, (2;3), 1;\n3 --> output, (3;4), -1;\n4 --> input, (4;5), 3;\n");
+}
+
+TEST(Operators, modified_sum) {
+    PCB::pcb circ, circ2;
+    PCB::contact c, c1(1, 1, (PCB::type) 1), c2(2, 3, (PCB::type) 1);
+    circ.add_contact(c), circ.add_contact(c1), circ.add_contact(c2);
+    circ.add_link(0, 2), circ.add_link(2, 1);
+    PCB::contact c3(3, 4, (PCB::type) 0), c4(4, 5, (PCB::type) 1);
+    circ2.add_contact(c3), circ2.add_contact(c4);
+    circ2.add_link(0, 1);
+
+    EXPECT_EQ(3, circ.getSize());
+    EXPECT_EQ(2, circ2.getSize());
+    std::ostringstream ostr_before, ostr_after, ostr_before1;
+
+    ostr_before << circ;
+    EXPECT_EQ(ostr_before.str(), "0 --> input, (0;0), 2;\n1 --> output, (1;1), -1;\n2 --> output, (2;3), 1;\n");
+    ostr_before1 << circ2;
+    EXPECT_EQ(ostr_before1.str(), "0 --> input, (3;4), 1;\n1 --> output, (4;5), -1;\n");
+    circ += circ2;
+    EXPECT_EQ(5, circ.getSize());
+    ostr_after << circ;
+    EXPECT_EQ(ostr_after.str(), "0 --> input, (0;0), 2;\n1 --> output, (1;1), -1;\n2 --> output, (2;3), 1;\n3 --> input, (3;4), 4;\n4 --> output, (4;5), -1;\n");
+
+    EXPECT_THROW(circ += circ2, std::out_of_range);
+}
+
+TEST(Operators, sum) {
+    PCB::pcb circ, circ2, res;
+    PCB::contact c, c1(1, 1, (PCB::type) 1), c2(2, 3, (PCB::type) 1);
+    circ.add_contact(c), circ.add_contact(c1), circ.add_contact(c2);
+    circ.add_link(0, 2), circ.add_link(2, 1);
+    PCB::contact c3(3, 4, (PCB::type) 0), c4(4, 5, (PCB::type) 1);
+    circ2.add_contact(c3), circ2.add_contact(c4);
+    circ2.add_link(0, 1);
+
+    EXPECT_EQ(3, circ.getSize());
+    EXPECT_EQ(2, circ2.getSize());
+    std::ostringstream ostr_before, ostr_after, ostr_before1;
+
+    ostr_before << circ;
+    EXPECT_EQ(ostr_before.str(), "0 --> input, (0;0), 2;\n1 --> output, (1;1), -1;\n2 --> output, (2;3), 1;\n");
+    ostr_before1 << circ2;
+    EXPECT_EQ(ostr_before1.str(), "0 --> input, (3;4), 1;\n1 --> output, (4;5), -1;\n");
+    EXPECT_EQ(0, res.getSize());
+    res = circ + circ2;
+    EXPECT_EQ(5, res.getSize());
+    ostr_after << res;
+    EXPECT_EQ(ostr_after.str(), "0 --> input, (0;0), 2;\n1 --> output, (1;1), -1;\n2 --> output, (2;3), 1;\n3 --> input, (3;4), 4;\n4 --> output, (4;5), -1;\n");
+
+    EXPECT_THROW(res = res + circ2, std::out_of_range);
+}
+
+TEST(Operators, comparator) {
+    PCB::pcb circ, circ2, res;
+    PCB::contact c, c1(1, 1, (PCB::type) 1), c2(2, 3, (PCB::type) 1);
+
+    EXPECT_EQ( 0 <=> 0, circ <=> circ2);
+    circ.add_contact(c), circ.add_contact(c1), circ.add_contact(c2);
+    PCB::contact c3(3, 4, (PCB::type) 0), c4(4, 5, (PCB::type) 1);
+    circ2.add_contact(c3), circ2.add_contact(c4);
+
+    EXPECT_EQ(3 <=> 2, circ <=> circ2);
+    EXPECT_EQ(3 > 2, circ > circ2);
+    EXPECT_EQ(3 <= 2, circ <= circ2);
+}
 
 int main(int argc, char* argv[]) {
     ::testing::InitGoogleTest(&argc, argv);

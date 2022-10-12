@@ -113,6 +113,9 @@ namespace PCB{
         if (pcb::check_correctly(to) != 0) {
             throw std::logic_error("Error, contact 2 has input connection");
         }
+        if (pcb::check_correctly(to) == 0 and plat[from].type_contact == output) {
+            throw std::logic_error("Error, contact 1 has output type and does not have input connection");
+        }
         plat[from].link_contact = to;
     }
 
@@ -219,7 +222,7 @@ namespace PCB{
         int link_to, link_next, j;
         unsigned int check[N] = {};
         for(int i = 0; i < n0; ++i) {
-            if (check[i] == 0) {
+            if (check[i] == 0 and res[i].type_contact == input) {
                 link_to = i;
                 link_next = res[i].link_contact;
                 check[i] = 1;

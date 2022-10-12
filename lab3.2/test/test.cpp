@@ -221,28 +221,28 @@ TEST(Operators, input_output) {
 TEST(Operators, invert) {
     PCB::pcb circ;
     PCB::contact c, c1(1, 1, (PCB::type) 1), c2(2, 3, (PCB::type) 1);
-    circ.add_contact(c);
-    circ.add_contact(c1), circ.add_contact(c2);
-    circ.add_link(0, 2), circ.add_link(2, 1);
+    circ.add_contact(c1);
+    circ.add_contact(c), circ.add_contact(c2);
+    circ.add_link(1, 2), circ.add_link(2, 0);
     std::ostringstream ostr_before, ostr_after, ostr_before1, ostr_after1;
 
     ostr_before << circ;
-    EXPECT_EQ(ostr_before.str(), "0 --> input, (0;0), 2;\n1 --> output, (1;1), -1;\n2 --> output, (2;3), 1;\n");
+    EXPECT_EQ(ostr_before.str(), "0 --> output, (1;1), -1;\n1 --> input, (0;0), 2;\n2 --> output, (2;3), 0;\n");
 
     circ = !circ;
     ostr_after << circ;
-    EXPECT_EQ(ostr_after.str(), "0 --> output, (0;0), -1;\n1 --> input, (1;1), 2;\n2 --> output, (2;3), 0;\n");
+    EXPECT_EQ(ostr_after.str(), "0 --> input, (1;1), 2;\n1 --> output, (0;0), -1;\n2 --> output, (2;3), 1;\n");
 
     PCB::contact c3(3, 4, (PCB::type) 0), c4(4, 5, (PCB::type) 1);
     circ.add_contact(c3), circ.add_contact(c4);
     circ.add_link(3, 4);
 
     ostr_before1 << circ;
-    EXPECT_EQ(ostr_before1.str(), "0 --> output, (0;0), -1;\n1 --> input, (1;1), 2;\n2 --> output, (2;3), 0;\n3 --> input, (3;4), 4;\n4 --> output, (4;5), -1;\n");
+    EXPECT_EQ(ostr_before1.str(), "0 --> input, (1;1), 2;\n1 --> output, (0;0), -1;\n2 --> output, (2;3), 1;\n3 --> input, (3;4), 4;\n4 --> output, (4;5), -1;\n");
 
     circ = !circ;
     ostr_after1 << circ;
-    EXPECT_EQ(ostr_after1.str(), "0 --> input, (0;0), 2;\n1 --> output, (1;1), -1;\n2 --> output, (2;3), 1;\n3 --> output, (3;4), -1;\n4 --> input, (4;5), 3;\n");
+    EXPECT_EQ(ostr_after1.str(), "0 --> output, (1;1), -1;\n1 --> input, (0;0), 2;\n2 --> output, (2;3), 0;\n3 --> output, (3;4), -1;\n4 --> input, (4;5), 3;\n");
 }
 
 TEST(Operators, modified_sum) {
@@ -297,7 +297,7 @@ TEST(Operators, sum) {
 }
 
 TEST(Operators, comparator) {
-    PCB::pcb circ, circ2, res;
+    PCB::pcb circ, circ2;
     PCB::contact c, c1(1, 1, (PCB::type) 1), c2(2, 3, (PCB::type) 1);
 
     EXPECT_EQ( 0 <=> 0, circ <=> circ2);

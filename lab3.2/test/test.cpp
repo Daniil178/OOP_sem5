@@ -96,7 +96,7 @@ TEST(Operations, Checkcorrectly) {
 
 TEST(Operations, add_link) {
     PCB::pcb circ;
-    PCB::contact c, c1(1, 1, (PCB::type) 1), c2(2, 3, (PCB::type) 1);
+    PCB::contact c, c1(1, 1, (PCB::type) 1), c2(2, 3, (PCB::type) 1), c3(9, 9, (PCB::type) 1);
     circ.add_contact(c);
     circ.add_contact(c1);
 
@@ -109,6 +109,8 @@ TEST(Operations, add_link) {
     EXPECT_THROW(circ.add_link(0, 1), std::logic_error);
 
     circ.add_contact(c2);
+    circ.add_contact(c3);
+    EXPECT_THROW(circ.add_link(2, 3), std::logic_error);
     EXPECT_THROW(circ.add_link(2, 1), std::logic_error);
 
     circ.add_link(1, 2);

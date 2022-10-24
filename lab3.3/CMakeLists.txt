@@ -8,5 +8,5 @@ include_directories(test)
 
 add_library(lib_pcb lib/pcb.cpp)
 
-add_executable(lab3.3 main.cpp)
+add_executable(lab3.3 application/main.cpp application/func.cpp)
 target_link_libraries(lab3.3 lib_pcb)

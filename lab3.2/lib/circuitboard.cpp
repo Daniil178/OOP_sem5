@@ -113,7 +113,7 @@ namespace PCB{
         if (pcb::check_correctly(to) != 0) {
             throw std::logic_error("Error, contact 2 has input connection");
         }
-        if (pcb::check_correctly(to) == 0 and plat[from].type_contact == output) {
+        if (pcb::check_correctly(from) == 0 and plat[from].type_contact == output) {
             throw std::logic_error("Error, contact 1 has output type and does not have input connection");
         }
         plat[from].link_contact = to;

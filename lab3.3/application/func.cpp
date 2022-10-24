@@ -1,13 +1,8 @@
-#include "circuitboard.hpp"
+#include "func.hpp"
 
-using namespace PCB;
+using namespace PCB_dynamic;
 
-const char *MSGS[] = {"----------------\n0. Quit", "1. Input and add 1 contact", "2. Print pcb","3. Add connection",
-                      "4. Print group of contacts", "5. Calculate distance between 2 contacts", "6. Pop contact",
-                      "7. Invert links in pcb", "8. Input pcb with n contacts"};
-const int MSGS_SIZE = sizeof(MSGS) / sizeof(MSGS[0]);
-
-int dialog(const char *msgs[], int n) {
+int get_choice(const char *msgs[], int n) {
     int choice = 0;
     do {
         if (!std::cin.good() or choice < 0 || choice >= n) {
@@ -24,17 +19,17 @@ int dialog(const char *msgs[], int n) {
     return choice;
 }
 
-int main(){
-    int c, from, to, dist, filter;
-    c = from = to = dist = 0;
+void dialog(){
+    int choice, from, to, dist, filter;
+    choice = from = to = dist = 0;
     contact cont;
     pcb circuit, circ2;
     do {
-        c = dialog(MSGS, MSGS_SIZE);
+        choice = get_choice(MSGS, MSGS_SIZE);
         std::cin.clear();
         std::cin.sync();
         try {
-            switch (c) {
+            switch (choice) {
                 case 1://input and add contact
                     std::cout << "Please, enter contact: coordinates x y and type (0 - input, 1 - output)" << std::endl;
                     cont.input_contact(std::cin);
@@ -86,6 +81,5 @@ int main(){
             std::cin.sync();
             std::cout << ex.what() << std::endl;
         }
-    } while (c != 0);
-    return 0;
+    } while (choice != 0);
 }

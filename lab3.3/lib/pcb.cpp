@@ -93,20 +93,18 @@ namespace PCB_dynamic {
 
     // -------------- pcb tasks ----------------- //
     void pcb::add_contact(contact c) {
-        if (n < max_elems) {
-            for(int i = 0; i < n; ++i) {
-                if (plat[i].p.x == c.p.x and plat[i].p.y == c.p.y) {
-                    throw std::invalid_argument("Place with similar coordinates is busy");
-                }
-            }
-            plat[n] = c;
-            n += 1;
-        }
-        else {
+        if (n >= max_elems - 1) {
             max_elems += quota;
             pcb extended_pcb(*this);
             swap(*this, extended_pcb);
         }
+        for(int i = 0; i < n; ++i) {
+            if (plat[i].p.x == c.p.x and plat[i].p.y == c.p.y) {
+                throw std::invalid_argument("Place with similar coordinates is busy");
+            }
+        }
+        plat[n] = c;
+        n += 1;
     }
 
     int pcb::len_() const noexcept {
@@ -194,7 +192,6 @@ namespace PCB_dynamic {
 
     pcb pcb::group_cont(type filter) const {
         PCB_dynamic::pcb circ2;
-        int num = 0;
         if (filter != output and filter != input) {
             throw std::invalid_argument("invalid type of contact");
         }
@@ -219,8 +216,8 @@ namespace PCB_dynamic {
             }
         }
         n--;
-        if (n < max_elems - quota) {
-            max_elems -= quota;
+        if (n < max_elems - quota * 2 - 1) {
+            max_elems -= 2 * quota;
             pcb narrowed_pcb(*this);
             swap(*this, narrowed_pcb);
         }
@@ -246,7 +243,7 @@ namespace PCB_dynamic {
         return *this;
     }
 
-    const pcb pcb::operator --(int d){
+    const pcb pcb::operator --(int){
         pcb circ(*this);
         (*this).pcb_pop();
         return circ;
@@ -260,7 +257,7 @@ namespace PCB_dynamic {
         int n, n0 = circ.len_();
         contact c;
         in >> n;
-        if (n > circ.max_len() - n0 or n < 0) {
+        if (n <= 0) {
             throw std::invalid_argument("Invalid number of contacts");
         }
         for(int i = n0; i < n0 + n; ++i) {
@@ -270,11 +267,11 @@ namespace PCB_dynamic {
         return in;
     }
 
-    pcb operator !(const pcb &circ) {
+    pcb operator !(pcb &circ) {
         pcb res(circ);
         int n0 = res.len_(), i;
         int link_to, link_next, j;
-        auto *check = new unsigned int [n0]; // calloc
+        auto *check = new unsigned int [n0];
         for (i = 0; i < n0; ++i) {
             check[i] = 0;
         }
@@ -285,7 +282,7 @@ namespace PCB_dynamic {
                 check[i] = 1;
                 if (link_next != -1) {
                     if (res[i].type_contact == input) {
-                        res[i].type_contact = (PCB_dynamic::type) 1;
+                        res[i].type_contact = output;
                         res[i].connection_to = -1;
                     }
                     while (link_next != -1) {
@@ -295,7 +292,7 @@ namespace PCB_dynamic {
                         link_to = j;
                         check[j] = 1;
                     }
-                    res[j].type_contact = (PCB_dynamic::type) 0;
+                    res[j].type_contact = input;
                 }
             }
         }

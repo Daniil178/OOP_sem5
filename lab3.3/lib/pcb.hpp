@@ -74,22 +74,21 @@ class pcb {
 
         // ------ modified sum ------ //
         pcb& operator +=(const pcb& pcb2);
+    // ------ output ------ //
+        friend std::ostream& operator<<(std::ostream &out, pcb &circ);
+
+    // ------ input ------ //
+        friend std::istream& operator>>(std::istream &in, pcb &circ);
+
+    // ------ comparator ------ //
+    friend std::strong_ordering operator <=>(const pcb& pcb1, const pcb& pcb2);
 };
-
-// ------ output ------ //
-std::ostream& operator<<(std::ostream &out, pcb &circ);
-
-// ------ input ------ //
-std::istream& operator>>(std::istream &in, pcb &circ);
-
-// ------ comparator ------ //
-std::strong_ordering operator <=>(const pcb& pcb1, const pcb& pcb2);
 
 // ------ sum ------ //
 pcb operator +(const pcb& pcb1, const pcb& pcb2);
 
 // ------ invert ------ //
-pcb operator !(const pcb &circ);
+pcb operator !(pcb &circ);
 
 } // PCB_dynamic
 

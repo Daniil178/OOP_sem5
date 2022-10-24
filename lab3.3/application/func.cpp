@@ -2,6 +2,12 @@
 
 using namespace PCB_dynamic;
 
+const char *MSGS[] = {"----------------\n0. Quit", "1. Input and add 1 contact", "2. Print pcb","3. Add connection",
+                      "4. Print group of contacts", "5. Calculate distance between 2 contacts", "6. Pop contact",
+                      "7. Invert links in pcb", "8. Input pcb with n contacts", "9. Add to pcb default circuit"};
+
+const int MSGS_SIZE = sizeof(MSGS) / sizeof(MSGS[0]);
+
 int get_choice(const char *msgs[], int n) {
     int choice = 0;
     do {
@@ -21,9 +27,11 @@ int get_choice(const char *msgs[], int n) {
 
 void dialog(){
     int choice, from, to, dist, filter;
-    choice = from = to = dist = 0;
     contact cont;
-    pcb circuit, circ2;
+    pcb circuit, circ2, default_pcb;
+    default_pcb.add_contact(contact (1, 1, input));
+    default_pcb.add_contact(contact (2, 2, output));
+    default_pcb.add_link(0, 1);
     do {
         choice = get_choice(MSGS, MSGS_SIZE);
         std::cin.clear();
@@ -66,10 +74,16 @@ void dialog(){
                     circuit = !circuit;
                     std::cout << "All links are inverted" << std::endl;
                     break;
-                case 8:
+                case 8: // Input pcb with n contacts
                     std::cout << "Please, enter number of contacts" << std::endl;
                     std::cout << "Example of contact x y type (0 - input, 1 - output)" << std::endl;
                     std::cin >> circuit;
+                    break;
+                case 9: // Add to pcb default circuit
+                    std::cout << "Default pcb:" << std::endl;
+                    std::cout << default_pcb;
+                    circuit = circuit + default_pcb;
+                    std::cout << "result of summary:" << std::endl << circuit;
                     break;
                 default:
                     std::cout << "Goodbye!" << std::endl;

@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 include_directories(lib)
 include_directories(test)
+include_directories(application)
 
 add_library(lib_pcb lib/pcb.cpp)
 

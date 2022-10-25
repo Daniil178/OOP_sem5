@@ -48,9 +48,9 @@ namespace PCB_dynamic {
 
     // copy constructor
     pcb::pcb(const pcb& circ) : n(circ.n), max_elems(circ.max_elems) {
-        plat = new contact[max_elems];
-
+        plat = nullptr;
         try {
+            plat = new contact[max_elems];
             std::copy(circ.plat, circ.plat + circ.n + 1, plat);
         }
         catch (std::exception& err) {
@@ -91,6 +91,15 @@ namespace PCB_dynamic {
         delete[] plat;
     }
 
+    // ------------ getters ------------ //
+    int pcb::len_() const noexcept {
+        return n;
+    }
+
+    int pcb::max_len() const noexcept {
+        return max_elems;
+    }
+
     // -------------- pcb tasks ----------------- //
     void pcb::add_contact(contact c) {
         if (n >= max_elems - 1) {
@@ -99,20 +108,12 @@ namespace PCB_dynamic {
             swap(*this, extended_pcb);
         }
         for(int i = 0; i < n; ++i) {
-            if (plat[i].p.x == c.p.x and plat[i].p.y == c.p.y) {
+            if (plat[i].p == c.p) {
                 throw std::invalid_argument("Place with similar coordinates is busy");
             }
         }
         plat[n] = c;
         n += 1;
-    }
-
-    int pcb::len_() const noexcept {
-        return n;
-    }
-
-    int pcb::max_len() const noexcept {
-        return max_elems;
     }
 
     std::ostream& pcb::print_pcb(std::ostream& out) const noexcept{

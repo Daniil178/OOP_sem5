@@ -4,7 +4,6 @@
 #include <iostream>
 using std::swap;
 
-
 namespace PCB_dynamic {
 struct point {
     double x, y;
@@ -74,14 +73,11 @@ class pcb {
 
         // ------ modified sum ------ //
         pcb& operator +=(const pcb& pcb2);
-    // ------ output ------ //
+        // ------ output ------ //
         friend std::ostream& operator<<(std::ostream &out, pcb &circ);
 
-    // ------ input ------ //
+        // ------ input ------ //
         friend std::istream& operator>>(std::istream &in, pcb &circ);
-
-    // ------ comparator ------ //
-    friend std::strong_ordering operator <=>(const pcb& pcb1, const pcb& pcb2);
 };
 
 // ------ sum ------ //
@@ -90,10 +86,13 @@ pcb operator +(const pcb& pcb1, const pcb& pcb2);
 // ------ invert ------ //
 pcb operator !(pcb &circ);
 
+// ------ comparator ------ //
+std::strong_ordering operator <=>(const pcb& pcb1, const pcb& pcb2);
+
 } // PCB_dynamic
 
 /*
-    Унарный (!) - смена направления связей
+    Унарный (!) - смена направления связей для всех контактов
     Бинарный (+) - сложение двух плат и запись в новую переменную
     Декремент в двух вариантах - (--i; i--) удаление последнего элемента на плате
     [] В двух возможностях - обращение к конкретному контакту

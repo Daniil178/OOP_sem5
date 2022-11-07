@@ -6,6 +6,7 @@ add_subdirectory(lab1)
 add_subdirectory(lab2)
 add_subdirectory(lab3.2)
 add_subdirectory(lab3.3)
+add_subdirectory(lab4)
 #next labs..
 
 add_subdirectory(Google_tests)

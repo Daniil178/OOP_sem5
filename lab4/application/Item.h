@@ -1,6 +1,7 @@
 #ifndef ITEM_H
 #define ITEM_H
 
+#include "RPG_Object.h"
 #include <string>
 
 enum ITEM_TYPE {
@@ -9,15 +10,15 @@ enum ITEM_TYPE {
     weapon
 };
 
-class Item {
+class Item{
 public:
     //Item();
     ITEM_TYPE get_type();
     //Item(int id, std::string name, int weight);
 protected:
     ITEM_TYPE type;
+    std::string name;
     int id; // unique id
-    std::string name; // name of thing
     int weight; // weight of item
 };
 

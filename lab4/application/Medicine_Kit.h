@@ -11,7 +11,8 @@ enum MED_KIT_HEALTH {
 
 class Medicine_Kit: public Item {
 public:
-    Medicine_Kit(MED_KIT_HEALTH type); // initialisation type and params
+    Medicine_Kit(MED_KIT_HEALTH); // initialisation type and params
+    [[nodiscard]] std::pair<int, int> use() const noexcept;
 protected:
     MED_KIT_HEALTH type;
     int score_health;

@@ -3,7 +3,7 @@
 
 #include "Item.h"
 #include "Ammo_container.h"
-#include <map>
+#include <unordered_map>
 
 struct WEAPON_PARAMS {
     int damage;
@@ -20,8 +20,8 @@ enum WEAPON_TYPE {
     TO3_34
 };
 
-std::map<WEAPON_TYPE, WEAPON_PARAMS> weapon_type_params = {{AK_74, {15, 4, 2, machine_gun, 30}},
-                                                           {RPK_74, {20, 4, 3, machine_gun, 45}},
+std::unordered_map<WEAPON_TYPE, WEAPON_PARAMS> weapon_type_params = {{AK_74, {15, 4, 2, machine_gun, 10}},
+                                                           {RPK_74, {20, 4, 3, machine_gun, 15}},
                                                            {PM, {10, 2, 1, pistol, 8}},
                                                            {TO3_34, {30, 1, 2, shotgun, 2}}};
 

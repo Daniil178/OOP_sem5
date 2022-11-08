@@ -12,7 +12,7 @@ public:
     Item get_item(Item item); // take item from inventory
     int put_item(Item item); // put item to inventory
 protected:
-    std::vector<Item> inventory;
+    std::vector<Item*> inventory;
 };
 
 #endif //TABLE_H

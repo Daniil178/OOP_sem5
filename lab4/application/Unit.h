@@ -1,7 +1,7 @@
 #ifndef UNIT_H
 #define UNIT_H
 
-#include <string>
+#include "RPG_Object.h"
 #include "Weapon.h"
 
 enum Direction {
@@ -24,21 +24,20 @@ struct basic_unit_parameters {
     int time_to_step = 1;
     int max_time = 10;
     int current_time = 10;
-    int accuracy = 90; // in %
     int view_radius = 3;
 };
 
-class Unit {
+class Unit: public RPG_Object{
 public:
     Unit(std::string name, UNIT_TYPE type, std::pair<uint, uint> position); // initialisation all params of Units
     UNIT_TYPE get_type(); // fet type of unit
     basic_unit_parameters get_basic_params(); // get max and current health, time and view radius
     int change_params(int loss_time);
-    int get_damage(int loss); // get damage after attack
+    int get_damage(int loss) override; // get damage after attack
     int step(Direction new_position); // change position
 protected:
-    std::string name;
     UNIT_TYPE type;
+    std::string name;
     basic_unit_parameters params;
     std::pair<uint, uint> position;
 };

@@ -4,6 +4,8 @@
 #include "Level.h"
 #include "RPG_Object.h"
 
+namespace RPG {
+
 class Game {
 public:
     Game(int number_of_level, Level map_); //initialisation of Game
@@ -11,10 +13,13 @@ public:
     void finish(); // end game
     void turn(); // do one turn with 2 teams
     void shot(Unit *, Direction);
+
 protected:
     int number_of_level;
     Level map_;
     int finish_flag; // 0 - don`t finish, 1 - win, 2 - lose
 };
+
+} // RPG
 
 #endif //GAME_H

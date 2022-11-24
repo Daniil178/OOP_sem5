@@ -4,6 +4,8 @@
 #include "RPG_Object.h"
 #include "Weapon.h"
 
+namespace RPG {
+
 enum Direction {
     Left = 0,
     Down,
@@ -27,12 +29,13 @@ struct basic_unit_parameters {
     int view_radius = 3;
 };
 
-class Unit: public RPG_Object{
+class Unit : public RPG_Object {
 public:
     Unit(std::string name, UNIT_TYPE type, std::pair<uint, uint> position); // initialisation all params of Units
     UNIT_TYPE get_type(); // fet type of unit
     basic_unit_parameters get_basic_params(); // get max and current health, time and view radius
     int change_params(int loss_time);
+
     int get_damage(int loss) override; // get damage after attack
     int step(Direction new_position); // change position
 protected:
@@ -42,4 +45,5 @@ protected:
     std::pair<uint, uint> position;
 };
 
+} // RPG
 #endif //UNIT_H

@@ -3,7 +3,8 @@
 
 #include "Item.h"
 #include "Ammo_container.h"
-#include <unordered_map>
+
+namespace RPG {
 
 struct WEAPON_PARAMS {
     int damage;
@@ -13,6 +14,11 @@ struct WEAPON_PARAMS {
     int max_ammo;
 };
 
+struct WEAPON_PARAMS_WEIGHT {
+    WEAPON_PARAMS bas_params;
+    int weight;
+};
+
 enum WEAPON_TYPE {
     AK_74 = 0,
     RPK_74,
@@ -20,25 +26,31 @@ enum WEAPON_TYPE {
     TO3_34
 };
 
-std::unordered_map<WEAPON_TYPE, WEAPON_PARAMS> weapon_type_params = {{AK_74, {15, 4, 2, machine_gun, 10}},
-                                                           {RPK_74, {20, 4, 3, machine_gun, 15}},
-                                                           {PM, {10, 2, 1, pistol, 8}},
-                                                           {TO3_34, {30, 1, 2, shotgun, 2}}};
+std::unordered_map<WEAPON_TYPE, WEAPON_PARAMS_WEIGHT> weapon_type_params = {{AK_74,  {{15, 4, 2, machine_gun, 10}, 4000}},
+                                                                     {RPK_74, {{20, 4, 3, machine_gun, 15}, 5000}},
+                                                                     {PM,     {{10, 2, 1, pistol,      8}, 800}},
+                                                                     {TO3_34, {{30, 1, 2, shotgun,     2}, 3000}}};
 
-class Weapon: public Item {
+std::unordered_map<WEAPON_TYPE, std::string> TYPE_NAME_weapon = {{AK_74, "AK_74"},
+                                                                 {RPK_74, "RPK_74"},
+                                                                 {PM, "PM"},
+                                                              {TO3_34, "TO3_34"}};
+
+class Weapon : public Item {
 public:
-    Weapon(WEAPON_TYPE type, int ammo_number); // initialisation params
-    int shot(); // make attack with gun
+    /**/explicit Weapon(WEAPON_TYPE type, int ammo_number); // initialisation params
+    /**/bool shot(); // make attack with gun
     int shot_result(); // get result of shot
-    int get_damage(); // get damage, which gun can make
-    int reload(); // update ammo in gun
+    /*range*/int get_damage(); // get damage, which gun can make. return damage
+    /*time_to_reload||-1*/int reload(Ammo_container& container); // update ammo in gun, return time_to_reload
+    /**/[[nodiscard]] WEAPON_PARAMS_WEIGHT get_params() const noexcept;
 protected:
-    WEAPON_TYPE type;
-    WEAPON_PARAMS basic_params;
-    int shot_time = 1;
+    const WEAPON_TYPE type;
+    const WEAPON_PARAMS_WEIGHT params;
+    static const int shot_time = 1;
     int ammo_number;
 };
 
-
+} // RPG
 
 #endif

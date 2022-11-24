@@ -3,23 +3,28 @@
 
 #include "RPG_Object.h"
 #include <string>
+#include <unordered_map>
+
+namespace RPG {
 
 enum ITEM_TYPE {
-    Medicine_kit = 0,
-    ammo_container,
-    weapon
+    MEDICINE_KIT = 0,
+    AMMO_CONTAINER,
+    WEAPON
 };
 
-class Item{
+class Item {
 public:
     //Item();
-    ITEM_TYPE get_type();
-    //Item(int id, std::string name, int weight);
+    /**/[[nodiscard]] ITEM_TYPE get_type() const noexcept;
+    /**/Item(std::string name, int weight, ITEM_TYPE type0);
 protected:
-    ITEM_TYPE type;
-    std::string name;
-    int id; // unique id
+    const ITEM_TYPE type;
+    const std::string name;
+    //int id; // unique id
     int weight; // weight of item
 };
+
+} //RPG
 
 #endif //ITEM_H

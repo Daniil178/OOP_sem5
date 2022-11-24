@@ -5,7 +5,7 @@ project(lab4)
 find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
 
 add_executable(game main.cpp)
-add_executable(dirt dirt.cpp)
+add_executable(dirt dirt.cpp test/test_classes.cpp)
 
 target_link_libraries(game sfml-graphics sfml-audio)
 

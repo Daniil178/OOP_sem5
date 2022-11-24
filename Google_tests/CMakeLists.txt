@@ -19,4 +19,9 @@ target_link_libraries(Google_Tests_run_lab3.2 gtest gtest_main lib_circuitboard)
 include_directories(../lab3.3/lib)
 add_executable(Google_Tests_run_lab3.3 ../lab3.3/test/test.cpp)
 target_link_libraries(Google_Tests_run_lab3.3 gtest gtest_main lib_pcb)
+
+#tests for lab4
+include_directories(../lab4/application)
+add_executable(Google_Tests_run_lab4 ../lab4/test/test_classes.cpp)
+target_link_libraries(Google_Tests_run_lab4 gtest gtest_main objects)
 #next labs...

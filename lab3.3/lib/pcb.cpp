@@ -318,7 +318,7 @@ namespace PCB_dynamic {
         return res;
     }
 
-    std::strong_ordering operator <=>(const pcb& pcb1, const pcb& pcb2) {
-        return pcb1.len_() <=> pcb2.len_();
-    }
+//    std::strong_ordering operator <=>(const pcb& pcb1, const pcb& pcb2) {
+//        return pcb1.len_() <=> pcb2.len_();
+//    }
 }

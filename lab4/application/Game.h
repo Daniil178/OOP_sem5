@@ -2,7 +2,6 @@
 #define GAME_H
 
 #include "Level.h"
-#include "RPG_Object.h"
 
 namespace RPG {
 

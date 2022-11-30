@@ -1,9 +1,7 @@
 #ifndef CELL_H
 #define CELL_H
 
-#include "Item.h"
-#include <unordered_map>
-#include <vector>
+#include "Weapon.h"
 
 namespace RPG {
 
@@ -22,32 +20,29 @@ struct cell_params {
     bool go_through;
 };
 
-std::unordered_map<CELL_TYPE, cell_params> CELL_TYPE_PARAMS = {{Floor,         {true,  false, true}},
-                                                               {Wall,          {false, false, false}},
-                                                               {Glass,         {true,  true,  false}},
-                                                               {Partition,     {false, true,  false}},
-                                                               {Storage_point, {true,  false, true}},
-                                                               {Have_item,     {true,  false, true}}};
-
 
 class Cell : RPG_Object {
 public:
-    Cell(CELL_TYPE type, std::vector<Item *> items); // initialisation params
-    int change_type(CELL_TYPE new_type); // change type, when we destroy cell
+    Cell();
+    explicit Cell(CELL_TYPE type, std::vector<Item*> items); // initialisation params
+
     CELL_TYPE get_type(); // get type of cell
-    Item take_item(Item item); // take item from cell
-    int put_item(Item item); // put item on cell
+    Item* take_item(Item* item); // take item from cell
+    int put_item(Item* item); // put item on cell
     bool is_visible();
-
     int get_damage(int) override;
-
     bool can_go_through();
+    static std::unordered_map<CELL_TYPE, cell_params> CELL_TYPE_PARAMS;
 
 protected:
     CELL_TYPE type;
-    std::vector<Item *> items; // items which cell has
+    std::vector<Item *> all_items; // items which cell has
     cell_params parameters;
+    int change_type(CELL_TYPE new_type); // change type, when we destroy cell
 };
+
+
+using Map = std::unordered_map<coordinate, Cell, mhash>;
 
 }//RPG
 #endif //CELL_H

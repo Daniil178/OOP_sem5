@@ -56,7 +56,7 @@ public:
     //modified sum
     pcb& operator += (const pcb& pcb2);
     //comparator
-    friend std::strong_ordering operator <=>(const pcb& pcb1, const pcb& pcb2);
+    //friend std::strong_ordering operator <=>(const pcb& pcb1, const pcb& pcb2);
 };
 pcb operator +(const pcb& pcb1, const pcb& pcb2);
 pcb operator !(const pcb &circ);

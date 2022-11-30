@@ -1,7 +1,8 @@
 #ifndef MEDICINE_KIT_H
 #define MEDICINE_KIT_H
 
-#include "Item.h"
+//#include "Item.h"
+#include "Ammo_container.h"
 
 namespace RPG {
 
@@ -11,19 +12,21 @@ enum MED_KIT_HEALTH {
     Scientific = 80
 };
 
-std::unordered_map<MED_KIT_HEALTH, std::string> TYPE_NAME = {{Basic, "Basic med"},
-                                                             {Army, "Army med"},
-                                                             {Scientific, "Scientific med"}};
 
-class Medicine_Kit : public Item {
+
+class Medicine_Kit : virtual public Item {
 public:
     /**/explicit Medicine_Kit(MED_KIT_HEALTH); // initialisation type and params
-    /**/[[nodiscard]] std::pair<const int, const int> use() const noexcept;
+    ///
+    /// @brief  just return needed params and after you must delete it
+    /// \return pair of params: (score_health, time_to_use)
+    /**/[[nodiscard]] std::pair<int, int> use() const noexcept;
+    /**/[[nodiscard]] MED_KIT_HEALTH get_type();
 
 protected:
     MED_KIT_HEALTH type;
     const int score_health;
-    static const int time_to_use = 1;
+    const int time_to_use = 1;
 };
 
 } // RPG

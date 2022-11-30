@@ -269,7 +269,7 @@ namespace PCB{
         return res;
     }
 
-    std::strong_ordering operator <=> (const pcb& pcb1, const pcb& pcb2) {
-        return pcb1.getSize() <=> pcb2.getSize();
-    }
+//    std::strong_ordering operator <=> (const pcb& pcb1, const pcb& pcb2) {
+//        return pcb1.getSize() <=> pcb2.getSize();
+//    }
 }

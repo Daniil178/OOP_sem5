@@ -26,7 +26,7 @@ namespace Prog2{
         [[nodiscard]] double perimeter() const;
         [[nodiscard]] double area() const;
         [[nodiscard]] point f(double t) const;
-        [[nodiscard]] char *formula() const;
+        //[[nodiscard]] char *formula() const;
     };
 }
 

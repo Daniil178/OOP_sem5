@@ -2,8 +2,14 @@
 
 namespace RPG {
 
+std::unordered_map<AMMO_WEIGHT, std::string> TYPE_NAME_ammo = {{machine_gun, "Machine gun ammo's"},
+                                                               {shotgun, "Shotgun ammo's"},
+                                                               {pistol, "Pistol ammo's"},
+                                                               {empty, "empty"}};
+
+
 Ammo_container::Ammo_container(AMMO_WEIGHT type0) : // initialisation params
-                                                    Item(TYPE_NAME[type0], 0, AMMO_CONTAINER),
+                                                    Item(TYPE_NAME_ammo[type0], 0, AMMO_CONTAINER),
                                                     type(type0),
                                                     current_count(0)
                                                     {}
@@ -30,6 +36,10 @@ bool Ammo_container::put_ammo(int number) { // put some ammo to container
 
 int Ammo_container::num_ammo() {
     return current_count;
+}
+
+AMMO_WEIGHT Ammo_container::get_type() {
+    return type;
 }
 
 } // RPG

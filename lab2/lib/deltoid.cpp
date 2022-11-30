@@ -52,27 +52,27 @@ namespace Prog2{
         p1.y = 2*r*sin(t) - r*sin(2*t) + p.y;
         return p1;
     }
-    char* Deltoid::formula() const{ //(x^2 + y^2)^2 + 18*(x^2 + y^2) = 8x^3 - 24y^2*x + 27
-        const char *s1 = "((x - )^2 + (y - )^2)^2 + 18*((x - )^2 + (y - )^2) = 8(x - )^3 - 24(y - )^2 * (x - ) + 27";
-        unsigned int l = strlen(s1) + 1;
-        size_t size = 20;
-        char num[20];
-        sprintf_s(num, size, "%.2f", p.x);
-        if(p.x != 0)
-            l += 4 * strlen(num);
-        sprintf_s(num, size, "%.2f", p.y);
-        if(p.y != 0)
-            l += 3 * strlen(num);
-        char *s = new char[l];
-        if(p.x == 0 and p.y == 0)
-            sprintf_s(s, l, "(x^2 + y^2)^2 + 18*(x^2 + y^2) = 8x^3 - 24y^2 * x + 27");
-        else if (p.x == 0)
-            sprintf_s(s, l, "((x - %.2f)^2 + y^2)^2 + 18*((x - %.2f)^2 + y^2) = 8(x - %.2f)^3 - 24y^2 * (x - %.2f) + 27", p.x, p.x, p.x, p.x);
-        else if (p.y == 0)
-            sprintf_s(s, l, "(x^2 + (y - %.2f)^2)^2 + 18*(x^2 + (y - %.2f)^2) = 8x^3 - 24(y - %.2f)^2 *x + 27", p.y, p.y, p.y);
-        else
-            sprintf_s(s, l, "((x - %.2f)^2 + (y - %.2f)^2)^2 + 18*((x - %.2f)^2 + (y - %.2f)^2) = 8(x - %.2f)^3 - 24(y - %.2f)^2 * (x - %.2f) + 27", p.x, p.y, p.x, p.y, p.x, p.y, p.x);
-        return s;
-    }
+//    char* Deltoid::formula() const{ //(x^2 + y^2)^2 + 18*(x^2 + y^2) = 8x^3 - 24y^2*x + 27
+//        const char *s1 = "((x - )^2 + (y - )^2)^2 + 18*((x - )^2 + (y - )^2) = 8(x - )^3 - 24(y - )^2 * (x - ) + 27";
+//        unsigned int l = strlen(s1) + 1;
+//        size_t size = 20;
+//        char num[20];
+//        sprintf_s(num, size, "%.2f", p.x);
+//        if(p.x != 0)
+//            l += 4 * strlen(num);
+//        sprintf_s(num, size, "%.2f", p.y);
+//        if(p.y != 0)
+//            l += 3 * strlen(num);
+//        char *s = new char[l];
+//        if(p.x == 0 and p.y == 0)
+//            sprintf_s(s, l, "(x^2 + y^2)^2 + 18*(x^2 + y^2) = 8x^3 - 24y^2 * x + 27");
+//        else if (p.x == 0)
+//            sprintf_s(s, l, "((x - %.2f)^2 + y^2)^2 + 18*((x - %.2f)^2 + y^2) = 8(x - %.2f)^3 - 24y^2 * (x - %.2f) + 27", p.x, p.x, p.x, p.x);
+//        else if (p.y == 0)
+//            sprintf_s(s, l, "(x^2 + (y - %.2f)^2)^2 + 18*(x^2 + (y - %.2f)^2) = 8x^3 - 24(y - %.2f)^2 *x + 27", p.y, p.y, p.y);
+//        else
+//            sprintf_s(s, l, "((x - %.2f)^2 + (y - %.2f)^2)^2 + 18*((x - %.2f)^2 + (y - %.2f)^2) = 8(x - %.2f)^3 - 24(y - %.2f)^2 * (x - %.2f) + 27", p.x, p.y, p.x, p.y, p.x, p.y, p.x);
+//        return s;
+//    }
 
 }

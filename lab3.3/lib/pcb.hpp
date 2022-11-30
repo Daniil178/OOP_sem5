@@ -87,7 +87,7 @@ pcb operator +(const pcb& pcb1, const pcb& pcb2);
 pcb operator !(pcb &circ);
 
 // ------ comparator ------ //
-std::strong_ordering operator <=>(const pcb& pcb1, const pcb& pcb2);
+//std::strong_ordering operator <=>(const pcb& pcb1, const pcb& pcb2);
 
 } // PCB_dynamic
 

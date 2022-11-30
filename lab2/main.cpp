@@ -11,9 +11,9 @@ int main(){
     while(fl1) {
         std::cout << "Your deltoid is:" << std::endl;
         std::cout << "----------------------------" << std::endl;
-        char *s = d.formula();
-        std::cout << s << std::endl;
-        delete [] s;
+        //char *s = d.formula();
+        //std::cout << s << std::endl;
+        //delete [] s;
         std::cout << "coordinates of center: (" << d.getP().x << ", " << d.getP().y << ")" << std::endl;
         std::cout << "radius: " << d.getR() << std::endl;
         std::cout << "area_with_tangent: " << d.area_with_tangent() << std::endl;

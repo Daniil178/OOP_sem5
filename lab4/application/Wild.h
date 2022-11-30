@@ -7,15 +7,15 @@ namespace RPG {
 
 class Wild : virtual public Unit {
 public:
-    Wild(std::string name); // initialisation damage and range of attack
-    int get_num_damage(); // get damage
-    int get_range(); // get range of attack
-    int get_accuracy(); // get accuracy of attack in %
-    virtual int attack(Direction direct); // make damage to cell
+    Wild(std::string name, coordinate start_pos); // initialisation damage and range of attack
+    /**/[[nodiscard]] int get_num_damage() const noexcept; // get damage
+    /**/[[nodiscard]] int get_range() const noexcept; // get range of attack
+    /**/[[nodiscard]] int get_accuracy() const noexcept; // get accuracy of attack in %
+    /*?*/virtual int attack(); // make damage to cell
 protected:
-    int damage;
+    int damage = 25;
     int range;
-    int accuracy = 90; // in %
+    const int accuracy = 90; // in %
 };
 
 } // RPG

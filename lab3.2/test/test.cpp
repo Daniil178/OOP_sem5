@@ -298,19 +298,19 @@ TEST(Operators, sum) {
     EXPECT_THROW(res = res + circ2, std::out_of_range);
 }
 
-TEST(Operators, comparator) {
-    PCB::pcb circ, circ2;
-    PCB::contact c, c1(1, 1, (PCB::type) 1), c2(2, 3, (PCB::type) 1);
-
-    EXPECT_EQ( 0 <=> 0, circ <=> circ2);
-    circ.add_contact(c), circ.add_contact(c1), circ.add_contact(c2);
-    PCB::contact c3(3, 4, (PCB::type) 0), c4(4, 5, (PCB::type) 1);
-    circ2.add_contact(c3), circ2.add_contact(c4);
-
-    EXPECT_EQ(3 <=> 2, circ <=> circ2);
-    EXPECT_EQ(3 > 2, circ > circ2);
-    EXPECT_EQ(3 <= 2, circ <= circ2);
-}
+//TEST(Operators, comparator) {
+//    PCB::pcb circ, circ2;
+//    PCB::contact c, c1(1, 1, (PCB::type) 1), c2(2, 3, (PCB::type) 1);
+//
+//    EXPECT_EQ( 0 <=> 0, circ <=> circ2);
+//    circ.add_contact(c), circ.add_contact(c1), circ.add_contact(c2);
+//    PCB::contact c3(3, 4, (PCB::type) 0), c4(4, 5, (PCB::type) 1);
+//    circ2.add_contact(c3), circ2.add_contact(c4);
+//
+//    EXPECT_EQ(3 <=> 2, circ <=> circ2);
+//    EXPECT_EQ(3 > 2, circ > circ2);
+//    EXPECT_EQ(3 <= 2, circ <= circ2);
+//}
 
 int main(int argc, char* argv[]) {
     ::testing::InitGoogleTest(&argc, argv);

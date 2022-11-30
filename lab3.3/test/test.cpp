@@ -351,19 +351,19 @@ TEST(Operators, sum) {
     EXPECT_EQ(ostr_after.str(), "0 --> input, (0;0), 2;\n1 --> output, (1;1), -1;\n2 --> output, (2;3), 1;\n3 --> input, (3;4), 4;\n4 --> output, (4;5), -1;\n");
 }
 
-TEST(Operators, comparator) {
-    pcb circ, circ2;
-    contact c, c1(1, 1, (type) 1), c2(2, 3, (type) 1);
-
-    EXPECT_EQ( 0 <=> 0, circ <=> circ2);
-    circ.add_contact(c), circ.add_contact(c1), circ.add_contact(c2);
-    contact c3(3, 4, (type) 0), c4(4, 5, (type) 1);
-    circ2.add_contact(c3), circ2.add_contact(c4);
-
-    EXPECT_EQ(3 <=> 2, circ <=> circ2);
-    EXPECT_EQ(3 > 2, circ > circ2);
-    EXPECT_EQ(3 <= 2, circ <= circ2);
-}
+//TEST(Operators, comparator) {
+//    pcb circ, circ2;
+//    contact c, c1(1, 1, (type) 1), c2(2, 3, (type) 1);
+//
+//    EXPECT_EQ( 0 <=> 0, circ <=> circ2);
+//    circ.add_contact(c), circ.add_contact(c1), circ.add_contact(c2);
+//    contact c3(3, 4, (type) 0), c4(4, 5, (type) 1);
+//    circ2.add_contact(c3), circ2.add_contact(c4);
+//
+//    EXPECT_EQ(3 <=> 2, circ <=> circ2);
+//    EXPECT_EQ(3 > 2, circ > circ2);
+//    EXPECT_EQ(3 <= 2, circ <= circ2);
+//}
 
 TEST(DynamicMemory, big_pcb) {
     pcb pcb1;

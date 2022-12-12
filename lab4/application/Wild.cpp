@@ -20,8 +20,10 @@ int Wild::get_accuracy() const noexcept {
 }
 
 int Wild::attack() {
-    params.current_time -= 1;
-
+    if (params.current_time <= 0) {
+        return -3; // haven't time
+    }
+    params.current_time -= time_to_attack;
     if (GetRandomNumber(0, 100) > accuracy) {
         return 1; // missing
     }

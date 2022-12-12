@@ -22,22 +22,22 @@ basic_unit_parameters Unit::get_params() const noexcept{
     return params;
 }
 
-int Unit::change_time(int loss_time) {
-
-    if (params.current_time < loss_time) {
-        return -1;
-    }
-    params.current_time -= loss_time;
-    return params.current_time;
-}
+//int Unit::change_time(int loss_time) {
+//
+//    if (params.current_time < loss_time) {
+//        return -1;
+//    }
+//    params.current_time -= loss_time;
+//    return params.current_time;
+//}
 
 int Unit::get_damage(int loss) {
     params.current_health -= loss;
     if (params.current_health <= 0) {
         params.current_health = 0;
-        return 0;
+        return 100;
     }
-    return 1;
+    return 0;
 }
 
 int Unit::step(Direction new_position, Map& map_) {
@@ -48,7 +48,7 @@ int Unit::step(Direction new_position, Map& map_) {
     coordinate prob_pos;
     prob_pos.first = position.first + DIR_POS[new_position].first;
     prob_pos.second = position.second + DIR_POS[new_position].second;
-    if (!(map_[prob_pos].can_go_through())) {
+    if (!(map_[prob_pos]->can_go_through())) {
         return -1;
     }
     position.first = prob_pos.first;

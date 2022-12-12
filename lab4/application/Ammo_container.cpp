@@ -26,11 +26,15 @@ bool Ammo_container::take_ammo(int number) { // take some ammo from container
 bool Ammo_container::put_ammo(int number) { // put some ammo to container
 
     if (current_count + number > max_count) {
+//        current_count += number;
+//        weight += number * ((int) type);
+//        return false;
+        number = max_count - current_count;
+        weight += number * ((int) type);
         return false;
     }
     current_count += number;
     weight += number * ((int) type);
-
     return true;
 }
 

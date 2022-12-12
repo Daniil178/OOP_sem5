@@ -16,4 +16,6 @@ add_library(objects application/RPG_Object.cpp application/Game.cpp application/
         application/Unit.cpp application/Forager.cpp application/Wild.cpp application/Rational.cpp
         application/Operative.cpp application/Table.cpp application/help_func.h)
 
+add_executable(main main.cpp)
+
 #target_link_libraries(dirt objects)

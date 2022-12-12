@@ -17,25 +17,41 @@ enum ITEM_TYPE {
     WEAPON,
     EMPTY
 };
-
+/**
+ * @class Item abstract class for Weapon, Med_kit and ammo_cont
+ */
 class Item {
 public:
     Item();
-    /// @brief constructor of class Item
-    /// \param name string name of item
-    /// \param weight weight of item
-    /// \param type0 type of item - enum class
-    /**/Item(std::string name, int weight, ITEM_TYPE type0);
-    ///
-    /// \return enum ITEM_TYPE - type of item
-    /**/[[nodiscard]] virtual ITEM_TYPE get_type() const noexcept;
-    ///
-    /// \return int - weight of item
-    /**/[[nodiscard]] int get_weight() const noexcept;
+    /** @brief constructor of class Item
+    * @param name string name of item
+    * @param weight weight of item
+    * @param type0 type of item - enum class
+    */
+    Item(std::string name, int weight, ITEM_TYPE type0);
+    /**
+     * @brief check type of item
+     * @return enum ITEM_TYPE - type of item
+     */
+    [[nodiscard]] virtual ITEM_TYPE get_type() const noexcept;
+    /**
+     * @brief check weight of item
+     * \return (int) - weight of item
+     */
+    [[nodiscard]] int get_weight() const noexcept;
 protected:
+    /**
+     * @brief (ITEM_TYPE) - type of item
+     */
     const ITEM_TYPE type;
+    /**
+     * @brief (string) - name of item
+     */
     const std::string name;
     //int id; // unique id
+    /**
+     * @brief (int) - weight of item
+     */
     int weight; // weight of item
 };
 

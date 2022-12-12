@@ -7,6 +7,13 @@
 
 namespace RPG {
 
+/**
+ * @brief types of units
+ * @enum WILD, \n
+ * RATIONAL, \n
+ * FORAGER, \n
+ * OPERATIVE
+ */
 enum UNIT_TYPE {
     WILD = 0,
     RATIONAL,
@@ -14,6 +21,9 @@ enum UNIT_TYPE {
     OPERATIVE
 };
 
+/**
+ * @brief struct with basic params of units
+ */
 struct basic_unit_parameters {
     int max_health = 100;
     int current_health = 100;
@@ -23,20 +33,67 @@ struct basic_unit_parameters {
     int view_radius = 3;
 };
 
+/**
+ * @class Unit hear of RPG_Object
+ */
 class Unit: public RPG_Object {
 public:
-    /**/explicit Unit(std::string name, UNIT_TYPE type, coordinate position); // initialisation all params of Units
-    /**/UNIT_TYPE get_type(); // fet type of unit
-    /**/ [[nodiscard]] basic_unit_parameters get_params() const noexcept; // get max and current health, time and view radius
-    /**/ [[nodiscard]] coordinate get_position() const noexcept;
-    /*0-died, 1 - leave*/int get_damage(int loss) override; // get damage after attack
-    /**/int step(Direction new_position, Map& map_); // change position
+    /**
+     * @brief constructor of Unit
+     * @param name (string) - name of unit
+     * @param type (UNIT_TYPE) - type of unit
+     * @param position (coordinate) - start position of unit
+     */
+    explicit Unit(std::string name, UNIT_TYPE type, coordinate position); // initialisation all params of Units
+    /**
+     * @brief check type of unit
+     * @return (UNIT_TYPE) - type of unit
+     */
+    UNIT_TYPE get_type();
+    /**
+     * @brief check params of unit
+     * @return (basic_unit_parameters) - parameters of unit
+     */
+    [[nodiscard]] basic_unit_parameters get_params() const noexcept;
+    /**
+     * @brief check position of unit
+     * @return (coordinate) - current position of unit
+     */
+    [[nodiscard]] coordinate get_position() const noexcept;
+    /**
+     * @brief unit get damage after attack
+     * @param loss (int) - number of hp which unit loss
+     * @return (int) 100 - died, \n
+     * 1 - get damage and leave
+     */
+    int get_damage(int loss) override;
+    /**
+     * @brief change position of unit
+     * @param new_position (coordinate) - new position of unit
+     * @param map_ (Map&) - map on which unit step
+     * @return (int) - 1 - unit haven't time, \n
+     * -1 - can't step, \n
+     * 0 - successfully step
+     */
+    int step(Direction new_position, Map& map_); // change position
 protected:
+    /**
+     * @brief (UNIT_TYPE) - type of unit
+     */
     UNIT_TYPE type;
+    /**
+     * @brief (string) - name of unit
+     */
     std::string name;
+    /**
+     * @brief parameters of unit
+     */
     basic_unit_parameters params;
+    /**
+     * @brief (coordinate) - current position of unit
+     */
     coordinate position;
-    /*current time*/int change_time(int loss_time);
+    //*current time*/int change_time(int loss_time);
 };
 
 } // RPG

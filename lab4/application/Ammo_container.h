@@ -5,6 +5,14 @@
 
 namespace RPG {
 
+/**
+ * @brief type of ammo's and their correspondence to the weight in g
+ * @enum
+ * machine_gun = 6, \n
+ * pistol = 5, \n
+ * shotgun = 7, \n
+ * empty = 0 \n
+ */
 enum AMMO_WEIGHT {
     machine_gun = 6,
     pistol = 5,
@@ -12,17 +20,51 @@ enum AMMO_WEIGHT {
     empty = 0
 };
 
-
+/**
+ * @class Ammo_container hear of Item
+ */
 class Ammo_container : public Item {
 public:
-    /**/explicit Ammo_container(AMMO_WEIGHT type); // initialisation params
-    /**/bool take_ammo(int number); // take some ammo from container
-    /**/bool put_ammo(int number); // put some ammo to container
-    /**/int num_ammo(); // show how much ammo you have
-    /**/ AMMO_WEIGHT get_type();
+    /**
+     * @brief constructor of class Ammo_container
+     * @param type - type of ammo
+     */
+    explicit Ammo_container(AMMO_WEIGHT type); // initialisation params
+    /**
+     * @brief take some ammo's from container
+     * @param number - number of takes ammo's
+     * @return true or false - can you take needed ammo's
+     */
+    bool take_ammo(int number); // take some ammo from container
+    /**
+     * @brief put some ammo's to container
+     * @param number - number of puts ammo's
+     * @return true or false - can you put needed ammo's
+     * (anyway you put maximum ammo's how you can)
+     */
+    bool put_ammo(int number); // put some ammo to container
+    /**
+     * @brief number of ammo's in container
+     * @return int - number of ammo's in container
+     */
+    int num_ammo(); // show how much ammo you have
+    /**
+     * @brief check type of ammo's
+     * @return AMMO_WEIGHT - type of ammo's
+     */
+    AMMO_WEIGHT get_type();
 protected:
+    /**
+     * @brief type of ammo's in container
+     */
     AMMO_WEIGHT type;
+    /**
+     * @brief max count of ammo's in container
+     */
     int max_count = 100;
+    /**
+     * @brief current count of ammo's in container (\<= max_count)
+     */
     int current_count;
 };
 

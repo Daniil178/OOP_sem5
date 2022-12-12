@@ -1,4 +1,4 @@
-# include "Table.h"
+#include "Table.h"
 
 namespace RPG {
 
@@ -8,27 +8,55 @@ int Table::number_of_items() {
     return (int) inventory.size();
 }
 
-int Table::change_item(Item* new_item, Item* old_item) {
+Item* Table::change_item(Item* put_item_in, Item* item_take_from) {
     auto curr_item = inventory.begin();
+    Item* res;
     while(curr_item != inventory.end()) {
-        if (*curr_item == old_item) {
-            *curr_item = new_item;
-            weight += -old_item->get_weight() + new_item->get_weight();
-            //inventory.erase(curr_item);
-            return 0;
+        ITEM_TYPE type_curr_item = (*curr_item)->get_type();
+        if (type_curr_item == item_take_from->get_type()) {
+            if (((type_curr_item == WEAPON) &&
+                 (dynamic_cast<Weapon*>(*curr_item)->get_type() == dynamic_cast<Weapon*>(item_take_from)->get_type()))
+                or
+                ((type_curr_item == AMMO_CONTAINER) &&
+                 (dynamic_cast<Ammo_container*>(*curr_item)->get_type() == dynamic_cast<Ammo_container*>(item_take_from)->get_type()))
+                or
+                ((type_curr_item == MEDICINE_KIT) &&
+                 (dynamic_cast<Medicine_Kit*>(*curr_item)->get_type() == dynamic_cast<Medicine_Kit*>(item_take_from)->get_type())))
+            {
+                res = *curr_item;
+                *curr_item = put_item_in;
+                weight += -item_take_from->get_weight() + put_item_in->get_weight();
+                //inventory.erase(curr_item);
+                return res;
+            }
         }
+        ++curr_item;
     }
-    return -1; // not have old
+    return nullptr; // not have old
 }
 
 Item* Table::get_item(Item* item) {
     auto curr_item = inventory.begin();
+    Item* res;
     while(curr_item != inventory.end()) {
-        if (*curr_item == item) {
-            inventory.erase(curr_item);
-            weight -= item->get_weight();
-            return item;
+        ITEM_TYPE type_curr_item = (*curr_item)->get_type();
+        if (type_curr_item == item->get_type()) {
+            if (((type_curr_item == WEAPON) &&
+                (dynamic_cast<Weapon*>(*curr_item)->get_type() == dynamic_cast<Weapon*>(item)->get_type()))
+                or
+                ((type_curr_item == AMMO_CONTAINER) &&
+                 (dynamic_cast<Ammo_container*>(*curr_item)->get_type() == dynamic_cast<Ammo_container*>(item)->get_type()))
+                or
+                ((type_curr_item == MEDICINE_KIT) &&
+                 (dynamic_cast<Medicine_Kit*>(*curr_item)->get_type() == dynamic_cast<Medicine_Kit*>(item)->get_type())))
+            {
+                res = *curr_item;
+                inventory.erase(curr_item);
+                weight -= res->get_weight();
+                return res;
+            }
         }
+        ++curr_item;
     }
     return nullptr; // not have old
 }
@@ -51,8 +79,36 @@ int Table::change_weight(int loss) {
     return 0;
 }
 
+int Table::update_params() noexcept{
+    auto curr_item = inventory.begin();
+    weight = 0;
+    while(curr_item != inventory.end()) {
+        weight += (*curr_item)->get_weight();
+        ++curr_item;
+    }
+    return 0;
+}
+
 std::vector<Item*>::iterator Table::get_iter() {
     return inventory.begin();
+}
+
+Table::~Table() {
+    for (auto curr_item: inventory) {
+        ITEM_TYPE type_curr_item = curr_item->get_type();
+        if (type_curr_item == WEAPON) {
+            delete dynamic_cast<Weapon*>(curr_item);
+        }
+        else if (type_curr_item == MEDICINE_KIT) {
+            delete dynamic_cast<Medicine_Kit*>(curr_item);
+        }
+        else if (type_curr_item == AMMO_CONTAINER) {
+            delete dynamic_cast<Ammo_container*>(curr_item);
+        }
+        else {
+            delete curr_item;
+        }
+    }
 }
 
 } // RPG

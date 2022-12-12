@@ -2,11 +2,13 @@
 #define OOP_SEM5_HELP_FUNC_H
 
 #include <iostream>
-#include <unordered_map>
+//#include <unordered_map>
+#include "my_unordered_map.hpp"
 #include <string>
 #include <vector>
-#include <cstdlib>
-#include <ctime>
+//#include <cstdlib>
+//#include <ctime>
+#include <random>
 
 namespace RPG {
 
@@ -16,12 +18,19 @@ static bool operator==(const coordinate &frst, const coordinate &scnd) {
     return ((frst.first == scnd.first) && (frst.second == scnd.second));
 }
 
-//static coordinate operator+(const coordinate& frst, const coordinate& scnd) {
-//    coordinate new_pos = std::make_pair(0, 0);
-//    new_pos.first = frst.first + scnd.second;
-//    new_pos.second = frst.second + scnd.second;
-//    return std::make_pair(frst.first + scnd.second, frst.second + scnd.second);
-//}
+
+static coordinate& operator+=(coordinate& frst, coordinate& scnd) {
+    frst.first = frst.first + scnd.first;
+    frst.second = frst.second + scnd.second;
+    return frst;
+}
+
+static coordinate operator+(coordinate& frst, coordinate& scnd) {
+    coordinate new_pos = std::make_pair(0, 0);
+    new_pos += frst;
+    new_pos += scnd;
+    return new_pos;
+}
 
 struct mhash {
     std::size_t operator()(std::pair <int, int> const &coor) const noexcept {
@@ -32,12 +41,16 @@ struct mhash {
 };
 
 
-// Функция генерирования случайного целочисленного числа в указанных пределах.
-// Диапазон чисел: [min, max]
+/**
+ * @brief Функция генерирования случайного целочисленного числа в указанных пределах.
+ *  Диапазон чисел: [min, max]
+ */
 static int GetRandomNumber(int min, int max)
 {
-    srand(time(nullptr));
-    int num = min + rand() % (max - min + 1);
+    //srand(time(nullptr));
+    std::random_device rd;
+    std::mt19937 mersenne(rd());
+    int num = (ulong) min + mersenne() % (max - min + 1);
     return num;
 }
 

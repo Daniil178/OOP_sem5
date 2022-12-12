@@ -5,6 +5,13 @@
 
 namespace RPG {
 
+/**
+ * @brief side of motion
+ * @enum Left, \n
+ * Down, \n
+ * Up, \n
+ * Right
+ */
 enum Direction {
     Left = 0,
     Down,
@@ -12,14 +19,29 @@ enum Direction {
     Right
 };
 
+/**
+ * @brief Type of Object
+ * @enum ITEM, \n
+ * UNIT
+ */
 enum TYPE_OBJECT {
-    ITEM = 0,
+    CELL = 0,
     UNIT
 };
 
+/**
+ * @class RPG_Object - virtual class of Unit and Cell
+ */
 class RPG_Object {
 public:
+    /**
+     * @brief virtual method describe process getting of damage
+     * @return (int) - result of shot (kill or not or can't shot)
+     */
     virtual int get_damage(int) = 0;
+    /**
+     * @brief side of motion and it's correspondence to coordinate
+     */
     static std::unordered_map<Direction, coordinate> DIR_POS;
 };
 

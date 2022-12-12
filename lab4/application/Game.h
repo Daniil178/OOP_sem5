@@ -2,21 +2,34 @@
 #define GAME_H
 
 #include "Level.h"
+#include "RPG_Object.h"
 
 namespace RPG {
 
+/**
+ * @class Game - manager of game
+ */
 class Game {
 public:
-    Game(int number_of_level, Level map_); //initialisation of Game
-    void start(); // setup all parameters
-    void finish(); // end game
-    void turn(); // do one turn with 2 teams
-    void shot(Unit *, Direction);
+    /**
+     * @brief constructor of Game
+     * @param number_of_level (int) - number of level
+     * @param level0 (Level&) - start level
+     */
+    Game(int number_of_level, const Level& level0); //initialisation of Game
+//    int turn_operatives(); // return flag after change
+//    int turn_enemies(); // return flag after change
+
 
 protected:
+    /**
+     * @brief (int) - number of level
+     */
     int number_of_level;
-    Level map_;
-    int finish_flag; // 0 - don`t finish, 1 - win, 2 - lose
+    /**
+     * (Level) - start level
+     */
+    Level level;
 };
 
 } // RPG

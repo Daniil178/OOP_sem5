@@ -54,7 +54,7 @@ protected:
     /**
      * @brief accuracy of attack in %
      */
-    const int accuracy = 90;
+    const int accuracy = 100;
 };
 
 } // RPG

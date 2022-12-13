@@ -1,6 +1,7 @@
 #include "Level.h"
 
 #include <utility>
+#include <fstream>
 
 namespace RPG {
 
@@ -30,7 +31,54 @@ int Level::change_size(coordinate new_size) {
     return 0;
 }
 
-void Level::start() {
+void Level::start(std::string& path_to_map) {
+    std::ifstream fin(path_to_map);
+    coordinate size0;
+    if (fin.is_open()) {
+        fin >> size0.first;
+        fin >> size0.second;
+        std::cout << size0.first << ", " << size0.second << std::endl;
+        char str[size.second];
+        for (int i = 0; i < size.first; ++i) {
+            fin.getline(str, size.second);
+            for (int j = 0; j < size.second; ++j) {
+                if (str[j] == '.') {
+                    map_[std::make_pair(i, j)] = new Cell(Floor);
+                } else if (str[j] == '#') {
+                    map_[std::make_pair(i, j)] = new Cell(Wall);
+                } else if (str[j] == '=') {
+                    map_[std::make_pair(i, j)] = new Cell(Partition);
+                } else if (str[j] == '-') {
+                    map_[std::make_pair(i, j)] = new Cell(Glass);
+                } else if (str[j] == ')') {
+                    int med_type = GetRandomNumber(0, 80), weapon_type = GetRandomNumber(0, 3);
+                    auto med = (MED_KIT_HEALTH) ((med_type <= 20) ? 20 : ((med_type <= 50) ? 50 : 80));
+                    std::vector<Item *> items = {dynamic_cast<Item *>(new Medicine_Kit(med)),
+                                                 dynamic_cast<Item *>(new Weapon((WEAPON_TYPE) weapon_type,
+                                                                                 GetRandomNumber(0, 2))),
+                                                 dynamic_cast<Item *>((new Ammo_container(
+                                                         (AMMO_WEIGHT) ((weapon_type <= 1) ? 0
+                                                                                            : (weapon_type == 2) ? 1
+                                                                                                                : 2))))};
+
+                    map_[std::make_pair(i, j)] = new Cell(Storage_point, items);
+                } else if ('a' <= str[j] and str[j] <= 'z') {
+                    map_[std::make_pair(i, j)] = new Cell(Floor);
+                    operatives.push_back(new Operative(std::make_pair(i, j), new Weapon(AK_74, 10), "player"));
+                } else if ('A' <= str[j] and str[j] <= 'E') {
+                    map_[std::make_pair(i, j)] = new Cell(Floor);
+                    enemies.push_back(dynamic_cast<Unit *>(new Wild("wild", std::make_pair(i, j))));
+                } else if ('F' <= str[j] and str[j] <= 'K') {
+                    map_[std::make_pair(i, j)] = new Cell(Floor);
+                    enemies.push_back(dynamic_cast<Unit *>(new Rational("rational", std::make_pair(i, j))));
+                } else if ('L' <= str[j] and str[j] <= 'Q') {
+                    map_[std::make_pair(i, j)] = new Cell(Floor);
+                    enemies.push_back(dynamic_cast<Unit *>(new Forager("forager", std::make_pair(i, j))));
+                }
+            }
+        }
+    }
+    fin.close();
     finish_flag = 0;
 }
 
@@ -38,7 +86,7 @@ int Level::check_flag() const noexcept{
     return finish_flag;
 }
 
-int Level::shot(Wild* who, Direction where) {
+int Level::shoot(Wild* who, Direction where) {
     int res_attack = who->attack();
     if (res_attack != 0) {
         return res_attack;

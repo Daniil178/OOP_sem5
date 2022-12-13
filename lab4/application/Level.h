@@ -49,11 +49,12 @@ public:
      *  0 - successfully shot, \n
      *  100 - kill and delete unit
      */
-    int shot(Wild* who, Direction where);
+    int shoot(Wild* who, Direction where);
     /**
      * @brief initialize basic params
+     * @param path_to_map (string) - path fo config file
      */
-    void start();
+    void start(std::string& path_to_map);
     /**
      * @brief check finish flag
      * @return (int) - finish flag: \n

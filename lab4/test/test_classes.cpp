@@ -4,6 +4,8 @@
 
 using namespace RPG;
 
+static int accuracy0 = 100;
+
 TEST(Test_item, all_methods) {
     Item item("lala", 200, WEAPON);
     Item* med = new Medicine_Kit(Basic);
@@ -166,7 +168,7 @@ TEST(Test_wild, all_methods) {
     EXPECT_EQ(WILD, wild.get_type());
     EXPECT_EQ(25, wild.get_num_damage());
     EXPECT_EQ(1, wild.get_range());
-    EXPECT_EQ(90, wild.get_accuracy());
+    EXPECT_EQ(accuracy0, wild.get_accuracy());
 
     EXPECT_EQ(10, wild.get_params().max_time);
     wild.attack();
@@ -197,7 +199,7 @@ TEST(Test_rational, all_methods) {
     EXPECT_EQ(RATIONAL, rat.get_type());
     EXPECT_EQ(0, rat.get_num_damage());
     EXPECT_EQ(0, rat.get_range());
-    EXPECT_EQ(90, rat.get_accuracy());
+    EXPECT_EQ(accuracy0, rat.get_accuracy());
 
     EXPECT_EQ(nullptr, rat.get_current_weapon());
     EXPECT_EQ(-1, rat.attack());
@@ -401,7 +403,7 @@ TEST(Test_level, all_basic_methods) {
     EXPECT_EQ(0, level.check_flag());
 }
 
-TEST(Test_level, method_shot) {
+TEST(Test_level, method_shoot) {
     std::vector<Operative *> operatives = {new Operative(std::make_pair(2, 2), new Weapon(PM, 1), "operative")};
     std::vector<Unit *> enemies = {new Wild("wild", std::make_pair(0, 0)), new Rational("rational", std::make_pair(0, 2))};
     std::vector<Item*> items = {dynamic_cast<Item*>(new Weapon(RPK_74, 10))};
@@ -419,25 +421,47 @@ TEST(Test_level, method_shot) {
     EXPECT_EQ(0, dynamic_cast<Rational*>(level.enemies[1])->take_item(&rpk, level.map_));
 
     EXPECT_EQ(100, level.operatives[0]->get_params().current_health);
-    EXPECT_EQ(0, level.shot(dynamic_cast<Wild*>(level.enemies[1]), Down));
+    EXPECT_EQ(0, level.shoot(dynamic_cast<Wild*>(level.enemies[1]), Down));
     EXPECT_EQ(80, level.operatives[0]->get_params().current_health);
 
     EXPECT_EQ(0, level.operatives[0]->step(Left, level.map_));
-    EXPECT_EQ(0, level.shot(dynamic_cast<Wild*>(level.operatives[0]), Up));
+    EXPECT_EQ(0, level.shoot(dynamic_cast<Wild*>(level.operatives[0]), Up));
     EXPECT_EQ(Wall, level.map_[std::make_pair(1, 1)]->get_type());
 
-    EXPECT_EQ(0, level.shot(dynamic_cast<Wild*>(level.enemies[0]), Down));
+    EXPECT_EQ(0, level.shoot(dynamic_cast<Wild*>(level.enemies[0]), Down));
     EXPECT_EQ(Floor, level.map_[std::make_pair(1, 0)]->get_type());
     EXPECT_EQ(0, level.enemies[0]->step(Down, level.map_));
     EXPECT_EQ(0, level.operatives[0]->step(Left, level.map_));
 
-    EXPECT_EQ(0, level.shot(dynamic_cast<Wild*>(level.enemies[0]), Down));
-    EXPECT_EQ(0, level.shot(dynamic_cast<Wild*>(level.enemies[0]), Down));
-    EXPECT_EQ(0, level.shot(dynamic_cast<Wild*>(level.enemies[0]), Down));
+    EXPECT_EQ(0, level.shoot(dynamic_cast<Wild*>(level.enemies[0]), Down));
+    EXPECT_EQ(0, level.shoot(dynamic_cast<Wild*>(level.enemies[0]), Down));
+    EXPECT_EQ(0, level.shoot(dynamic_cast<Wild*>(level.enemies[0]), Down));
     EXPECT_EQ(5, level.operatives[0]->get_params().current_health);
-    EXPECT_EQ(100, level.shot(dynamic_cast<Wild*>(level.enemies[0]), Down));
+    EXPECT_EQ(100, level.shoot(dynamic_cast<Wild*>(level.enemies[0]), Down));
 
     EXPECT_EQ(2, level.check_flag());
+}
+
+TEST(Test_level, config_method) {
+    Level level;
+    std::string path = "TestMap.txt";
+    level.start(path);
+
+    EXPECT_EQ(std::make_pair(5, 5), level.get_size());
+
+    EXPECT_EQ(Wall, level.map_[std::make_pair(0, 0)]->get_type());
+    EXPECT_EQ(Floor, level.map_[std::make_pair(1, 1)]->get_type());
+    EXPECT_EQ(Floor, level.map_[std::make_pair(1, 2)]->get_type());
+    EXPECT_EQ(Floor, level.map_[std::make_pair(1, 3)]->get_type());
+    EXPECT_EQ(Partition, level.map_[std::make_pair(2, 1)]->get_type());
+    EXPECT_EQ(Wall, level.map_[std::make_pair(2, 2)]->get_type());
+    EXPECT_EQ(Floor, level.map_[std::make_pair(2, 3)]->get_type());
+    EXPECT_EQ(Floor, level.map_[std::make_pair(3, 1)]->get_type());
+    EXPECT_EQ(Floor, level.map_[std::make_pair(3, 2)]->get_type());
+    EXPECT_EQ(Floor, level.map_[std::make_pair(3, 3)]->get_type());
+
+    EXPECT_EQ(1, level.operatives.size());
+    EXPECT_EQ(2, level.enemies.size());
 }
 
 int main(int argc, char* argv[]) {

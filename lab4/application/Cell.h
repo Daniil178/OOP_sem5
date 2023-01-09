@@ -70,6 +70,7 @@ public:
      * nullptr - cell doesn't have this item
      */
     Item* take_item(Item* item);
+    Item* take_item();
     /**
      * @brief put item to cell
      * @param item - (Item*) pointer to item with same parameters
@@ -127,7 +128,7 @@ protected:
 /**
  * @brief short name of MyUnorderedMap<coordinate, Cell*, mhash>
  */
-using Map = MyUnorderedMap<coordinate, Cell*, mhash>;
+using Map = std::unordered_map<coordinate, Cell*, mhash>;
 
 }//RPG
 #endif //CELL_H

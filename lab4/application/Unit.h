@@ -76,6 +76,7 @@ public:
      * 0 - successfully step
      */
     int step(Direction new_position, Map& map_); // change position
+    void update_time();
 protected:
     /**
      * @brief (UNIT_TYPE) - type of unit

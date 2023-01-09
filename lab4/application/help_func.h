@@ -10,6 +10,7 @@
 //#include <cstdlib>
 //#include <ctime>
 #include <random>
+#include <cmath>
 
 namespace RPG {
 
@@ -33,6 +34,13 @@ static coordinate operator+(coordinate& frst, coordinate& scnd) {
     return new_pos;
 }
 
+static coordinate operator*(coordinate& frst, int& scnd) {
+    coordinate new_pos = frst;
+    new_pos.first *= scnd;
+    new_pos.second *= scnd;
+    return new_pos;
+}
+
 struct mhash {
     std::size_t operator()(std::pair <int, int> const &coor) const noexcept {
         std::size_t h1 = std::hash < int > {}(coor.first);
@@ -48,11 +56,60 @@ struct mhash {
  */
 static int GetRandomNumber(int min, int max)
 {
-    //srand(time(nullptr));
     std::random_device rd;
     std::mt19937 mersenne(rd());
-    int num = (ulong) min + mersenne() % (max - min + 1);
+    int num = min + (int) (mersenne() % (max - min + 1));
     return num;
+}
+
+static const double Pi = 3.1415926535;
+//  Массивы заполненные с градацией по 5 градусов. 5*72=360
+static double Cosinus[120];
+static double Sinus[120];
+
+static RPG::coordinate CastRay(int x, int y, int r, int angle, int height, int width) {
+    RPG::coordinate c;
+    c.first = (int) round(y + r * Cosinus[(int) angle/3]);
+    c.second = (int) round(height - 1 - x + r * Sinus[(int) angle/3]);
+    c.first = c.first >= width ? width - 1 : (c.first < 0 ? 0 : c.first);
+    c.second = c.second >= height ? height - 1 : (c.second < 0 ? 0 : c.second);
+    return c;
+}
+
+static void GenerateTables() {
+    for (int i=0; i < 120; i++)
+    {
+        Cosinus[i] = cos(i * 3 * Pi/180);
+        Sinus[i] = sin(i * 3 * Pi/180);
+    }
+}
+
+static int Sgn(int x) {
+    if (x == 0) {
+        return 0;
+    }
+    else {
+        return x > 0 ? 1 : -1;
+    }
+}
+
+template <class T>
+static int getNum(T &a){ //get int number
+    std::cin >> a;
+    if (!std::cin.good())
+        return -1;
+    return 1;
+}
+static inline int get_int(const char *msg, int &n, int min, int max){
+    const char *pr = "";
+    do{
+        std::cout << pr << std::endl;
+        std::cout << msg;
+        pr = "You are wrong, repeat please!";
+        if (getNum(n) < 0) // input Error
+            return -1;
+    } while (n < min || n > max);
+    return n;
 }
 
 } // RPG

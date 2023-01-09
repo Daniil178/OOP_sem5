@@ -57,4 +57,8 @@ int Unit::step(Direction new_position, Map& map_) {
     return 0;
 }
 
+void Unit::update_time() {
+    params.current_time = params.max_time;
+}
+
 } // RPG

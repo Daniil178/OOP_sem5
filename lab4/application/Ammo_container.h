@@ -26,20 +26,20 @@ enum AMMO_WEIGHT {
 class Ammo_container : public Item {
 public:
     /**
-     * \brief constructor of class Ammo_container
-     * \param type - type of ammo
+     * @brief constructor of class Ammo_container
+     * @param type - type of ammo
      */
     explicit Ammo_container(AMMO_WEIGHT type); // initialisation params
     /**
-     * \brief take some ammo's from container
-     * \param number - number of takes ammo's
-     * \return true or false - can you take needed ammo's
+     * @brief take some ammo's from container
+     * @param number - number of takes ammo's
+     * @return true or false - can you take needed ammo's
      */
     bool take_ammo(int number); // take some ammo from container
     /**
-     * \brief put some ammo's to container
-     * \param number - number of puts ammo's
-     * \return true or false - can you put needed ammo's
+     * @brief put some ammo's to container
+     * @param number - number of puts ammo's
+     * @return true or false - can you put needed ammo's
      * (anyway you put maximum ammo's how you can)
      */
     bool put_ammo(int number); // put some ammo to container

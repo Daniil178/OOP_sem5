@@ -5,7 +5,11 @@
 
 namespace RPG {
 
-Level::Level(): size(std::make_pair(0, 0)), finish_flag(0) {}
+Level::Level(): size(std::make_pair(0, 0)), finish_flag(0) {
+//    enemies = std::vector<Unit*>();
+//    operatives = std::vector<Operative*>();
+//    map_ = Map();
+}
 
 Level::Level(coordinate size0): size(std::move(size0)), finish_flag(0) {}
 
@@ -31,16 +35,13 @@ int Level::change_size(coordinate new_size) {
     return 0;
 }
 
-void Level::start(std::string& path_to_map) {
+void Level::start(const std::string& path_to_map) {
     std::ifstream fin(path_to_map);
-    coordinate size0;
     if (fin.is_open()) {
-        fin >> size0.first;
-        fin >> size0.second;
-        std::cout << size0.first << ", " << size0.second << std::endl;
-        char str[size.second];
+        fin >> size.first >> size.second;
+        std::string str;
         for (int i = 0; i < size.first; ++i) {
-            fin.getline(str, size.second);
+            fin >> str;
             for (int j = 0; j < size.second; ++j) {
                 if (str[j] == '.') {
                     map_[std::make_pair(i, j)] = new Cell(Floor);
@@ -169,14 +170,35 @@ int Level::shoot(Wild* who, Direction where) {
     return (res_attack < 0 ? 0: res_attack);
 }
 
-Level::~Level() {
-    for (auto curr_cell: map_) {
-        delete curr_cell.second;
-    }
-    for (auto curr_operative: operatives) {
-        delete curr_operative;
+int Level::step_by_unit(Unit* who, Direction where) {
+    coordinate probably_pos = who->get_position();
+    probably_pos += RPG_Object::DIR_POS[where];
+    int can_step = 0; // 0 - can, 1 - can't
+    for (auto curr_oper: operatives) {
+        if (curr_oper->get_position() == probably_pos) {
+            can_step = 1;
+        }
     }
     for (auto curr_enemy: enemies) {
+        if (curr_enemy->get_position() == probably_pos) {
+            can_step = 1;
+        }
+    }
+    if (can_step == 1) {
+        return -1;
+    }
+    int res_step = who->step(where, map_);
+    return res_step;
+}
+
+Level::~Level() {
+    for (auto& curr_cell: map_) {
+        delete curr_cell.second;
+    }
+    for (auto& curr_operative: operatives) {
+        delete curr_operative;
+    }
+    for (auto& curr_enemy: enemies) {
         UNIT_TYPE type_curr_enemy = curr_enemy->get_type();
         if (type_curr_enemy == WILD) {
             delete dynamic_cast<Wild*>(curr_enemy);

@@ -43,6 +43,8 @@ public:
      * 0 - successfully take
      */
     int take_item_to_inventory(Item* item, Map& map_);
+    int take_item_to_inventory(Map& map_);
+
     /**
      * @brief put item to floor from inventory
      * @param item (Item *) - ptr of item
@@ -63,7 +65,7 @@ protected:
     /**
      * (Table *) - inventory with all items
      */
-    Table* inventory;
+    Table* inventory{};
 };
 
 } // RPG

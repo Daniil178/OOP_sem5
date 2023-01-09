@@ -51,10 +51,20 @@ public:
      */
     int shoot(Wild* who, Direction where);
     /**
+     * @brief step with check map (two unit can't stay in one cell)
+     * @param who (Unit*) - who is stepping
+     * @param where (Direction) - where unit want to step
+     * @return (int) - result of step: \n
+     * -1 - can't step, \n
+     * 1 - haven't time, \n
+     * 0 - successfully step
+     */
+    int step_by_unit(Unit* who, Direction where);
+    /**
      * @brief initialize basic params
      * @param path_to_map (string) - path fo config file
      */
-    void start(std::string& path_to_map);
+    void start(const std::string& path_to_map);
     /**
      * @brief check finish flag
      * @return (int) - finish flag: \n

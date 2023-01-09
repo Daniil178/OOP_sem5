@@ -1,6 +1,6 @@
 #include "../../Google_tests/googletest-main/googletest/include/gtest/gtest.h"
 
-#include "Game.h"
+#include "Level.h"
 
 using namespace RPG;
 
@@ -385,14 +385,14 @@ TEST(Test_level, all_basic_methods) {
     EXPECT_EQ(std::make_pair(1, 1), level.get_size());
     EXPECT_EQ(0, level.enemies.size());
     EXPECT_EQ(0, level.operatives.size());
-    EXPECT_EQ(0, level.map_.count());
+    EXPECT_EQ(0, level.map_.size());
 
     level.operatives.push_back(oper);
     EXPECT_EQ(1, level.operatives.size());
 
     level.map_[std::make_pair(0,0)] = new Cell();
     level.map_[std::make_pair(1,0)] = new Cell(Wall);
-    EXPECT_EQ(2, level.map_.count());
+    EXPECT_EQ(2, level.map_.size());
 
     EXPECT_EQ(-1, level.change_size(std::make_pair(-1, -1)));
     EXPECT_EQ(std::make_pair(1, 1), level.get_size());
@@ -403,7 +403,7 @@ TEST(Test_level, all_basic_methods) {
     EXPECT_EQ(0, level.check_flag());
 }
 
-TEST(Test_level, method_shoot) {
+TEST(Test_level, method_shoot_step) {
     std::vector<Operative *> operatives = {new Operative(std::make_pair(2, 2), new Weapon(PM, 1), "operative")};
     std::vector<Unit *> enemies = {new Wild("wild", std::make_pair(0, 0)), new Rational("rational", std::make_pair(0, 2))};
     std::vector<Item*> items = {dynamic_cast<Item*>(new Weapon(RPK_74, 10))};
@@ -432,6 +432,7 @@ TEST(Test_level, method_shoot) {
     EXPECT_EQ(Floor, level.map_[std::make_pair(1, 0)]->get_type());
     EXPECT_EQ(0, level.enemies[0]->step(Down, level.map_));
     EXPECT_EQ(0, level.operatives[0]->step(Left, level.map_));
+    EXPECT_EQ(-1, level.step_by_unit(dynamic_cast<Unit*>(level.enemies[0]), Down));
 
     EXPECT_EQ(0, level.shoot(dynamic_cast<Wild*>(level.enemies[0]), Down));
     EXPECT_EQ(0, level.shoot(dynamic_cast<Wild*>(level.enemies[0]), Down));
@@ -444,7 +445,7 @@ TEST(Test_level, method_shoot) {
 
 TEST(Test_level, config_method) {
     Level level;
-    std::string path = "TestMap.txt";
+    std::string path = "/mnt/c/Users/danii/ClionProjects/OOP_sem5/lab4/TestMap.txt";
     level.start(path);
 
     EXPECT_EQ(std::make_pair(5, 5), level.get_size());
@@ -462,6 +463,26 @@ TEST(Test_level, config_method) {
 
     EXPECT_EQ(1, level.operatives.size());
     EXPECT_EQ(2, level.enemies.size());
+
+    EXPECT_EQ(100, level.operatives[0]->get_params().current_health);
+    EXPECT_EQ(0, level.shoot(dynamic_cast<Wild*>(level.enemies[1]), Down));
+    EXPECT_EQ(75, level.operatives[0]->get_params().current_health);
+
+    EXPECT_EQ(0, level.operatives[0]->step(Left, level.map_));
+    EXPECT_EQ(0, level.shoot(dynamic_cast<Wild*>(level.operatives[0]), Up));
+    EXPECT_EQ(Wall, level.map_[std::make_pair(2, 2)]->get_type());
+
+    EXPECT_EQ(0, level.shoot(dynamic_cast<Wild*>(level.enemies[0]), Down));
+    EXPECT_EQ(Floor, level.map_[std::make_pair(2, 1)]->get_type());
+    EXPECT_EQ(0, level.enemies[0]->step(Down, level.map_));
+    EXPECT_EQ(0, level.operatives[0]->step(Left, level.map_));
+
+    EXPECT_EQ(0, level.shoot(dynamic_cast<Wild*>(level.enemies[0]), Down));
+    EXPECT_EQ(0, level.shoot(dynamic_cast<Wild*>(level.enemies[0]), Down));
+    EXPECT_EQ(25, level.operatives[0]->get_params().current_health);
+    EXPECT_EQ(100, level.shoot(dynamic_cast<Wild*>(level.enemies[0]), Down));
+
+    EXPECT_EQ(2, level.check_flag());
 }
 
 int main(int argc, char* argv[]) {

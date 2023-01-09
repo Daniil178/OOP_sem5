@@ -2,7 +2,7 @@
 
 namespace RPG {
 
-Table::Table(): weight(0) {}
+Table::Table(): weight(0), inventory() {}
 
 int Table::number_of_items() {
     return (int) inventory.size();

@@ -76,6 +76,19 @@ Item* Cell::take_item(Item* item) {
     return nullptr;
 }
 
+Item* Cell::take_item() {
+    Item* res = nullptr;
+    if (!all_items.empty()) {
+        auto curr_item = all_items.begin();
+        res = *curr_item;
+        all_items.erase(curr_item);
+        if (all_items.empty()) {
+            this->change_type(Floor);
+        }
+    }
+    return res;
+}
+
 int Cell::put_item(Item* item) {
     if (type == Wall || type == Glass || type == Partition) {
         return -1;

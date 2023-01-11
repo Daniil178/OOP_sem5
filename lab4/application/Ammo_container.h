@@ -47,7 +47,7 @@ public:
      * @brief number of ammo's in container
      * @return int - number of ammo's in container
      */
-    int num_ammo(); // show how much ammo you have
+    [[nodiscard]] int num_ammo() const; // show how much ammo you have
     /**
      * @brief check type of ammo's
      * @return AMMO_WEIGHT - type of ammo's

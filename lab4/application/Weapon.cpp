@@ -47,7 +47,7 @@ int Weapon::shot() {
 }
 
 // how to get result...
-bool Weapon::shot_result() {
+bool Weapon::shot_result() const {
     if (ammo_number == 0) {
         return false;
     }
@@ -55,11 +55,11 @@ bool Weapon::shot_result() {
 }
 
 
-int Weapon::get_damage() {
+int Weapon::get_damage() const {
     return params.bas_params.damage;
 }
 
-int Weapon::time_to_shot() const noexcept {
+int Weapon::time_to_shot() noexcept {
     return shot_time;
 }
 

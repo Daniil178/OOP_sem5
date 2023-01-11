@@ -80,12 +80,12 @@ public:
      * @brief check can you do shot
      * @return true or false - have ammo
      */
-    bool shot_result();
+    [[nodiscard]] bool shot_result() const;
     /**
      * @brief get damage, which gun can make
      * @return (int) damage number
      */
-    int get_damage();
+    [[nodiscard]] int get_damage() const;
     /**
      * @brief reload of gun. Take ammo's from container and put they in weapon
      * @param container - pointer to the container from which ammo is taken
@@ -103,7 +103,7 @@ public:
      * @brief check time needs to shot
      * @return (int) time of shot
      */
-    [[nodiscard]] int time_to_shot() const noexcept;
+    [[nodiscard]] static int time_to_shot() noexcept;
     /**
      * @brief check number of current ammo's
      * @return (int) number of current ammo's

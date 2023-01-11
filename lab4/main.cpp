@@ -20,15 +20,15 @@ int main()
     sf::Keyboard::Key choice;
     int res_turn_oper;
     auto* level = new RPG::Level();
-    level->start(root_path + level_path);
+    level->start(level_path);
     RPG::Game game = RPG::Game(1, level);
 
     sf::RenderWindow window(sf::VideoMode(level->get_size().second * tile_size.y * scale, level->get_size().first * tile_size.x * scale), window_title);
     sf::Texture texture;
-    texture.loadFromFile(root_path + tileset_path);
+    texture.loadFromFile(tileset_path);
     sf::Text text;
     sf::Font font;
-    font.loadFromFile(root_path + font_path);
+    font.loadFromFile(font_path);
     text.setFont(font);
     text.setCharacterSize(font_size);
 
@@ -37,7 +37,7 @@ int main()
     do {
         try {
             //sf::RenderWindow window(sf::VideoMode(level.get_size().second * tile_size.y * scale, level.get_size().first * tile_size.x * scale), window_title);
-            while (!level->check_flag() && window.isOpen()) {
+            while (window.isOpen()) {
                 draw(window, texture, text, *level);
                 choice = RPG::get_input(window);
                 //~ - exit to main menu
@@ -52,12 +52,20 @@ int main()
                         curr_oper->update_time();
                     }
                 }
+                if (level->check_flag()) {
+                    window.close();
+                    break;
+                }
             }
         } catch (exception& error) {
             std::cout << "\n\t\tUnexpected error... " << error.what() << std::endl;
             window.close();
             continue;
         }
-    }while (choice != sf::Keyboard::Tilde);
+    } while (!level->check_flag() && choice != sf::Keyboard::Tilde);
+    if (level->check_flag() > 0) {
+        if (level->check_flag() == 1) std::cout << "You are win!" << std::endl;
+        else if (level->check_flag() == 2) std::cout << "You are lose!" << std::endl;
+    }
     return 0;
 }

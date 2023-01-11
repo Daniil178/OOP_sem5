@@ -54,6 +54,10 @@ int Operative::reload() {
     if (current_weapon->get_params().weight == 0) {
         return -2; // don`t weapon
     }
+    if (time_to_reload > params.current_time) {
+        return -1;
+    }
+
     auto container = Ammo_container(current_weapon->get_params().bas_params.ammo_type);
     auto cont = (Ammo_container *) (inventory->get_item(dynamic_cast<Item *>(&container)));
 

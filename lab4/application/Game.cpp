@@ -30,7 +30,8 @@ int Game::turn_operatives(sf::Keyboard::Key choice, sf::RenderWindow& window, in
     // f - choice direction and shoot
     else if (choice == sf::Keyboard::F) {
         sf::Keyboard::Key direction = get_input(window);
-        if (direction == sf::Keyboard::W or direction == sf::Keyboard::S or direction == sf::Keyboard::A or direction == sf::Keyboard::D) {
+        if (direction == sf::Keyboard::W or direction == sf::Keyboard::S
+        or direction == sf::Keyboard::A or direction == sf::Keyboard::D) {
             res_turn = level->shoot(*curr_oper, char_direction.at(direction));
         }
     }
@@ -53,7 +54,8 @@ int Game::turn_operatives(sf::Keyboard::Key choice, sf::RenderWindow& window, in
         }
     }
     else {
-        if (choice == sf::Keyboard::W or choice == sf::Keyboard::S or choice == sf::Keyboard::A or choice == sf::Keyboard::D) {
+        if (choice == sf::Keyboard::W or choice == sf::Keyboard::S
+            or choice == sf::Keyboard::A or choice == sf::Keyboard::D) {
             res_turn = level->step_by_unit(*curr_oper, char_direction[choice]);
         }
     }

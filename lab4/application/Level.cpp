@@ -54,18 +54,30 @@ void Level::start(const std::string& path_to_map) {
                 } else if (str[j] == ')') {
                     int med_type = GetRandomNumber(0, 80), weapon_type = GetRandomNumber(0, 3);
                     auto med = (MED_KIT_HEALTH) ((med_type <= 20) ? 20 : ((med_type <= 50) ? 50 : 80));
+
+                    auto cont = new Ammo_container(
+                            (AMMO_WEIGHT) ((weapon_type <= 1) ? 6
+                                                              : (weapon_type == 2) ? 5 : 7));
+                    cont->put_ammo(100);
+
+                    int max_ammo = 0;
+                    if (weapon_type == RPG::WEAPON_TYPE::AK_74) max_ammo = 10;
+                    else if (weapon_type == RPG::WEAPON_TYPE::RPK_74) max_ammo = 15;
+                    else if (weapon_type == RPG::WEAPON_TYPE::PM) max_ammo = 8;
+                    else if (weapon_type == RPG::WEAPON_TYPE::TO3_34) max_ammo = 2;
+
                     std::vector<Item *> items = {dynamic_cast<Item *>(new Medicine_Kit(med)),
                                                  dynamic_cast<Item *>(new Weapon((WEAPON_TYPE) weapon_type,
-                                                                                 GetRandomNumber(0, 2))),
-                                                 dynamic_cast<Item *>((new Ammo_container(
-                                                         (AMMO_WEIGHT) ((weapon_type <= 1) ? 0
-                                                                                            : (weapon_type == 2) ? 1
-                                                                                                                : 2))))};
+                                                                                 GetRandomNumber(0
+                                                                                                 , max_ammo))),
+                                                 dynamic_cast<Item *>(cont)};
 
                     map_[std::make_pair(i, j)] = new Cell(Storage_point, items);
                 } else if ('a' <= str[j] and str[j] <= 'z') {
                     map_[std::make_pair(i, j)] = new Cell(Floor);
-                    operatives.push_back(new Operative(std::make_pair(i, j), new Weapon(AK_74, 10), "player"));
+                    operatives.push_back(new Operative(std::make_pair(i, j)
+                                                       , new Weapon(AK_74, 10)
+                                                       , "player"));
                 } else if ('A' <= str[j] and str[j] <= 'E') {
                     map_[std::make_pair(i, j)] = new Cell(Floor);
                     enemies.push_back(dynamic_cast<Unit *>(new Wild("wild", std::make_pair(i, j))));

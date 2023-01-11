@@ -38,7 +38,7 @@ bool Ammo_container::put_ammo(int number) { // put some ammo to container
     return true;
 }
 
-int Ammo_container::num_ammo() {
+int Ammo_container::num_ammo() const {
     return current_count;
 }
 

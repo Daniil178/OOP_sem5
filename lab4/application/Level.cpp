@@ -142,7 +142,7 @@ int Level::shoot(Wild* who, Direction where) {
     }
     curr_target = targets.begin();
     res_attack = 1;
-    while (res_attack == 1 && curr_target <= targets.end()) {
+    while (res_attack == 1 && curr_target < targets.end()) {
         if (*curr_target != nullptr) {
             res_attack = (*curr_target)->get_damage(who->get_num_damage());
         }

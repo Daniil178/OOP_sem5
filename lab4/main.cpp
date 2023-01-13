@@ -10,19 +10,19 @@ int main()
     sf::Keyboard::Key choice;
     int res_turn_oper;
     auto* level = new RPG::Level();
-    level->start(level_path);
+    level->start(RPG::level_path);
     RPG::Game game = RPG::Game(1, level);
 
-    sf::RenderWindow window(sf::VideoMode(level->get_size().second * tile_size.y * scale
-                                          , level->get_size().first * tile_size.x * scale)
-                            , window_title);
+    sf::RenderWindow window(sf::VideoMode(level->get_size().second * RPG::tile_size.y * RPG::scale
+                                          , level->get_size().first * RPG::tile_size.x * RPG::scale)
+                            , RPG::window_title);
     sf::Texture texture;
-    texture.loadFromFile(tileset_path);
+    texture.loadFromFile(RPG::tileset_path);
     sf::Text text;
     sf::Font font;
-    font.loadFromFile(font_path);
+    font.loadFromFile(RPG::font_path);
     text.setFont(font);
-    text.setCharacterSize(font_size);
+    text.setCharacterSize(RPG::font_size);
 
     int diff = 0;
 
@@ -30,7 +30,7 @@ int main()
         try {
             //sf::RenderWindow window(sf::VideoMode(level.get_size().second * tile_size.y * scale, level.get_size().first * tile_size.x * scale), window_title);
             while (window.isOpen()) {
-                while(res_turn_oper != -100) {
+                while(res_turn_oper != -100 && window.isOpen()) {
                     RPG::draw(window, texture, text, *level);
                     choice = RPG::get_input(window);
                     //~ - exit to main menu

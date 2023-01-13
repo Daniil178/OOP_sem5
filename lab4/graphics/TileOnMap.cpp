@@ -35,7 +35,7 @@ std::set<RPG::coordinate>& TileOnMap::LoS(RPG::Map &map_
             px += sdx;
             visible_cells.insert(std::make_pair(height - py - 1, px)); // добавляем в список отрисовки
             //если здесь стена или плитка, остановка...
-            if (map_[std::make_pair(height - py - 1, px)]->is_visible() == false) {
+            if (!map_[std::make_pair(height - py - 1, px)]->is_visible()) {
                 return visible_cells;
             }
         }
@@ -49,7 +49,7 @@ std::set<RPG::coordinate>& TileOnMap::LoS(RPG::Map &map_
             py += sdy;
             visible_cells.insert(std::make_pair(height - py - 1, px)); //рисуем тайл на экране
             //если здесь стена или плитка, остановка...
-            if (map_[std::make_pair(height - py - 1, px)]->is_visible() == false) {
+            if (!map_[std::make_pair(height - py - 1, px)]->is_visible()) {
                 return visible_cells;
             }
         }
@@ -79,7 +79,7 @@ void TileOnMap::load(RPG::Level &level) {
         int x = oper->get_position().first;
         int y = oper->get_position().second;
         for (int i = 0; i < RPG::numOfRays; ++i) {
-            c = RPG::CastRay(x, y, oper->get_params().view_radius, i * RPG::graduate, height, width);
+            c = RPG::CastRay(y, height - x - 1, oper->get_params().view_radius, i * RPG::graduate, height, width);
             LoS(map_, draw_cell, y, height - x - 1, c.first, c.second, height);
         }
     }

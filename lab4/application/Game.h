@@ -8,19 +8,6 @@
 #include <thread>
 #include <chrono>
 
-//static const std::string root_path = "/mnt/c/Users/danii";
-static const std::string root_path = "/home/usik-dan";
-//static const std::string level_path = "/ClionProjects/OOP_sem5/lab4/src/maps/TestMap.txt";
-static const std::string level_path = "src/maps/map.txt";
-//static const std::string tileset_path = "/ClionProjects/OOP_sem5/lab4/src/textures/tileset.png";
-static const std::string tileset_path = "src/textures/tileset.png";
-//static const std::string font_path = "/ClionProjects/OOP_sem5/lab4/src/textures/solo5.ttf";
-static const std::string font_path = "src/textures/solo5.ttf";
-static const std::string window_title = "Operation";
-static const uint32_t font_size = 9;
-static const float scale = 4.f;
-static const sf::Vector2i tile_size(16, 16);
-
 namespace RPG {
 
 /**

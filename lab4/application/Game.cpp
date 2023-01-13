@@ -86,9 +86,28 @@ void Game::wildTurn(Wild* currWild) {
     std::vector<coordinate> operativesPos;
     for (auto& operative : level->operatives) {
         operativesPos.push_back((*operative).get_position());
+    }
+    int flagDie;
 
-        int flagDie = 0; // operator is live
-
+    while(currWild->get_params().current_time > 0) {
+        flagDie = 0;  // operator is live
+        for (auto operPos: operativesPos) {
+            //        coordinate diffCoor = currPos + RPG_Object::DIR_POS[Left];
+            coordinate diffCoor = operPos - currPos;
+            if (diffCoor == RPG_Object::DIR_POS[Left]
+            || diffCoor == RPG_Object::DIR_POS[Down]
+            || diffCoor == RPG_Object::DIR_POS[Up]
+            || diffCoor == RPG_Object::DIR_POS[Right])
+            {
+                while (currWild->get_params().current_time > 0 && flagDie != 100) {
+                    flagDie = level->shoot(currWild, RPG_Object::POS_DIR[diffCoor]);
+                }
+            }
+            if (flagDie == 100) {
+                operativesPos.erase(std::find(operativesPos.begin()
+                                              , operativesPos.end()
+                                              , operPos));
+                break;
         while(currWild->get_params().current_time > 0) {
             for (auto operPos: operativesPos) {
                 //        coordinate diffCoor = currPos + RPG_Object::DIR_POS[Left];

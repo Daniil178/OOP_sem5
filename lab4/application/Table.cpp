@@ -41,8 +41,6 @@ Item* Table::get_item(Item* item) {
     while(curr_item != inventory.end()) {
         ITEM_TYPE type_curr_item = (*curr_item)->get_type();
         if (type_curr_item == item->get_type()) {
-            std::cout << type_curr_item << " " << (type_curr_item == RPG::AMMO_CONTAINER) << " "
-            << " " << dynamic_cast<Ammo_container*>(*curr_item)->get_type() << " == " << dynamic_cast<Ammo_container*>(item)->get_type() << std::endl;
             if (((type_curr_item == WEAPON) &&
                 (dynamic_cast<Weapon*>(*curr_item)->get_type() == dynamic_cast<Weapon*>(item)->get_type()))
                 or

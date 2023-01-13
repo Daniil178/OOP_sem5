@@ -6,6 +6,4 @@ digraph "RPG::Game"
   Node1 [label="RPG::Game",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
   Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" level" ,fontname="Helvetica"];
   Node2 [label="RPG::Level",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classRPG_1_1Level.html",tooltip="Level - has map, operatives and enemies and manage to they."];
-  Node3 -> Node2 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" map_" ,fontname="Helvetica"];
-  Node3 [label="MyUnorderedMap\< coordinate,\l Cell *, mhash \>",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classMyUnorderedMap.html",tooltip=" "];
 }

@@ -44,6 +44,7 @@ public:
      * @brief side of motion and it's correspondence to coordinate
      */
     static std::unordered_map<Direction, coordinate> DIR_POS;
+    static std::unordered_map<coordinate, Direction, mhash> POS_DIR;
 };
 
 } // RPG

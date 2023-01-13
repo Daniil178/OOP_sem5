@@ -92,9 +92,14 @@ void Game::wildTurn(Wild* currWild) {
         while(currWild->get_params().current_time > 0) {
             for (auto operPos: operativesPos) {
                 //        coordinate diffCoor = currPos + RPG_Object::DIR_POS[Left];
-                if (operPos == currPos + RPG_Object::DIR_POS[Left]) {
+                coordinate diffCoor = operPos - currPos;
+                if (diffCoor == RPG_Object::DIR_POS[Left]
+                || diffCoor == RPG_Object::DIR_POS[Down]
+                || diffCoor == RPG_Object::DIR_POS[Up]
+                || diffCoor == RPG_Object::DIR_POS[Right])
+                {
                     while (currWild->get_params().current_time > 0 && flagDie != 100) {
-                        flagDie = level->shoot(currWild, Left);
+                        flagDie = level->shoot(currWild, RPG_Object::POS_DIR[diffCoor]);
                     }
                 }
                 if (flagDie == 100) {
@@ -106,7 +111,6 @@ void Game::wildTurn(Wild* currWild) {
             }
         }
     }
-    return;
 }
 
 bool Game::pathToPoint(std::vector<Direction> &path, coordinate from, coordinate to) {
@@ -238,7 +242,7 @@ bool Game::isSeeUnit(RPG::coordinate unitCoorFrom, RPG::coordinate coorTo) {
                 return true;
             }
             /* продолжаем цикл, пока зрение чудовища не заблокировано */
-        } while (level->map_[std::make_pair(x, y)]->is_visible() == true);
+        } while (level->map_[std::make_pair(x, y)]->is_visible());
 
         /* Цикл завершается т.к. взгляд монстра блокируется
            возвращаем FALSE: монстр не видит игрока         */
@@ -256,7 +260,7 @@ bool Game::isSeeUnit(RPG::coordinate unitCoorFrom, RPG::coordinate coorTo) {
             if (x == unitCoorFrom.first && y == unitCoorFrom.second) {
                 return true;
             }
-        } while (level->map_[std::make_pair(x, y)]->is_visible() == true);
+        } while (level->map_[std::make_pair(x, y)]->is_visible());
 
     }
     return false;

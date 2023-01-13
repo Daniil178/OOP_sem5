@@ -57,10 +57,10 @@ int Game::turn_operatives(sf::Keyboard::Key choice, sf::RenderWindow &window, in
     return res_turn;
 }
 
-int Game::turn_enemies() {
+int Game::turn_enemies(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text) {
     for (auto& currEnemy: level->enemies) {
         if (currEnemy->get_type() == WILD) {
-            wildTurn(dynamic_cast<Wild*>(currEnemy));
+            wildTurn(dynamic_cast<Wild*>(currEnemy), window, texture, text);
         }
     }
 
@@ -79,7 +79,7 @@ int Game::turn_enemies() {
     return 0;
 }
 
-void Game::wildTurn(Wild* currWild) {
+void Game::wildTurn(Wild* currWild, sf::RenderWindow& window, sf::Texture& texture, sf::Text& text) {
     int resultTurn = 0;
     coordinate currPos = currWild->get_position();
 
@@ -88,42 +88,100 @@ void Game::wildTurn(Wild* currWild) {
         operativesPos.push_back((*operative).get_position());
     }
     int flagDie;
+    bool flagOperAround = true;
 
     while(currWild->get_params().current_time > 0) {
-        flagDie = 0;  // operator is live
-        for (auto operPos: operativesPos) {
-            //        coordinate diffCoor = currPos + RPG_Object::DIR_POS[Left];
-            coordinate diffCoor = operPos - currPos;
-            if (diffCoor == RPG_Object::DIR_POS[Left]
-            || diffCoor == RPG_Object::DIR_POS[Down]
-            || diffCoor == RPG_Object::DIR_POS[Up]
-            || diffCoor == RPG_Object::DIR_POS[Right])
-            {
-                while (currWild->get_params().current_time > 0 && flagDie != 100) {
-                    flagDie = level->shoot(currWild, RPG_Object::POS_DIR[diffCoor]);
-                }
-            }
-            if (flagDie == 100) {
-                operativesPos.erase(std::find(operativesPos.begin()
-                                              , operativesPos.end()
-                                              , operPos));
-                break;
-        while(currWild->get_params().current_time > 0) {
+        RPG::draw(window, texture, text, *level);
+        while (flagOperAround) {
+            flagDie = 0;  // operator is live
             for (auto operPos: operativesPos) {
-                //        coordinate diffCoor = currPos + RPG_Object::DIR_POS[Left];
                 coordinate diffCoor = operPos - currPos;
+                // if operative around wild - attack
                 if (diffCoor == RPG_Object::DIR_POS[Left] || diffCoor == RPG_Object::DIR_POS[Down]
-                || diffCoor == RPG_Object::DIR_POS[Up] || diffCoor == RPG_Object::DIR_POS[Right])
-                {
+                    || diffCoor == RPG_Object::DIR_POS[Up] || diffCoor == RPG_Object::DIR_POS[Right]) {
+
                     while (currWild->get_params().current_time > 0 && flagDie != 100) {
                         flagDie = level->shoot(currWild, RPG_Object::POS_DIR[diffCoor]);
+                        RPG::draw(window, texture, text, *level);
+                        std::this_thread::sleep_for(std::chrono::milliseconds( 500));
+                    }
+                    if (flagDie == 100) {
+                        operativesPos.erase(std::find(operativesPos.begin(), operativesPos.end(), operPos));
+                        break;
                     }
                 }
-                if (flagDie == 100) {
-                    operativesPos.erase(std::find(operativesPos.begin()
-                                                  , operativesPos.end()
-                                                  , operPos));
-                    break;
+            }
+            flagOperAround = false;
+
+            if (currWild->get_params().current_time <= 0) break;
+            for (auto operPos: operativesPos) {
+                // if wild can see operative - go to him
+                if (isSeeUnit(currPos, operPos)) {
+                    std::vector<Direction> path2Oper;
+                    if (pathToPoint(path2Oper, currPos, operPos)) {
+                        for (auto whereStep: path2Oper) {
+                            if (currWild->get_params().current_time <= 0) break;
+                            if (operPos - currPos == RPG_Object::DIR_POS[whereStep]) {
+                                level->shoot(currWild, whereStep);
+                                flagOperAround = true;
+                            }
+                            else level->step_by_unit(currWild, whereStep);
+
+                            RPG::draw(window, texture, text, *level);
+                            std::this_thread::sleep_for(std::chrono::milliseconds( 500));
+                        }
+                    }
+                }
+                if (flagOperAround) break;
+            }
+        }
+
+        if (currWild->get_params().current_time <= 0) break;
+        // if wild alone
+        else {
+            RPG::coordinate c;
+            std::set<coordinate> visibleCells;
+            int x = currPos.first, y = currPos.second;
+            int height = level->get_size().first, width = level->get_size().second;
+            for (int i = 0; i < RPG::numOfRays; ++i) {
+                c = RPG::CastRay(x, y, currWild->get_params().view_radius, i * RPG::graduate, height, width);
+                RPG::TileOnMap::LoS(level->map_, visibleCells, y, height - x - 1, c.first, c.second, height);
+            }
+            for (auto currCellCoord: visibleCells) {
+                if (currWild->get_params().current_time <= 0) break;
+                else if (RPG::Cell::CELL_TYPE_PARAMS[level->map_[currCellCoord]->get_type()].destroy) {
+                    std::vector<Direction> path2Cell;
+                    if (pathToPoint(path2Cell, currPos, currCellCoord)) {
+                        for (auto whereStep: path2Cell) {
+                            if (currWild->get_params().current_time <= 0) break;
+                            if (currCellCoord - currPos == RPG_Object::DIR_POS[whereStep]) {
+                                level->shoot(currWild, whereStep);
+                            }
+                            else level->step_by_unit(currWild, whereStep);
+
+                            RPG::draw(window, texture, text, *level);
+                            std::this_thread::sleep_for(std::chrono::milliseconds( 500));
+                        }
+                    }
+                }
+            }
+
+            if (currWild->get_params().current_time <= 0) break;
+            std::vector<coordinate> canGoCoord;
+            for (auto currCellCoord: visibleCells) {
+                if (level->map_[currCellCoord]->can_go_through()) {
+                    canGoCoord.push_back(currCellCoord);
+                }
+            }
+            coordinate goalCellCoord = canGoCoord[RPG::GetRandomNumber(0, (int) canGoCoord.size())];
+            std::vector<Direction> path2Cell;
+            if (pathToPoint(path2Cell, currPos, goalCellCoord)) {
+                for (auto whereStep: path2Cell) {
+                    if (currWild->get_params().current_time <= 0) break;
+                    else level->step_by_unit(currWild, whereStep);
+
+                    RPG::draw(window, texture, text, *level);
+                    std::this_thread::sleep_for(std::chrono::milliseconds( 500));
                 }
             }
         }
@@ -146,6 +204,18 @@ bool Game::pathToPoint(std::vector<Direction> &path, coordinate from, coordinate
             coordinate x_y = std::make_pair(i, j);
             grid[i].push_back(level->map_.at(x_y)->can_go_through() ? BLANK : WALL);
             //grid[i][j] = level->map_.at(x_y)->can_go_through() ? BLANK : WALL;
+        }
+    }
+    for (auto currEnemy: level->enemies) {
+        coordinate currPos = currEnemy->get_position();
+        if (currPos != from && currPos != to) {
+            grid[currPos.first][currPos.second] = WALL;
+        }
+    }
+    for (auto currOper: level->operatives) {
+        coordinate currPos = currOper->get_position();
+        if (currPos != from && currPos != to) {
+            grid[currPos.first][currPos.second] = WALL;
         }
     }
 

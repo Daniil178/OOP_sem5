@@ -4,16 +4,6 @@
 using namespace sf;
 using namespace std;
 
-void draw(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text, RPG::Level& level) {
-    TileOnMap tileMap(texture, text, tile_size, scale);
-    tileMap.load(level);
-    window.clear(sf::Color::Black);
-    tileMap.drawCells(window);
-    tileMap.drawUnits(window);
-    tileMap.drawTexts(window);
-    window.display();
-}
-
 
 int main()
 {
@@ -41,7 +31,7 @@ int main()
             //sf::RenderWindow window(sf::VideoMode(level.get_size().second * tile_size.y * scale, level.get_size().first * tile_size.x * scale), window_title);
             while (window.isOpen()) {
                 while(res_turn_oper != -100) {
-                    draw(window, texture, text, *level);
+                    RPG::draw(window, texture, text, *level);
                     choice = RPG::get_input(window);
                     //~ - exit to main menu
                     if (choice == sf::Keyboard::Tilde) {
@@ -51,7 +41,7 @@ int main()
                     // Game - turn
                     res_turn_oper = game.turn_operatives(choice, window, &diff);
                 }
-                game.turn_enemies();
+                game.turn_enemies(window, texture, text);
                 if (res_turn_oper == -100) {
                     for (auto& curr_oper: level->operatives) {
                         curr_oper->update_time();

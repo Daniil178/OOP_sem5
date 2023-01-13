@@ -3,7 +3,10 @@
 
 #include <SFML/Graphics.hpp>
 #include "Level.h"
+#include "../graphics/TileOnMap.h"
 #include <cstring>
+#include <thread>
+#include <chrono>
 
 //static const std::string root_path = "/mnt/c/Users/danii";
 static const std::string root_path = "/home/usik-dan";
@@ -41,7 +44,7 @@ public:
      */
     int turn_operatives(sf::Keyboard::Key choice, sf::RenderWindow& window, int* diff);
 
-    int turn_enemies(); // return flag after change
+    int turn_enemies(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text); // return flag after change
 
     /**
      * @brief free pointer of level
@@ -75,7 +78,7 @@ protected:
      */
     bool isSeeUnit(coordinate unitCoorFrom, coordinate CoorTo);
 
-    void wildTurn(Wild* currWild);
+    void wildTurn(Wild* currWild, sf::RenderWindow& window, sf::Texture& texture, sf::Text& text);
 
 };
 

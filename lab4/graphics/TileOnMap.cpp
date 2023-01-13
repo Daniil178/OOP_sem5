@@ -2,9 +2,12 @@
 #include <sstream>
 #include "help_func.h"
 
+
+namespace RPG {
+
 // Процедура Line of Sight.
-std::set<RPG::coordinate>& TileOnMap::LoS(RPG::Map& map_
-                                          , std::set<RPG::coordinate>& visible_cells
+std::set<RPG::coordinate>& TileOnMap::LoS(RPG::Map &map_
+                                          , std::set<RPG::coordinate> &visible_cells
                                           , int x1
                                           , int y1
                                           , int x2
@@ -36,8 +39,7 @@ std::set<RPG::coordinate>& TileOnMap::LoS(RPG::Map& map_
                 return visible_cells;
             }
         }
-    }
-    else {
+    } else {
         for (int i = 0; i < dy_abs; ++i) {
             x += dx_abs;
             if (x > dy_abs) {
@@ -55,17 +57,16 @@ std::set<RPG::coordinate>& TileOnMap::LoS(RPG::Map& map_
     return visible_cells;
 }
 
-TileOnMap::TileOnMap(const sf::Texture &textures, const sf::Text& text, const sf::Vector2i &tile_size, float scale)
-                                                                                                :
-                                                                                                textures(textures),
-                                                                                                text_(text),
-                                                                                                tile_size(tile_size),
-                                                                                                scale(scale)
-                                                                                                {}
+TileOnMap::TileOnMap(const sf::Texture &textures, const sf::Text &text, const sf::Vector2i &tile_size, float scale)
+        :
+        textures(textures),
+        text_(text),
+        tile_size(tile_size),
+        scale(scale) {}
 
 void TileOnMap::load(RPG::Level &level) {
     RPG::GenerateTables();
-    RPG::Map& map_ = level.map_;
+    RPG::Map &map_ = level.map_;
     auto operatives = level.operatives;
     auto enemies = level.enemies;
 
@@ -74,7 +75,7 @@ void TileOnMap::load(RPG::Level &level) {
 
     RPG::coordinate c;
     std::set<RPG::coordinate> draw_cell;
-    for (auto& oper : operatives) {
+    for (auto &oper: operatives) {
         int x = oper->get_position().first;
         int y = oper->get_position().second;
         for (int i = 0; i < RPG::numOfRays; ++i) {
@@ -82,7 +83,7 @@ void TileOnMap::load(RPG::Level &level) {
             LoS(map_, draw_cell, y, height - x - 1, c.first, c.second, height);
         }
     }
-    for (auto& cell_coord : draw_cell) {
+    for (auto &cell_coord: draw_cell) {
         sf::Sprite cell_sprite = sf::Sprite(textures);
         RPG::coordinate sprite_coord = cell_tile_coords.at(map_[cell_coord]->get_type());
         cell_sprite.setTextureRect({sprite_coord.first, sprite_coord.second, tile_size.x, tile_size.y});
@@ -94,12 +95,13 @@ void TileOnMap::load(RPG::Level &level) {
     }
 
     RPG::coordinate sprite_coord;
-    for (auto& oper : operatives) {
+    for (auto &oper: operatives) {
         sf::Text text(text_);
         std::ostringstream status;
         status << "HP: " << oper->get_params().current_health << " / " << oper->get_params().max_health << "\n"
-        << "Time: " << oper->get_params().current_time << " / " << oper->get_params().max_time << "\n"
-        << "Ammo: " << oper->get_current_weapon()->get_ammo_num() << " / " << oper->get_current_weapon()->get_params().bas_params.max_ammo << std::endl;
+               << "Time: " << oper->get_params().current_time << " / " << oper->get_params().max_time << "\n"
+               << "Ammo: " << oper->get_current_weapon()->get_ammo_num() << " / "
+               << oper->get_current_weapon()->get_params().bas_params.max_ammo << std::endl;
         text.setString(status.str());
         text.setPosition(oper->get_position().second * tile_size.y * scale,
                          oper->get_position().first * tile_size.x * scale);
@@ -113,9 +115,9 @@ void TileOnMap::load(RPG::Level &level) {
         sprite_units.push_back(oper_sprite);
     }
 
-    for (auto& enemy : enemies) {
+    for (auto &enemy: enemies) {
         bool flag_see = false;
-        for (auto& cell_coord : draw_cell) {
+        for (auto &cell_coord: draw_cell) {
             if (cell_coord == enemy->get_position()) {
                 flag_see = true;
                 break;
@@ -148,18 +150,20 @@ void TileOnMap::load(RPG::Level &level) {
 }
 
 void TileOnMap::drawCells(sf::RenderWindow &window) const {
-    for (auto& cell_sprite : sprite_map) {
+    for (auto &cell_sprite: sprite_map) {
         window.draw(cell_sprite);
     }
 }
 
 void TileOnMap::drawUnits(sf::RenderWindow &window) const {
-    for (const auto& unit: sprite_units) {
+    for (const auto &unit: sprite_units) {
         window.draw(unit);
     }
 }
 
 void TileOnMap::drawTexts(sf::RenderWindow &window) const {
-    for (const auto& message: texts)
+    for (const auto &message: texts)
         window.draw(message);
 }
+
+} // RPG

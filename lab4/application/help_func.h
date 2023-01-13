@@ -49,11 +49,6 @@ struct mhash {
     }
 };
 
-
-/**
- * @brief Функция генерирования случайного целочисленного числа в указанных пределах.
- *  Диапазон чисел: [min, max]
- */
 static int GetRandomNumber(int min, int max)
 {
     std::random_device rd;
@@ -63,24 +58,26 @@ static int GetRandomNumber(int min, int max)
 }
 
 static const double Pi = 3.1415926535;
-//  Массивы заполненные с градацией по 5 градусов. 5*72=360
-static double Cosinus[120];
-static double Sinus[120];
+//  Массивы заполненные с градацией по 3 градуса. 3 * 120 = 360
+static const int graduate = 3;
+static const int numOfRays = 360 / graduate;
+static double Cosinus[numOfRays];
+static double Sinus[numOfRays];
 
 static RPG::coordinate CastRay(int x, int y, int r, int angle, int height, int width) {
     RPG::coordinate c;
-    c.first = (int) round(y + r * Cosinus[(int) angle/3]);
-    c.second = (int) round(height - 1 - x + r * Sinus[(int) angle/3]);
+    c.first = (int) round(y + r * Cosinus[(int) angle / graduate]);
+    c.second = (int) round(height - 1 - x + r * Sinus[(int) angle / graduate]);
     c.first = c.first >= width ? width - 1 : (c.first < 0 ? 0 : c.first);
     c.second = c.second >= height ? height - 1 : (c.second < 0 ? 0 : c.second);
     return c;
 }
 
 static void GenerateTables() {
-    for (int i=0; i < 120; i++)
+    for (int i=0; i < numOfRays; i++)
     {
-        Cosinus[i] = cos(i * 3 * Pi/180);
-        Sinus[i] = sin(i * 3 * Pi/180);
+        Cosinus[i] = cos(i * graduate * Pi/180);
+        Sinus[i] = sin(i * graduate * Pi/180);
     }
 }
 

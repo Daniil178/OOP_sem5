@@ -3,7 +3,13 @@
 #include "help_func.h"
 
 // Процедура Line of Sight.
-std::set<RPG::coordinate>& TileOnMap::LoS(RPG::Map& map_, std::set<RPG::coordinate>& visible_cells, int x1, int y1, int x2, int y2, int height) {
+std::set<RPG::coordinate>& TileOnMap::LoS(RPG::Map& map_
+                                          , std::set<RPG::coordinate>& visible_cells
+                                          , int x1
+                                          , int y1
+                                          , int x2
+                                          , int y2
+                                          , int height) {
     int dx, dy, sdx, sdy, dx_abs, dy_abs, x, y, px, py;
 
     dx = x2 - x1;
@@ -24,7 +30,7 @@ std::set<RPG::coordinate>& TileOnMap::LoS(RPG::Map& map_, std::set<RPG::coordina
                 py += sdy;
             }
             px += sdx;
-            visible_cells.insert(std::make_pair(height - py - 1, px)); //рисуем тайл на экране
+            visible_cells.insert(std::make_pair(height - py - 1, px)); // добавляем в список отрисовки
             //если здесь стена или плитка, остановка...
             if (map_[std::make_pair(height - py - 1, px)]->is_visible() == false) {
                 return visible_cells;
@@ -71,8 +77,8 @@ void TileOnMap::load(RPG::Level &level) {
     for (auto& oper : operatives) {
         int x = oper->get_position().first;
         int y = oper->get_position().second;
-        for (int i = 0; i < 120; ++i) {
-            c = RPG::CastRay(x, y, oper->get_params().view_radius, i * 3, height, width);
+        for (int i = 0; i < RPG::numOfRays; ++i) {
+            c = RPG::CastRay(x, y, oper->get_params().view_radius, i * RPG::graduate, height, width);
             LoS(map_, draw_cell, y, height - x - 1, c.first, c.second, height);
         }
     }
@@ -129,7 +135,10 @@ void TileOnMap::load(RPG::Level &level) {
         texts.push_back(text);
 
         sprite_coord = unit_tile_coords.at(enemy->get_type());
-        enemy_sprite.setTextureRect({sprite_coord.first, sprite_coord.second, tile_size.x, tile_size.y});
+        enemy_sprite.setTextureRect({sprite_coord.first,
+                                     sprite_coord.second,
+                                     tile_size.x,
+                                     tile_size.y});
         enemy_sprite.setPosition(enemy->get_position().second * tile_size.y * scale,
                                  enemy->get_position().first * tile_size.x * scale);
         enemy_sprite.setScale(scale, scale);

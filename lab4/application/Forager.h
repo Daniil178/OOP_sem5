@@ -33,7 +33,7 @@ public:
      * @return (int) - current weight
      */
     [[nodiscard]] int get_weight() const noexcept;
-    //[[nodiscard]] Table* see_inventory() const noexcept;
+    [[nodiscard]] std::vector<Item*>::iterator see_inventory() const noexcept;
     /**
      * @brief take item from floor to inventory
      * @param item (Item *) - ptr of similar item
@@ -53,6 +53,7 @@ public:
      * 0 - successfully put
      */
     int put_item_from_inventory(Item* item, Map& map_);
+    int put_all_items_from_inventory(Map& map_);
     /**
      * @brief destructor - delete ptr of inventory
      */

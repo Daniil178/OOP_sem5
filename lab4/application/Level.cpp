@@ -164,10 +164,12 @@ int Level::shoot(Wild* who, Direction where) {
             delete dynamic_cast<Rational*>(curr_unit);
         }
         else if (type_curr_enemy == FORAGER) {
+            dynamic_cast<Forager*>(curr_unit)->put_all_items_from_inventory(map_);
             enemies.erase(std::find(enemies.begin(), enemies.end(), dynamic_cast<Unit*>(curr_unit)));
             delete dynamic_cast<Forager*>(curr_unit);
         }
         else if (type_curr_enemy == OPERATIVE) {
+            dynamic_cast<Operative*>(curr_unit)->put_all_items_from_inventory(map_);
             operatives.erase(std::find(operatives.begin(), operatives.end(), dynamic_cast<Operative*>(curr_unit)));
             delete dynamic_cast<Operative*>(curr_unit);
             if (operatives.empty()) {

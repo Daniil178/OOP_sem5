@@ -2,6 +2,7 @@
 #define RPG_OBJECT_H
 
 #include "help_func.h"
+#include <unordered_map>
 
 namespace RPG {
 

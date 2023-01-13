@@ -2,13 +2,14 @@ cmake_minimum_required(VERSION 3.16)
 set(CMAKE_CXX_STANDARD 20)
 project(lab4)
 
-find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
+#set(SFML_DIR SFML-2.5.1/lib/cmake/SFML)
+
+add_compile_options(-DSFML_STATIC)
+
+find_package(SFML 2.5.1 COMPONENTS graphics REQUIRED)
 
 add_executable(game main.cpp graphics/TileOnMap.cpp)
 add_executable(dirt dirt.cpp)
-
-target_link_libraries(game sfml-graphics sfml-audio)
-target_link_libraries(dirt sfml-graphics sfml-audio)
 
 include_directories(app application)
 
@@ -17,5 +18,5 @@ add_library(objects application/RPG_Object.cpp application/Game.cpp application/
         application/Unit.cpp application/Forager.cpp application/Wild.cpp application/Rational.cpp
         application/Operative.cpp application/Table.cpp application/help_func.h)
 
-target_link_libraries(game objects)
-target_link_libraries(dirt objects)
+target_link_libraries(game sfml-graphics objects)
+target_link_libraries(dirt sfml-graphics objects)

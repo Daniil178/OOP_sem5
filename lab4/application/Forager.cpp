@@ -62,12 +62,25 @@ int Forager::put_item_from_inventory(Item *item, Map& map_) {
     return 0;
 }
 
+int Forager::put_all_items_from_inventory(Map& map_) {
+    int itemNums = inventory->number_of_items();
+    for (int i = 0; i < itemNums; ++i) {
+        Item *put_item = inventory->get_item(*inventory->get_iter());
+        if (put_item == nullptr) {
+            return -1; // not object
+        }
+        map_[position]->put_item(put_item);
+    }
+    return 0;
+}
+
 Forager::~Forager() {
     delete inventory;
 }
 
-//Table* Forager::see_inventory() const noexcept {
-//    auto curr_item = inventory->get_iter();
-//}
+std::vector<Item*>::iterator Forager::see_inventory() const noexcept {
+    auto item = inventory->get_iter();
+    (*item)
+}
 
 } // RPG

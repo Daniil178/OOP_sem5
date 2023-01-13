@@ -1,6 +1,5 @@
 /lab4/dirt.cpp
-/lab4/application/html/
-/lab4/application/html/Doxyfile
 git_help.txt
+cmake*
 cmake-build*
 .idea

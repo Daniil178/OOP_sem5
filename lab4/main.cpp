@@ -23,7 +23,9 @@ int main()
     level->start(level_path);
     RPG::Game game = RPG::Game(1, level);
 
-    sf::RenderWindow window(sf::VideoMode(level->get_size().second * tile_size.y * scale, level->get_size().first * tile_size.x * scale), window_title);
+    sf::RenderWindow window(sf::VideoMode(level->get_size().second * tile_size.y * scale
+                                          , level->get_size().first * tile_size.x * scale)
+                            , window_title);
     sf::Texture texture;
     texture.loadFromFile(tileset_path);
     sf::Text text;

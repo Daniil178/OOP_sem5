@@ -4,7 +4,7 @@
 
 using namespace RPG;
 
-static int accuracy0 = 100;
+static int accuracy0 = 90;
 
 TEST(Test_item, all_methods) {
     Item item("lala", 200, WEAPON);

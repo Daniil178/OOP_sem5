@@ -80,7 +80,7 @@ Forager::~Forager() {
 
 std::vector<Item*>::iterator Forager::see_inventory() const noexcept {
     auto item = inventory->get_iter();
-    (*item)
+    return item;
 }
 
 } // RPG

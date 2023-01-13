@@ -40,20 +40,23 @@ int main()
         try {
             //sf::RenderWindow window(sf::VideoMode(level.get_size().second * tile_size.y * scale, level.get_size().first * tile_size.x * scale), window_title);
             while (window.isOpen()) {
-                draw(window, texture, text, *level);
-                choice = RPG::get_input(window);
-                //~ - exit to main menu
-                if (choice == sf::Keyboard::Tilde) {
-                    window.close();
-                    break;
+                while(res_turn_oper != -100) {
+                    draw(window, texture, text, *level);
+                    choice = RPG::get_input(window);
+                    //~ - exit to main menu
+                    if (choice == sf::Keyboard::Tilde) {
+                        window.close();
+                        break;
+                    }
+                    // Game - turn
+                    res_turn_oper = game.turn_operatives(choice, window, &diff);
                 }
-                // Game - turn
-                res_turn_oper = game.turn_operatives(choice, window, &diff);
                 game.turn_enemies();
                 if (res_turn_oper == -100) {
                     for (auto& curr_oper: level->operatives) {
                         curr_oper->update_time();
                     }
+                    res_turn_oper = 0;
                 }
                 if (level->check_flag()) {
                     window.close();

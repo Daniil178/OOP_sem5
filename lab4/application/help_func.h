@@ -42,7 +42,7 @@ static coordinate& operator-=(coordinate& frst, coordinate& scnd) {
 
 static coordinate operator-(coordinate& frst, coordinate& scnd) {
     coordinate new_pos = std::make_pair(0, 0);
-    new_pos -= frst;
+    new_pos += frst;
     new_pos -= scnd;
     return new_pos;
 }

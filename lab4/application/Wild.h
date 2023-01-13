@@ -42,7 +42,7 @@ protected:
     /**
      * @brief number of damage
      */
-    int damage = 25;
+    int damage = 15;
     /**
      * @brief range of attack
      */
@@ -54,7 +54,7 @@ protected:
     /**
      * @brief accuracy of attack in %
      */
-    const int accuracy = 100;
+    const int accuracy = 90;
 };
 
 } // RPG

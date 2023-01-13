@@ -49,6 +49,7 @@ int main()
                 }
                 // Game - turn
                 res_turn_oper = game.turn_operatives(choice, window, &diff);
+                game.turn_enemies();
                 if (res_turn_oper == -100) {
                     for (auto& curr_oper: level->operatives) {
                         curr_oper->update_time();

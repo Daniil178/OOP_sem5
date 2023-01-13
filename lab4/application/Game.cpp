@@ -93,10 +93,8 @@ void Game::wildTurn(Wild* currWild) {
             for (auto operPos: operativesPos) {
                 //        coordinate diffCoor = currPos + RPG_Object::DIR_POS[Left];
                 coordinate diffCoor = operPos - currPos;
-                if (diffCoor == RPG_Object::DIR_POS[Left]
-                || diffCoor == RPG_Object::DIR_POS[Down]
-                || diffCoor == RPG_Object::DIR_POS[Up]
-                || diffCoor == RPG_Object::DIR_POS[Right])
+                if (diffCoor == RPG_Object::DIR_POS[Left] || diffCoor == RPG_Object::DIR_POS[Down]
+                || diffCoor == RPG_Object::DIR_POS[Up] || diffCoor == RPG_Object::DIR_POS[Right])
                 {
                     while (currWild->get_params().current_time > 0 && flagDie != 100) {
                         flagDie = level->shoot(currWild, RPG_Object::POS_DIR[diffCoor]);

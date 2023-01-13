@@ -1,0 +1,9 @@
+digraph "RPG::WEAPON_PARAMS_WEIGHT"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="RPG::WEAPON_PARAMS\l_WEIGHT",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="struct of basic params + (int) weight"];
+  Node2 -> Node1 [dir="back",color="darkorchid3",fontsize="10",style="dashed",label=" bas_params" ,fontname="Helvetica"];
+  Node2 [label="RPG::WEAPON_PARAMS",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$structRPG_1_1WEAPON__PARAMS.html",tooltip="struct of basic params of weapon:  (int) damage of shot,  (int) range of shot,  (int) time needs for ..."];
+}

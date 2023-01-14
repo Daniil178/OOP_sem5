@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "Level.h"
 #include "../graphics/TileOnMap.h"
+#include "../graphics/TileCoordinates.h"
 #include <cstring>
 #include <thread>
 #include <chrono>
@@ -31,7 +32,16 @@ public:
      */
     int turn_operatives(sf::Keyboard::Key choice, sf::RenderWindow& window, int* diff);
 
+    /**
+     * @brief turn of all enemies
+     * @param window window for draw map
+     * @param texture texture for draw map
+     * @param text text for draw map
+     * @return flag - result of turn
+     */
     int turn_enemies(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text); // return flag after change
+
+    int inventoryActions(Operative* currOperative, sf::Texture& texture, sf::Text& text);
 
     /**
      * @brief free pointer of level
@@ -65,6 +75,13 @@ protected:
      */
     bool isSeeUnit(coordinate unitCoorFrom, coordinate CoorTo);
 
+    /**
+     * @brief turn of all enemies with type == wild
+     * @param currWild current wild
+     * @param window window for draw map
+     * @param texture texture for draw map
+     * @param text text for draw map
+     */
     void wildTurn(Wild* currWild, sf::RenderWindow& window, sf::Texture& texture, sf::Text& text);
 
 };

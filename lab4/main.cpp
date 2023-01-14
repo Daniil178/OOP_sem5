@@ -24,14 +24,14 @@ int main()
     text.setFont(font);
     text.setCharacterSize(RPG::font_size);
 
-    int diff = 0;
+    int diff = 0, resInventory;
 
     do {
         try {
             //sf::RenderWindow window(sf::VideoMode(level.get_size().second * tile_size.y * scale, level.get_size().first * tile_size.x * scale), window_title);
             while (window.isOpen()) {
                 while(res_turn_oper != -100 && window.isOpen()) {
-                    RPG::draw(window, texture, text, *level);
+                    RPG::draw(window, texture, text, *level, diff);
                     choice = RPG::get_input(window);
                     //~ - exit to main menu
                     if (choice == sf::Keyboard::Tilde) {
@@ -40,6 +40,12 @@ int main()
                     }
                     // Game - turn
                     res_turn_oper = game.turn_operatives(choice, window, &diff);
+//                    if (res_turn_oper == 77) {
+//                        resInventory = 0;
+//                        while (resInventory == 0) {
+//                            resInventory = game.
+//                        }
+//                    }
                 }
                 game.turn_enemies(window, texture, text);
                 if (res_turn_oper == -100) {

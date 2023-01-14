@@ -18,22 +18,28 @@ public:
      * @param pos (coordinate) - start position of forager
      */
     Forager(std::string name, coordinate pos); // initialisation inventory
+
     /**
      * @brief check strength of forager
      * @return (int) - strength of forager
      */
     [[nodiscard]] int get_strength() const noexcept;
+
     /**
      * @brief check current number of items in inventory
      * @return (int) - number of items
      */
     [[nodiscard]] int get_num_of_items() const noexcept;
+
     /**
      * @brief check current weight of inventory
      * @return (int) - current weight
      */
     [[nodiscard]] int get_weight() const noexcept;
-    [[nodiscard]] std::vector<Item*>::iterator see_inventory() const noexcept;
+
+
+    [[nodiscard]] Table* see_inventory() const noexcept;
+
     /**
      * @brief take item from floor to inventory
      * @param item (Item *) - ptr of similar item
@@ -43,6 +49,12 @@ public:
      * 0 - successfully take
      */
     int take_item_to_inventory(Item* item, Map& map_);
+
+    /**
+     * @brief take first item from cell to inventory
+     * @param map_ map where happening actions
+     * @return flag - result of action
+     */
     int take_item_to_inventory(Map& map_);
 
     /**
@@ -53,7 +65,14 @@ public:
      * 0 - successfully put
      */
     int put_item_from_inventory(Item* item, Map& map_);
+
+    /**
+     * @brief put all items from inventory to cell
+     * @param map_ map where happening actions
+     * @return flag - result of action
+     */
     int put_all_items_from_inventory(Map& map_);
+
     /**
      * @brief destructor - delete ptr of inventory
      */

@@ -78,9 +78,8 @@ Forager::~Forager() {
     delete inventory;
 }
 
-std::vector<Item*>::iterator Forager::see_inventory() const noexcept {
-    auto item = inventory->get_iter();
-    return item;
+Table* Forager::see_inventory() const noexcept {
+    return inventory;
 }
 
 } // RPG

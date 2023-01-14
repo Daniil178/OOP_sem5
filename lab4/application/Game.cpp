@@ -39,13 +39,15 @@ int Game::turn_operatives(sf::Keyboard::Key choice, sf::RenderWindow &window, in
     }
         // i - inventory mode
     else if (choice == sf::Keyboard::I) {
-        //...
-    } else if (sf::Keyboard::Num1 <= choice and choice <= sf::Keyboard::Num9) {
+        res_turn = 77;
+    }
+    else if (sf::Keyboard::Num1 <= choice and choice <= sf::Keyboard::Num9) {
         int oper_num = choice - sf::Keyboard::Num1;
         if (oper_num >= 0 and oper_num < level->operatives.size()) {
             *diff = oper_num;
             //curr_oper = level.operatives.begin() + oper_num;
-        } else {
+        }
+        else {
             res_turn = -1;
         }
     } else {
@@ -55,6 +57,43 @@ int Game::turn_operatives(sf::Keyboard::Key choice, sf::RenderWindow &window, in
         }
     }
     return res_turn;
+}
+
+int Game::inventoryActions(Operative* currOperative, sf::Texture& texture, sf::Text& text) {
+    auto inventory = currOperative->see_inventory();
+    int resActions = 1, sizeInventory = inventory->number_of_items(), indexCurrItem = 0;
+    int inventoryWidth = 5;
+    sf::RenderWindow windowInventory(
+            sf::VideoMode(inventoryWidth * RPG::tile_size.y * RPG::scale
+                          , ((sizeInventory / inventoryWidth) + 1) * RPG::tile_size.x * RPG::scale)
+            , RPG::window_title);
+
+    std::vector<sf::Sprite> itemSprites;
+    auto inventoryIter = inventory->get_iter();
+    for (int i = 0; i < sizeInventory; ++i) {
+        sf::Sprite itemSprite = sf::Sprite(texture);
+        ITEM_TYPE type = (*inventoryIter)->get_type();
+        RPG::coordinate sprite_coord;
+        if (type == WEAPON) {
+            sprite_coord = weapon_tile_coords.at(dynamic_cast<Weapon*>(*inventoryIter)->get_type());
+        }
+        else if (type == MEDICINE_KIT) {
+            sprite_coord = medicine_kit_tile_coords.at(dynamic_cast<Medicine_Kit*>(*inventoryIter)->get_type());
+        }
+        else {
+            sprite_coord = container_tile_coord.at(type);
+        }
+
+        itemSprite.setTextureRect({sprite_coord.first, sprite_coord.second
+                                   , tile_size.x, tile_size.y});
+        itemSprite.setPosition((i / inventoryWidth) * tile_size.y * scale, (i % inventoryWidth) * tile_size.x * scale);
+        itemSprite.setScale(scale, scale);
+        itemSprites.push_back(itemSprite);
+    }
+
+//    itemSprites[indexCurrItem]
+
+    return resActions;
 }
 
 int Game::turn_enemies(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text) {
@@ -80,7 +119,7 @@ int Game::turn_enemies(sf::RenderWindow& window, sf::Texture& texture, sf::Text&
 }
 
 void Game::wildTurn(Wild* currWild, sf::RenderWindow& window, sf::Texture& texture, sf::Text& text) {
-    int resultTurn = 0;
+
     int timeWait = 300;
     currWild->update_time();
     RPG::GenerateTables();
@@ -144,22 +183,29 @@ void Game::wildTurn(Wild* currWild, sf::RenderWindow& window, sf::Texture& textu
         if (currWild->get_params().current_time <= 0 || level->check_flag() > 0) break;
         // if wild alone
         else {
+            // destroy all objects
             RPG::coordinate c;
             std::set<coordinate> visibleCells;
             int x = currWild->get_position().first, y = currWild->get_position().second;
             int height = level->get_size().first, width = level->get_size().second;
             for (int i = 0; i < RPG::numOfRays; ++i) {
-                c = RPG::CastRay(y, height - x - 1, currWild->get_params().view_radius, i * RPG::graduate, height, width);
+                c = RPG::CastRay(y, height - x - 1
+                                 , currWild->get_params().view_radius
+                                 , i * RPG::graduate
+                                 , height, width);
+
                 visibleCells = RPG::TileOnMap::LoS(level->map_
                         , visibleCells
                         , y, height - x - 1
                         , c.first, c.second
                         , height);
             }
-            coordinate posBeforeActions = currWild->get_position();
+
             int timeBeforeActions = currWild->get_params().current_time;
             for (auto currCellCoord: visibleCells) {
-                if (currWild->get_params().current_time <= 0 || timeBeforeActions != currWild->get_params().current_time) break;
+                if (currWild->get_params().current_time <= 0
+                || timeBeforeActions != currWild->get_params().current_time) break;
+
                 else if (RPG::Cell::CELL_TYPE_PARAMS[level->map_[currCellCoord]->get_type()].destroy) {
                     std::vector<Direction> path2Cell;
                     if (pathToPoint(path2Cell, currWild->get_position(), currCellCoord)) {
@@ -178,6 +224,7 @@ void Game::wildTurn(Wild* currWild, sf::RenderWindow& window, sf::Texture& textu
                 }
             }
 
+            // go to random point
             if (timeBeforeActions == currWild->get_params().current_time) {
                 if (currWild->get_params().current_time <= 0) break;
                 std::vector<coordinate> canGoCoord;
@@ -369,6 +416,8 @@ bool Game::isSeeUnit(RPG::coordinate unitCoorFrom, RPG::coordinate coorTo) {
     }
     return false;
 }
+
+
 
 Game::~Game() {
     delete level;

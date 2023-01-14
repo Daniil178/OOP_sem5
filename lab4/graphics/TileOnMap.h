@@ -24,7 +24,7 @@ class TileOnMap {
 public:
     TileOnMap(const sf::Texture &textures, const sf::Text &text, const sf::Vector2i &tile_size, float scale = 4.f);
 
-    void load(RPG::Level &level);
+    void load(RPG::Level &level, int currOperInd);
 
     void drawCells(sf::RenderWindow &window) const;
 
@@ -36,6 +36,8 @@ public:
                      , const sf::Vector2i &tile_size
                      , const std::string& message
                      , float scale = 4.f);
+
+    static void drawInventory(sf::RenderWindow &window, std::vector<sf::Sprite>& itemSprites);
 
     static std::set<RPG::coordinate>&
     LoS(RPG::Map &map_, std::set<RPG::coordinate> &visible_cells, int x1, int y1, int x2, int y2, int height);
@@ -53,9 +55,9 @@ private:
 
 };
 
-static void draw(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text, RPG::Level& level) {
+static void draw(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text, RPG::Level& level, int currOperInd = -1) {
     RPG::TileOnMap tileMap(texture, text, tile_size, scale);
-    tileMap.load(level);
+    tileMap.load(level, currOperInd);
     window.clear(sf::Color::Black);
     tileMap.drawCells(window);
     tileMap.drawUnits(window);

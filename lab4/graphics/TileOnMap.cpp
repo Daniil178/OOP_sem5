@@ -64,7 +64,7 @@ TileOnMap::TileOnMap(const sf::Texture &textures, const sf::Text &text, const sf
         tile_size(tile_size),
         scale(scale) {}
 
-void TileOnMap::load(RPG::Level &level) {
+void TileOnMap::load(RPG::Level &level, int currOperInd) {
     RPG::GenerateTables();
     RPG::Map &map_ = level.map_;
     auto operatives = level.operatives;
@@ -106,6 +106,9 @@ void TileOnMap::load(RPG::Level &level) {
         text.setString(status.str());
         text.setPosition(oper->get_position().second * tile_size.y * scale,
                          oper->get_position().first * tile_size.x * scale);
+        if (currOperInd != -1 && operatives[currOperInd] == oper) {
+            text.setColor(sf::Color::Red);
+        }
         texts.push_back(text);
         sf::Sprite oper_sprite = sf::Sprite(textures);
         sprite_coord = unit_tile_coords.at(RPG::OPERATIVE);
@@ -216,6 +219,12 @@ void TileOnMap::drawMessage(const sf::Texture &textures
     std::this_thread::sleep_for(std::chrono::milliseconds(3500));
     window.close();
 
+}
+
+void drawInventory(sf::RenderWindow &window, std::vector<sf::Sprite>& itemSprites) {
+    for (auto& currItem : itemSprites) {
+        window.draw(currItem);
+    }
 }
 
 } // RPG

@@ -60,8 +60,14 @@ int main()
         }
     } while (!level->check_flag() && choice != sf::Keyboard::Tilde);
     if (level->check_flag() > 0) {
-        if (level->check_flag() == 1) std::cout << "You are win!" << std::endl;
-        else if (level->check_flag() == 2) std::cout << "You are lose!" << std::endl;
+        if (level->check_flag() == 1) {
+            RPG::TileOnMap::drawMessage(texture, RPG::tile_size, "you win");
+            // std::cout << "You are win!" << std::endl;
+        }
+        else if (level->check_flag() == 2) {
+            RPG::TileOnMap::drawMessage(texture, RPG::tile_size, "you lose");
+            // std::cout << "You are lose!" << std::endl;
+        }
     }
     return 0;
 }

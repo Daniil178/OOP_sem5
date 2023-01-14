@@ -166,4 +166,57 @@ void TileOnMap::drawTexts(sf::RenderWindow &window) const {
         window.draw(message);
 }
 
+void TileOnMap::drawMessage(const sf::Texture &textures
+                            , const sf::Vector2i &tile_size
+                            , std::string message
+                            , float scale) {
+
+    std::vector<sf::Sprite> charSprites;
+    for (int i = 0; i < 26; ++i) {
+        charSprites.emplace_back();
+    }
+    coordinate size = std::make_pair(9, message.size() + 2);
+    for (int i = 0; i < 2; ++i) {
+        for (int j = 0; j < 13; ++j) {
+            int x = (tile_size.x + 1) * (19 + j);
+            int y = (tile_size.x + 1) * (30 + i);
+            sf::Sprite charSprite = sf::Sprite(textures);
+            charSprite.setTextureRect({x, y, tile_size.x, tile_size.y});
+            charSprite.setScale(scale, scale);
+
+            charSprites[j * (i + 1)] = charSprite;
+        }
+    }
+
+
+    sf::RenderWindow window(sf::VideoMode(size.second * (unsigned int) ((float) tile_size.y * scale)
+                                          , size.first * (unsigned int) ((float) tile_size.x * scale))
+                            , RPG::window_title);
+
+    for (int i = 0; i < size.first; ++i) {
+        for (int j = 0; j < size.second; ++j) {
+            int x = i, y = j;
+            sf::Sprite sprite = sf::Sprite(textures);
+            sprite.setTextureRect({0, 0, tile_size.x, tile_size.y});
+            sprite.setPosition(y * tile_size.y * scale, x * tile_size.x * scale);
+            sprite.setScale(scale, scale);
+            window.draw(sprite);
+        }
+    }
+
+    int i = 0;
+    for (auto char_ : message) {
+        ++i;
+        if (char_ != ' ') {
+            sf::Sprite sprite = charSprites[(int) (char_ - 'a')];
+            sprite.setPosition(i * tile_size.y * scale, 4 * tile_size.x * scale);
+            window.draw(sprite);
+        }
+    }
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+    window.close();
+
+}
+
 } // RPG

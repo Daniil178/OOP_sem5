@@ -68,31 +68,47 @@ int Game::inventoryActions(Operative* currOperative, sf::Texture& texture, sf::T
                           , ((sizeInventory / inventoryWidth) + 1) * RPG::tile_size.x * RPG::scale)
             , RPG::window_title);
 
-    std::vector<sf::Sprite> itemSprites;
-    auto inventoryIter = inventory->get_iter();
-    for (int i = 0; i < sizeInventory; ++i) {
-        sf::Sprite itemSprite = sf::Sprite(texture);
-        ITEM_TYPE type = (*inventoryIter)->get_type();
-        RPG::coordinate sprite_coord;
-        if (type == WEAPON) {
-            sprite_coord = weapon_tile_coords.at(dynamic_cast<Weapon*>(*inventoryIter)->get_type());
+    while(windowInventory.isOpen()) {
+        sf::Keyboard::Key choice = RPG::get_input(windowInventory);
+
+        if (choice == sf::Keyboard::Escape or choice == sf::Keyboard::Tilde) break;
+        else if (choice == sf::Keyboard::A) {
+            indexCurrItem = (indexCurrItem - 1) % sizeInventory;
         }
-        else if (type == MEDICINE_KIT) {
-            sprite_coord = medicine_kit_tile_coords.at(dynamic_cast<Medicine_Kit*>(*inventoryIter)->get_type());
-        }
-        else {
-            sprite_coord = container_tile_coord.at(type);
+        else if (choice == sf::Keyboard::D) {
+            indexCurrItem = (indexCurrItem + 1) % sizeInventory;
         }
 
-        itemSprite.setTextureRect({sprite_coord.first, sprite_coord.second
-                                   , tile_size.x, tile_size.y});
-        itemSprite.setPosition((i / inventoryWidth) * tile_size.y * scale, (i % inventoryWidth) * tile_size.x * scale);
-        itemSprite.setScale(scale, scale);
-        itemSprites.push_back(itemSprite);
+        std::vector<sf::Sprite> itemSprites;
+        auto inventoryIter = inventory->get_iter();
+        for (int i = 0; i < sizeInventory; ++i) {
+            sf::Sprite itemSprite = sf::Sprite(texture);
+            ITEM_TYPE type = (*inventoryIter)->get_type();
+            RPG::coordinate sprite_coord;
+            if (type == WEAPON) {
+                sprite_coord = weapon_tile_coords.at(dynamic_cast<Weapon *>(*inventoryIter)->get_type());
+            } else if (type == MEDICINE_KIT) {
+                sprite_coord = medicine_kit_tile_coords.at(dynamic_cast<Medicine_Kit *>(*inventoryIter)->get_type());
+            } else {
+                sprite_coord = container_tile_coord.at(type);
+            }
+
+            itemSprite.setTextureRect({sprite_coord.first, sprite_coord.second
+                                       , tile_size.x, tile_size.y});
+
+            itemSprite.setPosition((i / inventoryWidth) * tile_size.y * scale,
+                                   (i % inventoryWidth) * tile_size.x * scale);
+            itemSprite.setScale(scale, scale);
+            itemSprites.push_back(itemSprite);
+        }
+
+        itemSprites[indexCurrItem].setTextureRect({(tile_size.x + 1) * 20, (tile_size.y + 1) * 22
+                                                      , tile_size.x, tile_size.y});
+
+        windowInventory.display();
     }
 
-//    itemSprites[indexCurrItem]
-
+    windowInventory.close();
     return resActions;
 }
 

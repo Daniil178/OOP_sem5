@@ -5,7 +5,6 @@
 
 namespace RPG {
 
-// Процедура Line of Sight.
 std::set<RPG::coordinate>& TileOnMap::LoS(RPG::Map &map_
                                           , std::set<RPG::coordinate> &visible_cells
                                           , int x1
@@ -81,7 +80,6 @@ void TileOnMap::load(RPG::Level &level, int currOperInd) {
         for (int i = 0; i < RPG::numOfRays; ++i) {
             c = RPG::CastRay(y, height - x - 1, oper->get_params().view_radius, i * RPG::graduate, height, width);
             draw_cell = LoS(map_, draw_cell, y, height - x - 1, c.first, c.second, height);
-            std::cout << draw_cell.size() << std::endl;
         }
     }
     for (auto &cell_coord: draw_cell) {

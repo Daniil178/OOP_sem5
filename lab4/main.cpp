@@ -49,6 +49,7 @@ int main()
                 }
                 game.turn_enemies(window, texture, text);
                 if (res_turn_oper == -100) {
+                    diff = 0;
                     for (auto& curr_oper: level->operatives) {
                         curr_oper->update_time();
                     }

@@ -80,7 +80,8 @@ void TileOnMap::load(RPG::Level &level) {
         int y = oper->get_position().second;
         for (int i = 0; i < RPG::numOfRays; ++i) {
             c = RPG::CastRay(y, height - x - 1, oper->get_params().view_radius, i * RPG::graduate, height, width);
-            LoS(map_, draw_cell, y, height - x - 1, c.first, c.second, height);
+            draw_cell = LoS(map_, draw_cell, y, height - x - 1, c.first, c.second, height);
+            std::cout << draw_cell.size() << std::endl;
         }
     }
     for (auto &cell_coord: draw_cell) {
@@ -168,13 +169,11 @@ void TileOnMap::drawTexts(sf::RenderWindow &window) const {
 
 void TileOnMap::drawMessage(const sf::Texture &textures
                             , const sf::Vector2i &tile_size
-                            , std::string message
+                            , const std::string& message
                             , float scale) {
 
     std::vector<sf::Sprite> charSprites;
-    for (int i = 0; i < 26; ++i) {
-        charSprites.emplace_back();
-    }
+
     coordinate size = std::make_pair(9, message.size() + 2);
     for (int i = 0; i < 2; ++i) {
         for (int j = 0; j < 13; ++j) {
@@ -184,7 +183,7 @@ void TileOnMap::drawMessage(const sf::Texture &textures
             charSprite.setTextureRect({x, y, tile_size.x, tile_size.y});
             charSprite.setScale(scale, scale);
 
-            charSprites[j * (i + 1)] = charSprite;
+            charSprites.push_back(charSprite);
         }
     }
 
@@ -213,8 +212,8 @@ void TileOnMap::drawMessage(const sf::Texture &textures
             window.draw(sprite);
         }
     }
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+    window.display();
+    std::this_thread::sleep_for(std::chrono::milliseconds(3500));
     window.close();
 
 }

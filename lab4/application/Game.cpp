@@ -90,10 +90,11 @@ void Game::wildTurn(Wild* currWild, sf::RenderWindow& window, sf::Texture& textu
         operativesPos.push_back((*operative).get_position());
     }
     int flagDie;
-    bool flagOperAround = true;
+    bool flagOperAround;
 
     while(currWild->get_params().current_time > 0) {
         RPG::draw(window, texture, text, *level);
+        flagOperAround = true;
         while (flagOperAround) {
             flagDie = 0;  // operator is live
             for (auto operPos: operativesPos) {
@@ -114,6 +115,7 @@ void Game::wildTurn(Wild* currWild, sf::RenderWindow& window, sf::Texture& textu
                     }
                 }
             }
+            if (level->check_flag() > 0) break;
             flagOperAround = false;
 
             if (currWild->get_params().current_time <= 0) break;
@@ -139,8 +141,7 @@ void Game::wildTurn(Wild* currWild, sf::RenderWindow& window, sf::Texture& textu
                 if (flagOperAround) break;
             }
         }
-
-        if (currWild->get_params().current_time <= 0) break;
+        if (currWild->get_params().current_time <= 0 || level->check_flag() > 0) break;
         // if wild alone
         else {
             RPG::coordinate c;
@@ -157,7 +158,6 @@ void Game::wildTurn(Wild* currWild, sf::RenderWindow& window, sf::Texture& textu
             }
             coordinate posBeforeActions = currWild->get_position();
             int timeBeforeActions = currWild->get_params().current_time;
-            std::cout << "=============\n" << visibleCells.size() << "\n===========" << std::endl;
             for (auto currCellCoord: visibleCells) {
                 if (currWild->get_params().current_time <= 0 || timeBeforeActions != currWild->get_params().current_time) break;
                 else if (RPG::Cell::CELL_TYPE_PARAMS[level->map_[currCellCoord]->get_type()].destroy) {

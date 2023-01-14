@@ -77,22 +77,24 @@ static const int numOfRays = 360 / graduate;
 static double Cosinus[numOfRays];
 static double Sinus[numOfRays];
 
+static void GenerateTables() {
+    for (int i = 0; i < numOfRays; ++i)
+    {
+        Cosinus[i] = cos(i * graduate * Pi / 180);
+        Sinus[i] = sin(i * graduate * Pi / 180);
+    }
+}
+
 static RPG::coordinate CastRay(int x, int y, int r, int angle, int height, int width) {
     RPG::coordinate c;
-    c.first = (int) round(y + r * Cosinus[(int) angle / graduate]);
-    c.second = (int) round(height - 1 - x + r * Sinus[(int) angle / graduate]);
+    c.first = (int) round(x + r * Cosinus[(int) angle / graduate]);
+    c.second = (int) round(y + r * Sinus[(int) angle / graduate]);
     c.first = c.first >= width ? width - 1 : (c.first < 0 ? 0 : c.first);
     c.second = c.second >= height ? height - 1 : (c.second < 0 ? 0 : c.second);
     return c;
 }
 
-static void GenerateTables() {
-    for (int i=0; i < numOfRays; i++)
-    {
-        Cosinus[i] = cos(i * graduate * Pi/180);
-        Sinus[i] = sin(i * graduate * Pi/180);
-    }
-}
+
 
 static int Sgn(int x) {
     if (x == 0) {

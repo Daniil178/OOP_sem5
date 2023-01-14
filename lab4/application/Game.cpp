@@ -83,6 +83,7 @@ void Game::wildTurn(Wild* currWild, sf::RenderWindow& window, sf::Texture& textu
     int resultTurn = 0;
     int timeWait = 300;
     currWild->update_time();
+    RPG::GenerateTables();
 
     std::vector<coordinate> operativesPos;
     for (auto& operative : level->operatives) {
@@ -154,9 +155,11 @@ void Game::wildTurn(Wild* currWild, sf::RenderWindow& window, sf::Texture& textu
                         , c.first, c.second
                         , height);
             }
+            coordinate posBeforeActions = currWild->get_position();
+            int timeBeforeActions = currWild->get_params().current_time;
             std::cout << "=============\n" << visibleCells.size() << "\n===========" << std::endl;
             for (auto currCellCoord: visibleCells) {
-                if (currWild->get_params().current_time <= 0) break;
+                if (currWild->get_params().current_time <= 0 || timeBeforeActions != currWild->get_params().current_time) break;
                 else if (RPG::Cell::CELL_TYPE_PARAMS[level->map_[currCellCoord]->get_type()].destroy) {
                     std::vector<Direction> path2Cell;
                     if (pathToPoint(path2Cell, currWild->get_position(), currCellCoord)) {
@@ -175,22 +178,24 @@ void Game::wildTurn(Wild* currWild, sf::RenderWindow& window, sf::Texture& textu
                 }
             }
 
-            if (currWild->get_params().current_time <= 0) break;
-            std::vector<coordinate> canGoCoord;
-            for (auto currCellCoord: visibleCells) {
-                if (level->map_[currCellCoord]->can_go_through()) {
-                    canGoCoord.push_back(currCellCoord);
+            if (timeBeforeActions == currWild->get_params().current_time) {
+                if (currWild->get_params().current_time <= 0) break;
+                std::vector<coordinate> canGoCoord;
+                for (auto currCellCoord: visibleCells) {
+                    if (level->map_[currCellCoord]->can_go_through()) {
+                        canGoCoord.push_back(currCellCoord);
+                    }
                 }
-            }
-            coordinate goalCellCoord = canGoCoord[RPG::GetRandomNumber(0, canGoCoord.size())];
-            std::vector<Direction> path2Cell;
-            if (pathToPoint(path2Cell, currWild->get_position(), goalCellCoord)) {
-                for (auto whereStep: path2Cell) {
-                    if (currWild->get_params().current_time <= 0) break;
-                    else level->step_by_unit(currWild, whereStep);
+                coordinate goalCellCoord = canGoCoord[RPG::GetRandomNumber(0, canGoCoord.size())];
+                std::vector<Direction> path2Cell;
+                if (pathToPoint(path2Cell, currWild->get_position(), goalCellCoord)) {
+                    for (auto whereStep: path2Cell) {
+                        if (currWild->get_params().current_time <= 0) break;
+                        else level->step_by_unit(currWild, whereStep);
 
-                    RPG::draw(window, texture, text, *level);
-                    std::this_thread::sleep_for(std::chrono::milliseconds( timeWait));
+                        RPG::draw(window, texture, text, *level);
+                        std::this_thread::sleep_for(std::chrono::milliseconds(timeWait));
+                    }
                 }
             }
         }
@@ -212,6 +217,9 @@ bool Game::pathToPoint(std::vector<Direction> &path, coordinate from, coordinate
         for (int j = 0; j < size.second; ++j) {
             coordinate x_y = std::make_pair(i, j);
             grid[i].push_back(level->map_.at(x_y)->can_go_through() ? BLANK : WALL);
+            if (!level->map_[std::make_pair(i, j)]->can_go_through() && std::make_pair(i, j) == to) {
+                grid[i][j] = BLANK;
+            }
             //grid[i][j] = level->map_.at(x_y)->can_go_through() ? BLANK : WALL;
         }
     }

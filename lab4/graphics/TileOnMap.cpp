@@ -219,7 +219,7 @@ void TileOnMap::drawMessage(const sf::Texture &textures
 
 }
 
-void drawInventory(sf::RenderWindow &window, std::vector<sf::Sprite>& itemSprites) {
+void TileOnMap::drawInventory(sf::RenderWindow &window, std::vector<sf::Sprite>& itemSprites) {
     for (auto& currItem : itemSprites) {
         window.draw(currItem);
     }

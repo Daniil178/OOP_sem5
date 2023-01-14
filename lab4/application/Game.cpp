@@ -63,32 +63,25 @@ int Game::inventoryActions(Operative* currOperative, sf::Texture& texture, sf::T
     auto inventory = currOperative->see_inventory();
     int resActions = 1, sizeInventory = inventory->number_of_items(), indexCurrItem = 0;
     int inventoryWidth = 5;
+    if (sizeInventory == 0) return resActions;
     sf::RenderWindow windowInventory(
             sf::VideoMode(inventoryWidth * RPG::tile_size.y * RPG::scale
                           , ((sizeInventory / inventoryWidth) + 1) * RPG::tile_size.x * RPG::scale)
             , RPG::window_title);
 
     while(windowInventory.isOpen()) {
-        sf::Keyboard::Key choice = RPG::get_input(windowInventory);
 
-        if (choice == sf::Keyboard::Escape or choice == sf::Keyboard::Tilde) break;
-        else if (choice == sf::Keyboard::A) {
-            indexCurrItem = (indexCurrItem - 1) % sizeInventory;
-        }
-        else if (choice == sf::Keyboard::D) {
-            indexCurrItem = (indexCurrItem + 1) % sizeInventory;
-        }
 
         std::vector<sf::Sprite> itemSprites;
         auto inventoryIter = inventory->get_iter();
         for (int i = 0; i < sizeInventory; ++i) {
             sf::Sprite itemSprite = sf::Sprite(texture);
-            ITEM_TYPE type = (*inventoryIter)->get_type();
+            ITEM_TYPE type = (*(inventoryIter + i))->get_type();
             RPG::coordinate sprite_coord;
             if (type == WEAPON) {
-                sprite_coord = weapon_tile_coords.at(dynamic_cast<Weapon *>(*inventoryIter)->get_type());
+                sprite_coord = weapon_tile_coords.at(dynamic_cast<Weapon *>(*(inventoryIter + i))->get_type());
             } else if (type == MEDICINE_KIT) {
-                sprite_coord = medicine_kit_tile_coords.at(dynamic_cast<Medicine_Kit *>(*inventoryIter)->get_type());
+                sprite_coord = medicine_kit_tile_coords.at(dynamic_cast<Medicine_Kit *>(*(inventoryIter + i))->get_type());
             } else {
                 sprite_coord = container_tile_coord.at(type);
             }
@@ -96,19 +89,43 @@ int Game::inventoryActions(Operative* currOperative, sf::Texture& texture, sf::T
             itemSprite.setTextureRect({sprite_coord.first, sprite_coord.second
                                        , tile_size.x, tile_size.y});
 
-            itemSprite.setPosition((i / inventoryWidth) * tile_size.y * scale,
-                                   (i % inventoryWidth) * tile_size.x * scale);
+            itemSprite.setPosition((i % inventoryWidth) * tile_size.y * scale,
+                                   (i / inventoryWidth) * tile_size.x * scale);
+            itemSprite.setScale(scale, scale);
+            itemSprites.push_back(itemSprite);
+        }
+        int sizeFullInventory = ((sizeInventory / inventoryWidth) + 1) * inventoryWidth;
+        for (int i = sizeInventory; i < sizeFullInventory; ++i) {
+            sf::Sprite itemSprite = sf::Sprite(texture);
+            itemSprite.setTextureRect({(tile_size.x + 1) * 4, (tile_size.y + 1) * 6
+                                              , tile_size.x, tile_size.y});
+
+            itemSprite.setPosition((i % inventoryWidth) * tile_size.y * scale,
+                                   (i / inventoryWidth) * tile_size.x * scale);
             itemSprite.setScale(scale, scale);
             itemSprites.push_back(itemSprite);
         }
 
         itemSprites[indexCurrItem].setTextureRect({(tile_size.x + 1) * 20, (tile_size.y + 1) * 22
-                                                      , tile_size.x, tile_size.y});
+                                                          , tile_size.x, tile_size.y});
 
+        RPG::TileOnMap::drawInventory(windowInventory, itemSprites);
         windowInventory.display();
+
+        sf::Keyboard::Key choice = RPG::get_input(windowInventory);
+
+        if (choice == sf::Keyboard::Escape or choice == sf::Keyboard::Tilde) windowInventory.close();
+        else {
+            if (choice == sf::Keyboard::A) {
+                indexCurrItem = (indexCurrItem > 0) ? indexCurrItem - 1 : sizeInventory - 1;
+            }
+            else if (choice == sf::Keyboard::D) {
+                indexCurrItem = (indexCurrItem + 1) % sizeInventory;
+            }
+        }
     }
 
-    windowInventory.close();
+
     return resActions;
 }
 

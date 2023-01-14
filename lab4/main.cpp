@@ -40,12 +40,12 @@ int main()
                     }
                     // Game - turn
                     res_turn_oper = game.turn_operatives(choice, window, &diff);
-//                    if (res_turn_oper == 77) {
-//                        resInventory = 0;
-//                        while (resInventory == 0) {
-//                            resInventory = game.
-//                        }
-//                    }
+                    if (res_turn_oper == 77) {
+                        resInventory = 0;
+                        while (resInventory == 0) {
+                            resInventory = game.inventoryActions(level->operatives[diff], texture, text);
+                        }
+                    }
                 }
                 game.turn_enemies(window, texture, text);
                 if (res_turn_oper == -100) {

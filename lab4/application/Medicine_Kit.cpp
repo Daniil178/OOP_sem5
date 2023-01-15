@@ -2,9 +2,9 @@
 
 namespace RPG {
 
-std::unordered_map<MED_KIT_HEALTH, std::string> Medicine_Kit::TYPE_NAME_med = {{Basic, "Basic med"},
-                                                                 {Army, "Army med"},
-                                                                 {Scientific, "Scientific med"}};
+std::unordered_map<MED_KIT_HEALTH, std::string> Medicine_Kit::TYPE_NAME_med = {{Basic, "Basic\nMedKit"},
+                                                                 {Army, "Army\nMedKit"},
+                                                                 {Scientific, "Scientific\nMedKit"}};
 
 Medicine_Kit::Medicine_Kit(MED_KIT_HEALTH type0) :
                                                     Item(TYPE_NAME_med[type0], 200, MEDICINE_KIT),

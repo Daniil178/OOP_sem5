@@ -9,7 +9,6 @@ add_compile_options(-DSFML_STATIC)
 find_package(SFML 2.5.1 COMPONENTS graphics REQUIRED)
 
 add_executable(game main.cpp graphics/TileOnMap.cpp)
-add_executable(dirt dirt.cpp)
 
 include_directories(app application)
 
@@ -19,4 +18,3 @@ add_library(objects application/RPG_Object.cpp application/Game.cpp application/
         application/Operative.cpp application/Table.cpp application/help_func.h)
 
 target_link_libraries(game sfml-graphics objects)
-target_link_libraries(dirt sfml-graphics objects)

@@ -7,7 +7,7 @@ using namespace std;
 
 int main() {
     sf::Keyboard::Key choice;
-    int res_turn_oper;
+    int res_turn_oper = 0;
     int res;
 
     sf::Texture texture;

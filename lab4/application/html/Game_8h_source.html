@@ -70,70 +70,77 @@ $(function() {
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;SFML/Graphics.hpp&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;Level.h&quot;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;cstring&gt;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="comment">//static const std::string root_path = &quot;/mnt/c/Users/danii&quot;;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> std::string root_path = <span class="stringliteral">&quot;/home/usik-dan&quot;</span>;</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment">//static const std::string level_path = &quot;/ClionProjects/OOP_sem5/lab4/src/maps/TestMap.txt&quot;;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> std::string level_path = <span class="stringliteral">&quot;src/maps/map.txt&quot;</span>;</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment">//static const std::string tileset_path = &quot;/ClionProjects/OOP_sem5/lab4/src/textures/tileset.png&quot;;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> std::string tileset_path = <span class="stringliteral">&quot;src/textures/tileset.png&quot;</span>;</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment">//static const std::string font_path = &quot;/ClionProjects/OOP_sem5/lab4/src/textures/solo5.ttf&quot;;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> std::string font_path = <span class="stringliteral">&quot;src/textures/solo5.ttf&quot;</span>;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> std::string window_title = <span class="stringliteral">&quot;Operation&quot;</span>;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> uint32_t font_size = 9;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> scale = 4.f;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">static</span> <span class="keyword">const</span> sf::Vector2i tile_size(16, 16);</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">namespace </span>RPG {</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classRPG_1_1Game.html">   26</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRPG_1_1Game.html">Game</a> {</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <a class="code" href="classRPG_1_1Game.html#a567339964f160e9db412d048fb39e8ef">Game</a>(<span class="keywordtype">int</span> <a class="code" href="classRPG_1_1Game.html#a0b8da0d9a43e809f78799c36aa9fe915">number_of_level</a>, <a class="code" href="classRPG_1_1Level.html">Level</a>* level0); <span class="comment">//initialisation of Game</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;../graphics/TileOnMap.h&quot;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;../graphics/TileCoordinates.h&quot;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;cstring&gt;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;thread&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;chrono&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">namespace </span>RPG {</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="classRPG_1_1Game.html">   17</a></span>&#160;<span class="keyword">class </span><a class="code" href="classRPG_1_1Game.html">Game</a> {</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <a class="code" href="classRPG_1_1Game.html#a567339964f160e9db412d048fb39e8ef">Game</a>(<span class="keywordtype">int</span> <a class="code" href="classRPG_1_1Game.html#a0b8da0d9a43e809f78799c36aa9fe915">number_of_level</a>, <a class="code" href="classRPG_1_1Level.html">Level</a>* level0); <span class="comment">//initialisation of Game</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classRPG_1_1Game.html#afc9f165e1d9c7530474ed8ba275e3fef">turn_operatives</a>(sf::Keyboard::Key choice, sf::RenderWindow&amp; window, <span class="keywordtype">int</span>* diff);</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classRPG_1_1Game.html#afc9f165e1d9c7530474ed8ba275e3fef">turn_operatives</a>(sf::Keyboard::Key choice, sf::RenderWindow&amp; window, <span class="keywordtype">int</span>* diff);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classRPG_1_1Game.html#ac071114159c0ebac737445b1ebbc1cbe">turn_enemies</a>(sf::RenderWindow&amp; window, sf::Texture&amp; texture, sf::Text&amp; text);</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordtype">int</span> turn_enemies(); <span class="comment">// return flag after change</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <a class="code" href="classRPG_1_1Game.html#a7df1cdbd46996f892ec9c8abbf109139">~Game</a>();</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="classRPG_1_1Game.html#a0b8da0d9a43e809f78799c36aa9fe915">   55</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classRPG_1_1Game.html#a0b8da0d9a43e809f78799c36aa9fe915">number_of_level</a>;</div>
-<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="classRPG_1_1Game.html#aafbde9112c5a03853570ddea3db4d2fd">   59</a></span>&#160;    <a class="code" href="classRPG_1_1Level.html">Level</a>* <a class="code" href="classRPG_1_1Game.html#aafbde9112c5a03853570ddea3db4d2fd">level</a>;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classRPG_1_1Game.html#a1d2a9737de711d4dc5473c5e2f065db8">pathToPoint</a>(std::vector&lt;Direction&gt;&amp; path, coordinate from, coordinate to);</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classRPG_1_1Game.html#ada43b47ee7a6fa13c176b47f0280867f">inventoryActions</a>(<a class="code" href="classRPG_1_1Operative.html">Operative</a>* currOperative, sf::Texture&amp; texture, sf::Text&amp; text);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">int</span> startMenu(sf::Texture&amp; texture, sf::Text&amp; text);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <a class="code" href="classRPG_1_1Game.html#a7df1cdbd46996f892ec9c8abbf109139">~Game</a>();</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="classRPG_1_1Game.html#a0b8da0d9a43e809f78799c36aa9fe915">   64</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classRPG_1_1Game.html#a0b8da0d9a43e809f78799c36aa9fe915">number_of_level</a>;</div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="classRPG_1_1Game.html#aafbde9112c5a03853570ddea3db4d2fd">   68</a></span>&#160;    <a class="code" href="classRPG_1_1Level.html">Level</a>* <a class="code" href="classRPG_1_1Game.html#aafbde9112c5a03853570ddea3db4d2fd">level</a>;</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classRPG_1_1Game.html#a2e3d1add7663aecf03255b59c41cd29a">isSeeUnit</a>(coordinate unitCoorFrom, coordinate CoorTo);</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keywordtype">void</span> wildTurn(<a class="code" href="classRPG_1_1Wild.html">Wild</a>* currWild);</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;};</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="keyword">static</span> sf::Keyboard::Key get_input(sf::RenderWindow&amp; window) {</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    sf::Event <span class="keyword">event</span>{};</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keywordflow">do</span> {</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        window.pollEvent(event);</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordflow">if</span> (event.type == sf::Event::Closed) {</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            <span class="keywordflow">return</span> sf::Keyboard::Tilde;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        }</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <span class="keywordflow">if</span> (event.type == sf::Event::KeyPressed) {</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">event</span>.key.code;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        }</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    }<span class="keywordflow">while</span> (<span class="keyword">true</span>);</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;}</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;} <span class="comment">// RPG</span></div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="preprocessor">#endif </span><span class="comment">//GAME_H</span></div>
-<div class="ttc" id="aclassRPG_1_1Game_html"><div class="ttname"><a href="classRPG_1_1Game.html">RPG::Game</a></div><div class="ttdef"><b>Definition:</b> Game.h:26</div></div>
-<div class="ttc" id="aclassRPG_1_1Game_html_a0b8da0d9a43e809f78799c36aa9fe915"><div class="ttname"><a href="classRPG_1_1Game.html#a0b8da0d9a43e809f78799c36aa9fe915">RPG::Game::number_of_level</a></div><div class="ttdeci">int number_of_level</div><div class="ttdoc">(int) - number of level</div><div class="ttdef"><b>Definition:</b> Game.h:55</div></div>
-<div class="ttc" id="aclassRPG_1_1Game_html_a1d2a9737de711d4dc5473c5e2f065db8"><div class="ttname"><a href="classRPG_1_1Game.html#a1d2a9737de711d4dc5473c5e2f065db8">RPG::Game::pathToPoint</a></div><div class="ttdeci">bool pathToPoint(std::vector&lt; Direction &gt; &amp;path, coordinate from, coordinate to)</div><div class="ttdoc">calculate path to point with algorithm lee</div><div class="ttdef"><b>Definition:</b> Game.cpp:111</div></div>
-<div class="ttc" id="aclassRPG_1_1Game_html_a2e3d1add7663aecf03255b59c41cd29a"><div class="ttname"><a href="classRPG_1_1Game.html#a2e3d1add7663aecf03255b59c41cd29a">RPG::Game::isSeeUnit</a></div><div class="ttdeci">bool isSeeUnit(coordinate unitCoorFrom, coordinate CoorTo)</div><div class="ttdoc">check situation: can unit see to point</div><div class="ttdef"><b>Definition:</b> Game.cpp:195</div></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classRPG_1_1Game.html#a1d2a9737de711d4dc5473c5e2f065db8">pathToPoint</a>(std::vector&lt;Direction&gt;&amp; path, coordinate from, coordinate to);</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classRPG_1_1Game.html#a2e3d1add7663aecf03255b59c41cd29a">isSeeUnit</a>(coordinate unitCoorFrom, coordinate CoorTo);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRPG_1_1Game.html#ad1b1a1cbee001c362d1745a76f789e7f">wildTurn</a>(<a class="code" href="classRPG_1_1Wild.html">Wild</a>* currWild, sf::RenderWindow&amp; window, sf::Texture&amp; texture, sf::Text&amp; text);</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classRPG_1_1Game.html#adfe9db5fc3132dd7eb4c49e390a52622">itemActions</a>(<a class="code" href="classRPG_1_1Item.html">Item</a>* currItem</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                     , sf::RenderWindow&amp; window</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                     , sf::Texture&amp; texture</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                     , sf::Text&amp; text</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                     , <span class="keywordtype">int</span> shift</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                     , <span class="keywordtype">bool</span> printOptions = <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;};</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="keyword">static</span> sf::Keyboard::Key get_input(sf::RenderWindow&amp; window) {</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    sf::Event <span class="keyword">event</span>{};</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    <span class="keywordflow">do</span> {</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        window.pollEvent(event);</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        <span class="keywordflow">if</span> (event.type == sf::Event::Closed) {</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;            <span class="keywordflow">return</span> sf::Keyboard::Tilde;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        }</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        <span class="keywordflow">if</span> (event.type == sf::Event::KeyPressed) {</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">event</span>.key.code;</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        }</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    }<span class="keywordflow">while</span> (<span class="keyword">true</span>);</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;}</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;} <span class="comment">// RPG</span></div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160; </div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;<span class="preprocessor">#endif </span><span class="comment">//GAME_H</span></div>
+<div class="ttc" id="aclassRPG_1_1Game_html"><div class="ttname"><a href="classRPG_1_1Game.html">RPG::Game</a></div><div class="ttdef"><b>Definition:</b> Game.h:17</div></div>
+<div class="ttc" id="aclassRPG_1_1Game_html_a0b8da0d9a43e809f78799c36aa9fe915"><div class="ttname"><a href="classRPG_1_1Game.html#a0b8da0d9a43e809f78799c36aa9fe915">RPG::Game::number_of_level</a></div><div class="ttdeci">int number_of_level</div><div class="ttdoc">(int) - number of level</div><div class="ttdef"><b>Definition:</b> Game.h:64</div></div>
+<div class="ttc" id="aclassRPG_1_1Game_html_a1d2a9737de711d4dc5473c5e2f065db8"><div class="ttname"><a href="classRPG_1_1Game.html#a1d2a9737de711d4dc5473c5e2f065db8">RPG::Game::pathToPoint</a></div><div class="ttdeci">bool pathToPoint(std::vector&lt; Direction &gt; &amp;path, coordinate from, coordinate to)</div><div class="ttdoc">calculate path to point with algorithm lee</div><div class="ttdef"><b>Definition:</b> Game.cpp:430</div></div>
+<div class="ttc" id="aclassRPG_1_1Game_html_a2e3d1add7663aecf03255b59c41cd29a"><div class="ttname"><a href="classRPG_1_1Game.html#a2e3d1add7663aecf03255b59c41cd29a">RPG::Game::isSeeUnit</a></div><div class="ttdeci">bool isSeeUnit(coordinate unitCoorFrom, coordinate CoorTo)</div><div class="ttdoc">check situation: can unit see to point</div><div class="ttdef"><b>Definition:</b> Game.cpp:529</div></div>
 <div class="ttc" id="aclassRPG_1_1Game_html_a567339964f160e9db412d048fb39e8ef"><div class="ttname"><a href="classRPG_1_1Game.html#a567339964f160e9db412d048fb39e8ef">RPG::Game::Game</a></div><div class="ttdeci">Game(int number_of_level, Level *level0)</div><div class="ttdoc">constructor of Game</div><div class="ttdef"><b>Definition:</b> Game.cpp:6</div></div>
-<div class="ttc" id="aclassRPG_1_1Game_html_a7df1cdbd46996f892ec9c8abbf109139"><div class="ttname"><a href="classRPG_1_1Game.html#a7df1cdbd46996f892ec9c8abbf109139">RPG::Game::~Game</a></div><div class="ttdeci">~Game()</div><div class="ttdoc">free pointer of level</div><div class="ttdef"><b>Definition:</b> Game.cpp:264</div></div>
-<div class="ttc" id="aclassRPG_1_1Game_html_aafbde9112c5a03853570ddea3db4d2fd"><div class="ttname"><a href="classRPG_1_1Game.html#aafbde9112c5a03853570ddea3db4d2fd">RPG::Game::level</a></div><div class="ttdeci">Level * level</div><div class="ttdef"><b>Definition:</b> Game.h:59</div></div>
+<div class="ttc" id="aclassRPG_1_1Game_html_a7df1cdbd46996f892ec9c8abbf109139"><div class="ttname"><a href="classRPG_1_1Game.html#a7df1cdbd46996f892ec9c8abbf109139">RPG::Game::~Game</a></div><div class="ttdeci">~Game()</div><div class="ttdoc">free pointer of level</div><div class="ttdef"><b>Definition:</b> Game.cpp:606</div></div>
+<div class="ttc" id="aclassRPG_1_1Game_html_aafbde9112c5a03853570ddea3db4d2fd"><div class="ttname"><a href="classRPG_1_1Game.html#aafbde9112c5a03853570ddea3db4d2fd">RPG::Game::level</a></div><div class="ttdeci">Level * level</div><div class="ttdef"><b>Definition:</b> Game.h:68</div></div>
+<div class="ttc" id="aclassRPG_1_1Game_html_ac071114159c0ebac737445b1ebbc1cbe"><div class="ttname"><a href="classRPG_1_1Game.html#ac071114159c0ebac737445b1ebbc1cbe">RPG::Game::turn_enemies</a></div><div class="ttdeci">int turn_enemies(sf::RenderWindow &amp;window, sf::Texture &amp;texture, sf::Text &amp;text)</div><div class="ttdoc">turn of all enemies</div><div class="ttdef"><b>Definition:</b> Game.cpp:277</div></div>
+<div class="ttc" id="aclassRPG_1_1Game_html_ad1b1a1cbee001c362d1745a76f789e7f"><div class="ttname"><a href="classRPG_1_1Game.html#ad1b1a1cbee001c362d1745a76f789e7f">RPG::Game::wildTurn</a></div><div class="ttdeci">void wildTurn(Wild *currWild, sf::RenderWindow &amp;window, sf::Texture &amp;texture, sf::Text &amp;text)</div><div class="ttdoc">turn of all enemies with type == wild</div><div class="ttdef"><b>Definition:</b> Game.cpp:299</div></div>
+<div class="ttc" id="aclassRPG_1_1Game_html_ada43b47ee7a6fa13c176b47f0280867f"><div class="ttname"><a href="classRPG_1_1Game.html#ada43b47ee7a6fa13c176b47f0280867f">RPG::Game::inventoryActions</a></div><div class="ttdeci">int inventoryActions(Operative *currOperative, sf::Texture &amp;texture, sf::Text &amp;text)</div><div class="ttdoc">create inventory mode</div><div class="ttdef"><b>Definition:</b> Game.cpp:77</div></div>
+<div class="ttc" id="aclassRPG_1_1Game_html_adfe9db5fc3132dd7eb4c49e390a52622"><div class="ttname"><a href="classRPG_1_1Game.html#adfe9db5fc3132dd7eb4c49e390a52622">RPG::Game::itemActions</a></div><div class="ttdeci">void itemActions(Item *currItem, sf::RenderWindow &amp;window, sf::Texture &amp;texture, sf::Text &amp;text, int shift, bool printOptions=true)</div><div class="ttdoc">print all parameters of item</div><div class="ttdef"><b>Definition:</b> Game.cpp:204</div></div>
 <div class="ttc" id="aclassRPG_1_1Game_html_afc9f165e1d9c7530474ed8ba275e3fef"><div class="ttname"><a href="classRPG_1_1Game.html#afc9f165e1d9c7530474ed8ba275e3fef">RPG::Game::turn_operatives</a></div><div class="ttdeci">int turn_operatives(sf::Keyboard::Key choice, sf::RenderWindow &amp;window, int *diff)</div><div class="ttdoc">turn of operatives - reactions of clicks</div><div class="ttdef"><b>Definition:</b> Game.cpp:16</div></div>
+<div class="ttc" id="aclassRPG_1_1Item_html"><div class="ttname"><a href="classRPG_1_1Item.html">RPG::Item</a></div><div class="ttdef"><b>Definition:</b> Item.h:23</div></div>
 <div class="ttc" id="aclassRPG_1_1Level_html"><div class="ttname"><a href="classRPG_1_1Level.html">RPG::Level</a></div><div class="ttdoc">Level - has map, operatives and enemies and manage to they.</div><div class="ttdef"><b>Definition:</b> Level.h:11</div></div>
+<div class="ttc" id="aclassRPG_1_1Operative_html"><div class="ttname"><a href="classRPG_1_1Operative.html">RPG::Operative</a></div><div class="ttdef"><b>Definition:</b> Operative.h:13</div></div>
 <div class="ttc" id="aclassRPG_1_1Wild_html"><div class="ttname"><a href="classRPG_1_1Wild.html">RPG::Wild</a></div><div class="ttdef"><b>Definition:</b> Wild.h:11</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

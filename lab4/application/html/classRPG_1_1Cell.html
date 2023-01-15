@@ -104,8 +104,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab98c227a02a5a5e8a97ccfeac9b38fb3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classRPG_1_1Item.html">Item</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRPG_1_1Cell.html#ab98c227a02a5a5e8a97ccfeac9b38fb3">take_item</a> (<a class="el" href="classRPG_1_1Item.html">Item</a> *item)</td></tr>
 <tr class="memdesc:ab98c227a02a5a5e8a97ccfeac9b38fb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">take item from cell  <a href="classRPG_1_1Cell.html#ab98c227a02a5a5e8a97ccfeac9b38fb3">More...</a><br /></td></tr>
 <tr class="separator:ab98c227a02a5a5e8a97ccfeac9b38fb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abef763bbe69bb8dd80ea037cca0231e9"><td class="memItemLeft" align="right" valign="top"><a id="abef763bbe69bb8dd80ea037cca0231e9"></a>
-<a class="el" href="classRPG_1_1Item.html">Item</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>take_item</b> ()</td></tr>
+<tr class="memitem:abef763bbe69bb8dd80ea037cca0231e9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classRPG_1_1Item.html">Item</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRPG_1_1Cell.html#abef763bbe69bb8dd80ea037cca0231e9">take_item</a> ()</td></tr>
+<tr class="memdesc:abef763bbe69bb8dd80ea037cca0231e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">take first item from cell  <a href="classRPG_1_1Cell.html#abef763bbe69bb8dd80ea037cca0231e9">More...</a><br /></td></tr>
 <tr class="separator:abef763bbe69bb8dd80ea037cca0231e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a697a06b39874c3afd34bcd510aa7a10c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRPG_1_1Cell.html#a697a06b39874c3afd34bcd510aa7a10c">put_item</a> (<a class="el" href="classRPG_1_1Item.html">Item</a> *item)</td></tr>
 <tr class="memdesc:a697a06b39874c3afd34bcd510aa7a10c"><td class="mdescLeft">&#160;</td><td class="mdescRight">put item to cell  <a href="classRPG_1_1Cell.html#a697a06b39874c3afd34bcd510aa7a10c">More...</a><br /></td></tr>
@@ -133,6 +133,9 @@ Static Public Attributes</h2></td></tr>
 <tr class="memitem:a147ca4268f342d0f8b114a25f4744b8a inherit pub_static_attribs_classRPG_1_1RPG__Object"><td class="memItemLeft" align="right" valign="top">static std::unordered_map&lt; Direction, coordinate &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRPG_1_1RPG__Object.html#a147ca4268f342d0f8b114a25f4744b8a">DIR_POS</a></td></tr>
 <tr class="memdesc:a147ca4268f342d0f8b114a25f4744b8a inherit pub_static_attribs_classRPG_1_1RPG__Object"><td class="mdescLeft">&#160;</td><td class="mdescRight">side of motion and it's correspondence to coordinate  <a href="classRPG_1_1RPG__Object.html#a147ca4268f342d0f8b114a25f4744b8a">More...</a><br /></td></tr>
 <tr class="separator:a147ca4268f342d0f8b114a25f4744b8a inherit pub_static_attribs_classRPG_1_1RPG__Object"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46fa70cbc5d877b240155f94a7ebcfc5 inherit pub_static_attribs_classRPG_1_1RPG__Object"><td class="memItemLeft" align="right" valign="top">static std::unordered_map&lt; coordinate, Direction, <a class="el" href="structRPG_1_1mhash.html">mhash</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRPG_1_1RPG__Object.html#a46fa70cbc5d877b240155f94a7ebcfc5">POS_DIR</a></td></tr>
+<tr class="memdesc:a46fa70cbc5d877b240155f94a7ebcfc5 inherit pub_static_attribs_classRPG_1_1RPG__Object"><td class="mdescLeft">&#160;</td><td class="mdescRight">coordinate and it's correspondence to direction  <a href="classRPG_1_1RPG__Object.html#a46fa70cbc5d877b240155f94a7ebcfc5">More...</a><br /></td></tr>
+<tr class="separator:a46fa70cbc5d877b240155f94a7ebcfc5 inherit pub_static_attribs_classRPG_1_1RPG__Object"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -392,8 +395,29 @@ std::vector&lt; <a class="el" href="classRPG_1_1Item.html">Item</a> * &gt;&#160;
 
 </div>
 </div>
+<a id="abef763bbe69bb8dd80ea037cca0231e9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abef763bbe69bb8dd80ea037cca0231e9">&#9670;&nbsp;</a></span>take_item() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classRPG_1_1Item.html">Item</a> * RPG::Cell::take_item </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>take first item from cell </p>
+<dl class="section return"><dt>Returns</dt><dd>(Item*) pointer of item - successfully take <br  />
+nullptr - cell doesn't have this item </dd></dl>
+
+</div>
+</div>
 <a id="ab98c227a02a5a5e8a97ccfeac9b38fb3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab98c227a02a5a5e8a97ccfeac9b38fb3">&#9670;&nbsp;</a></span>take_item()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab98c227a02a5a5e8a97ccfeac9b38fb3">&#9670;&nbsp;</a></span>take_item() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">

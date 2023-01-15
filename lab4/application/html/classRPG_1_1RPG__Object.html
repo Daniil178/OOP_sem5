@@ -90,6 +90,9 @@ Static Public Attributes</h2></td></tr>
 <tr class="memitem:a147ca4268f342d0f8b114a25f4744b8a"><td class="memItemLeft" align="right" valign="top">static std::unordered_map&lt; Direction, coordinate &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRPG_1_1RPG__Object.html#a147ca4268f342d0f8b114a25f4744b8a">DIR_POS</a></td></tr>
 <tr class="memdesc:a147ca4268f342d0f8b114a25f4744b8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">side of motion and it's correspondence to coordinate  <a href="classRPG_1_1RPG__Object.html#a147ca4268f342d0f8b114a25f4744b8a">More...</a><br /></td></tr>
 <tr class="separator:a147ca4268f342d0f8b114a25f4744b8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46fa70cbc5d877b240155f94a7ebcfc5"><td class="memItemLeft" align="right" valign="top">static std::unordered_map&lt; coordinate, Direction, <a class="el" href="structRPG_1_1mhash.html">mhash</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRPG_1_1RPG__Object.html#a46fa70cbc5d877b240155f94a7ebcfc5">POS_DIR</a></td></tr>
+<tr class="memdesc:a46fa70cbc5d877b240155f94a7ebcfc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">coordinate and it's correspondence to direction  <a href="classRPG_1_1RPG__Object.html#a46fa70cbc5d877b240155f94a7ebcfc5">More...</a><br /></td></tr>
+<tr class="separator:a46fa70cbc5d877b240155f94a7ebcfc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>class of <a class="el" href="classRPG_1_1Unit.html">Unit</a> and <a class="el" href="classRPG_1_1Cell.html">Cell</a> </p>
@@ -151,6 +154,34 @@ Static Public Attributes</h2></td></tr>
 <div class="line">                                                                {Right, std::make_pair(0, 1)}}</div>
 </div><!-- fragment -->
 <p>side of motion and it's correspondence to coordinate </p>
+
+</div>
+</div>
+<a id="a46fa70cbc5d877b240155f94a7ebcfc5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46fa70cbc5d877b240155f94a7ebcfc5">&#9670;&nbsp;</a></span>POS_DIR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unordered_map&lt; coordinate, Direction, <a class="el" href="structRPG_1_1mhash.html">mhash</a> &gt; RPG::RPG_Object::POS_DIR</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {{std::make_pair(0, -1), Left},</div>
+<div class="line">                                                                {std::make_pair(1, 0), Down},</div>
+<div class="line">                                                                {std::make_pair(-1, 0), Up},</div>
+<div class="line">                                                                {std::make_pair(0, 1), Right}}</div>
+</div><!-- fragment -->
+<p>coordinate and it's correspondence to direction </p>
 
 </div>
 </div>

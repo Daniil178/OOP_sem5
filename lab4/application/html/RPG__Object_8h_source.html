@@ -89,14 +89,16 @@ $(function() {
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classRPG_1_1RPG__Object.html#a25cf6bcb9f4acc77ae51541e14d16b28">   42</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="classRPG_1_1RPG__Object.html#a25cf6bcb9f4acc77ae51541e14d16b28">get_damage</a>(<span class="keywordtype">int</span>) = 0;</div>
 <div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classRPG_1_1RPG__Object.html#a147ca4268f342d0f8b114a25f4744b8a">   46</a></span>&#160;    <span class="keyword">static</span> std::unordered_map&lt;Direction, coordinate&gt; <a class="code" href="classRPG_1_1RPG__Object.html#a147ca4268f342d0f8b114a25f4744b8a">DIR_POS</a>;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;};</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;} <span class="comment">// RPG</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">#endif </span><span class="comment">//RPG_OBJECT_H</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="classRPG_1_1RPG__Object.html#a46fa70cbc5d877b240155f94a7ebcfc5">   50</a></span>&#160;    <span class="keyword">static</span> std::unordered_map&lt;coordinate, Direction, mhash&gt; <a class="code" href="classRPG_1_1RPG__Object.html#a46fa70cbc5d877b240155f94a7ebcfc5">POS_DIR</a>;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;};</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;} <span class="comment">// RPG</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#endif </span><span class="comment">//RPG_OBJECT_H</span></div>
 <div class="ttc" id="aclassRPG_1_1RPG__Object_html"><div class="ttname"><a href="classRPG_1_1RPG__Object.html">RPG::RPG_Object</a></div><div class="ttdef"><b>Definition:</b> RPG_Object.h:36</div></div>
 <div class="ttc" id="aclassRPG_1_1RPG__Object_html_a147ca4268f342d0f8b114a25f4744b8a"><div class="ttname"><a href="classRPG_1_1RPG__Object.html#a147ca4268f342d0f8b114a25f4744b8a">RPG::RPG_Object::DIR_POS</a></div><div class="ttdeci">static std::unordered_map&lt; Direction, coordinate &gt; DIR_POS</div><div class="ttdoc">side of motion and it's correspondence to coordinate</div><div class="ttdef"><b>Definition:</b> RPG_Object.h:46</div></div>
 <div class="ttc" id="aclassRPG_1_1RPG__Object_html_a25cf6bcb9f4acc77ae51541e14d16b28"><div class="ttname"><a href="classRPG_1_1RPG__Object.html#a25cf6bcb9f4acc77ae51541e14d16b28">RPG::RPG_Object::get_damage</a></div><div class="ttdeci">virtual int get_damage(int)=0</div><div class="ttdoc">virtual method describe process getting of damage</div></div>
+<div class="ttc" id="aclassRPG_1_1RPG__Object_html_a46fa70cbc5d877b240155f94a7ebcfc5"><div class="ttname"><a href="classRPG_1_1RPG__Object.html#a46fa70cbc5d877b240155f94a7ebcfc5">RPG::RPG_Object::POS_DIR</a></div><div class="ttdeci">static std::unordered_map&lt; coordinate, Direction, mhash &gt; POS_DIR</div><div class="ttdoc">coordinate and it's correspondence to direction</div><div class="ttdef"><b>Definition:</b> RPG_Object.h:50</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

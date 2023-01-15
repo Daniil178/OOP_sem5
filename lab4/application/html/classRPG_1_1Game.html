@@ -67,6 +67,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classRPG_1_1Game-members.html">List of all members</a>  </div>
@@ -88,13 +89,22 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:afc9f165e1d9c7530474ed8ba275e3fef"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRPG_1_1Game.html#afc9f165e1d9c7530474ed8ba275e3fef">turn_operatives</a> (sf::Keyboard::Key choice, sf::RenderWindow &amp;window, int *diff)</td></tr>
 <tr class="memdesc:afc9f165e1d9c7530474ed8ba275e3fef"><td class="mdescLeft">&#160;</td><td class="mdescRight">turn of operatives - reactions of clicks  <a href="classRPG_1_1Game.html#afc9f165e1d9c7530474ed8ba275e3fef">More...</a><br /></td></tr>
 <tr class="separator:afc9f165e1d9c7530474ed8ba275e3fef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac1bb44c548e368f54da2bf5fbe4f5254"><td class="memItemLeft" align="right" valign="top"><a id="ac1bb44c548e368f54da2bf5fbe4f5254"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>turn_enemies</b> ()</td></tr>
-<tr class="separator:ac1bb44c548e368f54da2bf5fbe4f5254"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac071114159c0ebac737445b1ebbc1cbe"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRPG_1_1Game.html#ac071114159c0ebac737445b1ebbc1cbe">turn_enemies</a> (sf::RenderWindow &amp;window, sf::Texture &amp;texture, sf::Text &amp;text)</td></tr>
+<tr class="memdesc:ac071114159c0ebac737445b1ebbc1cbe"><td class="mdescLeft">&#160;</td><td class="mdescRight">turn of all enemies  <a href="classRPG_1_1Game.html#ac071114159c0ebac737445b1ebbc1cbe">More...</a><br /></td></tr>
+<tr class="separator:ac071114159c0ebac737445b1ebbc1cbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada43b47ee7a6fa13c176b47f0280867f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRPG_1_1Game.html#ada43b47ee7a6fa13c176b47f0280867f">inventoryActions</a> (<a class="el" href="classRPG_1_1Operative.html">Operative</a> *currOperative, sf::Texture &amp;texture, sf::Text &amp;text)</td></tr>
+<tr class="memdesc:ada43b47ee7a6fa13c176b47f0280867f"><td class="mdescLeft">&#160;</td><td class="mdescRight">create inventory mode  <a href="classRPG_1_1Game.html#ada43b47ee7a6fa13c176b47f0280867f">More...</a><br /></td></tr>
+<tr class="separator:ada43b47ee7a6fa13c176b47f0280867f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7df1cdbd46996f892ec9c8abbf109139"><td class="memItemLeft" align="right" valign="top"><a id="a7df1cdbd46996f892ec9c8abbf109139"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRPG_1_1Game.html#a7df1cdbd46996f892ec9c8abbf109139">~Game</a> ()</td></tr>
 <tr class="memdesc:a7df1cdbd46996f892ec9c8abbf109139"><td class="mdescLeft">&#160;</td><td class="mdescRight">free pointer of level <br /></td></tr>
 <tr class="separator:a7df1cdbd46996f892ec9c8abbf109139"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:aa7a9c5bcdf885eb7c109009fcb47da3d"><td class="memItemLeft" align="right" valign="top"><a id="aa7a9c5bcdf885eb7c109009fcb47da3d"></a>
+static int&#160;</td><td class="memItemRight" valign="bottom"><b>startMenu</b> (sf::Texture &amp;texture, sf::Text &amp;text)</td></tr>
+<tr class="separator:aa7a9c5bcdf885eb7c109009fcb47da3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -104,9 +114,12 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a2e3d1add7663aecf03255b59c41cd29a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRPG_1_1Game.html#a2e3d1add7663aecf03255b59c41cd29a">isSeeUnit</a> (coordinate unitCoorFrom, coordinate CoorTo)</td></tr>
 <tr class="memdesc:a2e3d1add7663aecf03255b59c41cd29a"><td class="mdescLeft">&#160;</td><td class="mdescRight">check situation: can unit see to point  <a href="classRPG_1_1Game.html#a2e3d1add7663aecf03255b59c41cd29a">More...</a><br /></td></tr>
 <tr class="separator:a2e3d1add7663aecf03255b59c41cd29a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a069e7ae28d8f2b23379080891824dde1"><td class="memItemLeft" align="right" valign="top"><a id="a069e7ae28d8f2b23379080891824dde1"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>wildTurn</b> (<a class="el" href="classRPG_1_1Wild.html">Wild</a> *currWild)</td></tr>
-<tr class="separator:a069e7ae28d8f2b23379080891824dde1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad1b1a1cbee001c362d1745a76f789e7f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRPG_1_1Game.html#ad1b1a1cbee001c362d1745a76f789e7f">wildTurn</a> (<a class="el" href="classRPG_1_1Wild.html">Wild</a> *currWild, sf::RenderWindow &amp;window, sf::Texture &amp;texture, sf::Text &amp;text)</td></tr>
+<tr class="memdesc:ad1b1a1cbee001c362d1745a76f789e7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">turn of all enemies with type == wild  <a href="classRPG_1_1Game.html#ad1b1a1cbee001c362d1745a76f789e7f">More...</a><br /></td></tr>
+<tr class="separator:ad1b1a1cbee001c362d1745a76f789e7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adfe9db5fc3132dd7eb4c49e390a52622"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRPG_1_1Game.html#adfe9db5fc3132dd7eb4c49e390a52622">itemActions</a> (<a class="el" href="classRPG_1_1Item.html">Item</a> *currItem, sf::RenderWindow &amp;window, sf::Texture &amp;texture, sf::Text &amp;text, int shift, bool printOptions=true)</td></tr>
+<tr class="memdesc:adfe9db5fc3132dd7eb4c49e390a52622"><td class="mdescLeft">&#160;</td><td class="mdescRight">print all parameters of item  <a href="classRPG_1_1Game.html#adfe9db5fc3132dd7eb4c49e390a52622">More...</a><br /></td></tr>
+<tr class="separator:adfe9db5fc3132dd7eb4c49e390a52622"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -158,6 +171,51 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="ada43b47ee7a6fa13c176b47f0280867f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada43b47ee7a6fa13c176b47f0280867f">&#9670;&nbsp;</a></span>inventoryActions()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int RPG::Game::inventoryActions </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classRPG_1_1Operative.html">Operative</a> *&#160;</td>
+          <td class="paramname"><em>currOperative</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sf::Texture &amp;&#160;</td>
+          <td class="paramname"><em>texture</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sf::Text &amp;&#160;</td>
+          <td class="paramname"><em>text</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>create inventory mode </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">currOperative</td><td>ptr to active operative </td></tr>
+    <tr><td class="paramname">texture</td><td>textures of items </td></tr>
+    <tr><td class="paramname">text</td><td>parameters of text </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>flag of mode (finish flag of mode) </dd></dl>
+
+</div>
+</div>
 <a id="a2e3d1add7663aecf03255b59c41cd29a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2e3d1add7663aecf03255b59c41cd29a">&#9670;&nbsp;</a></span>isSeeUnit()</h2>
 
@@ -201,6 +259,79 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>can unit see to point </dd></dl>
+
+</div>
+</div>
+<a id="adfe9db5fc3132dd7eb4c49e390a52622"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adfe9db5fc3132dd7eb4c49e390a52622">&#9670;&nbsp;</a></span>itemActions()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RPG::Game::itemActions </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classRPG_1_1Item.html">Item</a> *&#160;</td>
+          <td class="paramname"><em>currItem</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sf::RenderWindow &amp;&#160;</td>
+          <td class="paramname"><em>window</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sf::Texture &amp;&#160;</td>
+          <td class="paramname"><em>texture</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sf::Text &amp;&#160;</td>
+          <td class="paramname"><em>text</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>shift</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>printOptions</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>print all parameters of item </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">currItem</td><td>ptr to needs item </td></tr>
+    <tr><td class="paramname">window</td><td>active window </td></tr>
+    <tr><td class="paramname">texture</td><td>texture of items </td></tr>
+    <tr><td class="paramname">text</td><td>parameters of text </td></tr>
+    <tr><td class="paramname">shift</td><td>shift of row for print </td></tr>
+    <tr><td class="paramname">printOptions</td><td>need to print options </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -257,6 +388,51 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
 
 </div>
 </div>
+<a id="ac071114159c0ebac737445b1ebbc1cbe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac071114159c0ebac737445b1ebbc1cbe">&#9670;&nbsp;</a></span>turn_enemies()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int RPG::Game::turn_enemies </td>
+          <td>(</td>
+          <td class="paramtype">sf::RenderWindow &amp;&#160;</td>
+          <td class="paramname"><em>window</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sf::Texture &amp;&#160;</td>
+          <td class="paramname"><em>texture</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sf::Text &amp;&#160;</td>
+          <td class="paramname"><em>text</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>turn of all enemies </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">window</td><td>window for draw map </td></tr>
+    <tr><td class="paramname">texture</td><td>texture for draw map </td></tr>
+    <tr><td class="paramname">text</td><td>text for draw map </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>flag - result of turn </dd></dl>
+
+</div>
+</div>
 <a id="afc9f165e1d9c7530474ed8ba275e3fef"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afc9f165e1d9c7530474ed8ba275e3fef">&#9670;&nbsp;</a></span>turn_operatives()</h2>
 
@@ -299,6 +475,65 @@ int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>flag after change (if we want to finish turn) </dd></dl>
+
+</div>
+</div>
+<a id="ad1b1a1cbee001c362d1745a76f789e7f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1b1a1cbee001c362d1745a76f789e7f">&#9670;&nbsp;</a></span>wildTurn()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void RPG::Game::wildTurn </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classRPG_1_1Wild.html">Wild</a> *&#160;</td>
+          <td class="paramname"><em>currWild</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sf::RenderWindow &amp;&#160;</td>
+          <td class="paramname"><em>window</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sf::Texture &amp;&#160;</td>
+          <td class="paramname"><em>texture</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sf::Text &amp;&#160;</td>
+          <td class="paramname"><em>text</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>turn of all enemies with type == wild </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">currWild</td><td>current wild </td></tr>
+    <tr><td class="paramname">window</td><td>window for draw map </td></tr>
+    <tr><td class="paramname">texture</td><td>texture for draw map </td></tr>
+    <tr><td class="paramname">text</td><td>text for draw map </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

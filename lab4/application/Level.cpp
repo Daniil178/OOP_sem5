@@ -78,13 +78,13 @@ void Level::start(const std::string& path_to_map) {
                     operatives.push_back(new Operative(std::make_pair(i, j)
                                                        , new Weapon(AK_74, 10)
                                                        , "player"));
-                } else if ('A' <= str[j] and str[j] <= 'E') {
+                } else if ('W' == str[j]) {
                     map_[std::make_pair(i, j)] = new Cell(Floor);
                     enemies.push_back(dynamic_cast<Unit *>(new Wild("wild", std::make_pair(i, j))));
-                } else if ('F' <= str[j] and str[j] <= 'K') {
+                } else if ('R' == str[j]) {
                     map_[std::make_pair(i, j)] = new Cell(Floor);
                     enemies.push_back(dynamic_cast<Unit *>(new Rational("rational", std::make_pair(i, j))));
-                } else if ('L' <= str[j] and str[j] <= 'Q') {
+                } else if ('F' == str[j]) {
                     map_[std::make_pair(i, j)] = new Cell(Floor);
                     enemies.push_back(dynamic_cast<Unit *>(new Forager("forager", std::make_pair(i, j))));
                 }

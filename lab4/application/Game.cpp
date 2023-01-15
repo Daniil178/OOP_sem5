@@ -78,7 +78,7 @@ int Game::inventoryActions(Operative* currOperative, sf::Texture& texture, sf::T
     auto inventory = currOperative->see_inventory();
     int resActions = 1, sizeInventory = inventory->number_of_items(), indexCurrItem = 0;
     int inventoryWidth = 5;
-    coordinate sizeWindow = std::make_pair((sizeInventory / inventoryWidth) + 1 + 2, inventoryWidth);
+    coordinate sizeWindow = std::make_pair((sizeInventory / inventoryWidth) + 1 + 2 + 2, inventoryWidth);
     // if (sizeInventory == 0) return resActions;
     sf::RenderWindow windowInventory(
             sf::VideoMode(inventoryWidth * RPG::tile_size.y * RPG::scale
@@ -86,6 +86,29 @@ int Game::inventoryActions(Operative* currOperative, sf::Texture& texture, sf::T
             , "Inventory");
 
     while(windowInventory.isOpen()) {
+
+        RPG::TileOnMap::drawFullRow(windowInventory, 0
+                                    , sizeWindow.second, std::make_pair(0, 0), texture);
+
+        RPG::TileOnMap::drawFullRow(windowInventory, 1
+                                    , sizeWindow.second
+                                    , std::make_pair((tile_size.x + 1) * 23, (tile_size.y + 1) * 2)
+                                    , texture);
+
+        RPG::TileOnMap::drawFullRow(windowInventory, sizeWindow.first - 2
+                                    , sizeWindow.second
+                                    , std::make_pair((tile_size.x + 1) * 23, (tile_size.y + 1) * 2)
+                                    , texture);
+
+        RPG::TileOnMap::drawFullRow(windowInventory, sizeWindow.first - 1
+                                    , sizeWindow.second, std::make_pair(0, 0), texture);
+
+        itemActions(dynamic_cast<Item*>(currOperative->get_current_weapon())
+                    , windowInventory
+                    , texture
+                    , text
+                    , 0
+                    , false);
 
         std::vector<sf::Sprite> itemSprites;
         auto inventoryIter = inventory->get_iter();
@@ -107,7 +130,7 @@ int Game::inventoryActions(Operative* currOperative, sf::Texture& texture, sf::T
                                        , tile_size.x, tile_size.y});
 
             itemSprite.setPosition((i % inventoryWidth) * tile_size.y * scale,
-                                   (i / inventoryWidth) * tile_size.x * scale);
+                                   (i / inventoryWidth + 2) * tile_size.x * scale);
             itemSprite.setScale(scale, scale);
             itemSprites.push_back(itemSprite);
         }
@@ -118,7 +141,7 @@ int Game::inventoryActions(Operative* currOperative, sf::Texture& texture, sf::T
                                               , tile_size.x, tile_size.y});
 
             itemSprite.setPosition((i % inventoryWidth) * tile_size.y * scale,
-                                   (i / inventoryWidth) * tile_size.x * scale);
+                                   (i / inventoryWidth + 2) * tile_size.x * scale);
             itemSprite.setScale(scale, scale);
             itemSprites.push_back(itemSprite);
         }
@@ -131,22 +154,13 @@ int Game::inventoryActions(Operative* currOperative, sf::Texture& texture, sf::T
 
         RPG::TileOnMap::drawInventory(windowInventory, itemSprites);
         if (sizeInventory > 0) {
-            itemActions(currOperative
-                        , *(inventoryIter + indexCurrItem)
+            itemActions(*(inventoryIter + indexCurrItem)
                         , windowInventory
                         , texture
                         , text
-                        , sizeWindow);
+                        , sizeWindow.first - 1);
         }
-        else {
-            itemActions(currOperative
-                        , nullptr
-                        , windowInventory
-                        , texture
-                        , text
-                        , sizeWindow);
 
-        }
         windowInventory.display();
 
         sf::Keyboard::Key choice = RPG::get_input(windowInventory);
@@ -166,7 +180,6 @@ int Game::inventoryActions(Operative* currOperative, sf::Texture& texture, sf::T
                     currOperative->choice_weapon(dynamic_cast<Weapon *>(*(inventoryIter + indexCurrItem)));
                     indexCurrItem = 0;
                     sizeInventory = inventory->number_of_items();
-                    std::cout << "change" << std::endl;
                 }
             }
             else if (choice == sf::Keyboard::Q) {
@@ -174,14 +187,12 @@ int Game::inventoryActions(Operative* currOperative, sf::Texture& texture, sf::T
                     currOperative->heal(dynamic_cast<Medicine_Kit*>(*(inventoryIter + indexCurrItem)));
                     indexCurrItem = 0;
                     sizeInventory = inventory->number_of_items();
-                    std::cout << "heal" << std::endl;
                 }
             }
             else if (choice == sf::Keyboard::T) {
                 currOperative->put_item_from_inventory(*(inventoryIter + indexCurrItem), level->map_);
                 sizeInventory = inventory->number_of_items();
                 indexCurrItem = 0;
-                std::cout << "drop" << std::endl;
             }
         }
     }
@@ -190,36 +201,18 @@ int Game::inventoryActions(Operative* currOperative, sf::Texture& texture, sf::T
     return resActions;
 }
 
-void Game::itemActions(Operative* currOper
-                       , Item* currItem
+void Game::itemActions(Item* currItem
                        , sf::RenderWindow& window
                        , sf::Texture& texture
                        , sf::Text& text
-                       , coordinate sizeInventory) {
+                       , int shift
+                       , bool printOptions) {
 
     sf::Text textName, textParams, textOptions;
     std::vector<sf::Text> texts;
     std::ostringstream status, type, options;
     coordinate sprite_coord;
-    std::vector<sf::Sprite> itemSprites;
     std::vector<sf::Text> itemTexts;
-
-    for (int i = 0; i < sizeInventory.second; ++i) {
-        sf::Sprite sprite = sf::Sprite(texture);
-        sprite.setTextureRect({(tile_size.y + 1) * 23, (tile_size.x + 1) * 2
-                                      , tile_size.x, tile_size.y});
-        sprite.setPosition(i * tile_size.y * scale, (sizeInventory.first - 2) * tile_size.x * scale);
-        sprite.setScale(scale, scale);
-        itemSprites.push_back(sprite);
-    }
-    for (int i = 0; i < sizeInventory.second; ++i) {
-        sf::Sprite sprite = sf::Sprite(texture);
-        sprite.setTextureRect({0, 0, tile_size.x, tile_size.y});
-        sprite.setPosition(i * tile_size.y * scale, (sizeInventory.first - 1) * tile_size.x * scale);
-        sprite.setScale(scale, scale);
-        itemSprites.push_back(sprite);
-    }
-    RPG::TileOnMap::drawInventory(window, itemSprites);
 
     if (currItem != nullptr) {
         ITEM_TYPE typeItem = currItem->get_type();
@@ -230,27 +223,27 @@ void Game::itemActions(Operative* currOper
             auto medKit = dynamic_cast<Medicine_Kit *>(currItem);
             type << RPG::Medicine_Kit::TYPE_NAME_med[medKit->get_type()] << std::endl;
             status << "heal point: " << medKit->get_type() << std::endl;
-            options << "use - Q\n" << "drop - T" << std::endl;
+            options << "use:\ntap Q\n\n" << "drop:\ntap T" << std::endl;
             sprite_coord = medicine_kit_tile_coords.at(medKit->get_type());
         } else if (typeItem == WEAPON) {
             auto weapon = dynamic_cast<Weapon *>(currItem);
             type << RPG::Weapon::TYPE_NAME_weapon[weapon->get_type()] << std::endl;
             status << "damage: " << weapon->get_params().bas_params.damage << "\n" << "ammo: " << weapon->get_ammo_num()
-                   << " / " << weapon->get_params().bas_params.max_ammo << "\n" << "type ammo: "
+                   << " / " << weapon->get_params().bas_params.max_ammo << "\n" << "type ammo:\n"
                    << RPG::Ammo_container::TYPE_NAME_ammo[weapon->get_params().bas_params.ammo_type] << std::endl;
-            options << "change - H\n" << "drop - T" << std::endl;
+            options << "change:\ntap H\n\n" << "drop:\ntap T" << std::endl;
             sprite_coord = weapon_tile_coords.at(weapon->get_type());
         } else {
             auto ammoCont = dynamic_cast<Ammo_container *>(currItem);
-            type << "Ammo\ncontainer" << std::endl;
+            type << "Ammo\ncont" << std::endl;
             status << "ammo: " << ammoCont->num_ammo() << " / " << ammoCont->max_ammo() << "\n"
-                   << "type ammo: " << RPG::Ammo_container::TYPE_NAME_ammo[ammoCont->get_type()] << std::endl;
-            options << "drop - T" << std::endl;
+                   << "type ammo:\n" << RPG::Ammo_container::TYPE_NAME_ammo[ammoCont->get_type()] << std::endl;
+            options << "drop:\ntap T" << std::endl;
             sprite_coord = container_tile_coord.at(typeItem);
         }
 
-        itemSprite.setTextureRect({(tile_size.y + 1) * 23, (tile_size.x + 1) * 2, tile_size.x, tile_size.y});
-        itemSprite.setPosition(0, (sizeInventory.first - 1) * tile_size.x * scale);
+        itemSprite.setTextureRect({sprite_coord.first, sprite_coord.second, tile_size.x, tile_size.y});
+        itemSprite.setPosition(0, shift * tile_size.x * scale);
         itemSprite.setScale(scale, scale);
         window.draw(itemSprite);
 
@@ -261,13 +254,15 @@ void Game::itemActions(Operative* currOper
         textParams.setString(status.str());
         itemTexts.push_back(textParams);
 
-        textOptions.setString(options.str());
-        textOptions.setFillColor(sf::Color::Black);
-        itemTexts.push_back(textOptions);
+        if (printOptions) {
+            textOptions.setString(options.str());
+            textOptions.setFillColor(sf::Color::Magenta);
+            itemTexts.push_back(textOptions);
+        }
 
         int i = 1;
         for (auto &partText: itemTexts) {
-            partText.setPosition(i * tile_size.y * scale, (sizeInventory.first - 1) * tile_size.x * scale);
+            partText.setPosition(i * tile_size.y * scale, shift * tile_size.x * scale);
             partText.setFont(*text.getFont());
             partText.setCharacterSize(RPG::font_size);
             window.draw(partText);

@@ -40,6 +40,12 @@ public:
 
     static void drawInventory(sf::RenderWindow &window, std::vector<sf::Sprite>& itemSprites);
 
+    static void drawFullRow(sf::RenderWindow &window
+                            , int shift
+                            , int sizeTable
+                            , coordinate tileCoord
+                            , sf::Texture& texture);
+
     static std::set<RPG::coordinate>&
     LoS(RPG::Map &map_, std::set<RPG::coordinate> &visible_cells, int x1, int y1, int x2, int y2, int height);
 

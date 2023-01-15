@@ -50,10 +50,28 @@ public:
      */
     int inventoryActions(Operative* currOperative, sf::Texture& texture, sf::Text& text);
 
+    /**
+     * @brief create start menu
+     * @param texture textures of items
+     * @param text parameters of text
+     * @return flag of result
+     */
     static int startMenu(sf::Texture& texture, sf::Text& text);
 
+    /**
+     * @brief create help menu (with rules)
+     * @param texture textures of items
+     * @param text parameters of text
+     * @return flag of result
+     */
     static int helpMenu(sf::Texture& texture, sf::Text& text, bool pause = true);
 
+    /**
+     * @brief create menu with level choice
+     * @param texture textures of items
+     * @param text parameters of text
+     * @return flag of result
+     */
     static int chooseLevel(sf::Texture& texture, sf::Text& text);
 
     /**
@@ -62,10 +80,6 @@ public:
     ~Game();
 
 protected:
-    /**
-     * @brief (int) - number of level
-     */
-    int number_of_level;
     /**
      * (Level) - start level
      */

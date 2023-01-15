@@ -10,8 +10,9 @@ var searchData=
   ['change_5fweight_16',['change_weight',['../classRPG_1_1Table.html#ae4b617cdb6eaecad69fe226b1e704a5f',1,'RPG::Table']]],
   ['check_5fflag_17',['check_flag',['../classRPG_1_1Level.html#adf87a6411ad23c8994eedaf131ac4632',1,'RPG::Level']]],
   ['choice_5fweapon_18',['choice_weapon',['../classRPG_1_1Operative.html#ae1d9faa26f9cda077b74c75dcbcab271',1,'RPG::Operative']]],
-  ['clear_19',['clear',['../classMyUnorderedMap.html#ae572b62e7bfe2f10e9606d04a0664ba8',1,'MyUnorderedMap']]],
-  ['count_20',['count',['../classMyUnorderedMap.html#a632aa855c40b4c4c2ebaaffdae177b4f',1,'MyUnorderedMap']]],
-  ['current_5fcount_21',['current_count',['../classRPG_1_1Ammo__container.html#afd2ebcb5ab7fff39c73698c3e0415ec0',1,'RPG::Ammo_container']]],
-  ['current_5fweapon_22',['current_weapon',['../classRPG_1_1Rational.html#a460ad8c50a7dfd59ba9a049bc108aaba',1,'RPG::Rational']]]
+  ['chooselevel_19',['chooseLevel',['../classRPG_1_1Game.html#afd81df0f6286d8ca94a4da57043f2842',1,'RPG::Game']]],
+  ['clear_20',['clear',['../classMyUnorderedMap.html#ae572b62e7bfe2f10e9606d04a0664ba8',1,'MyUnorderedMap']]],
+  ['count_21',['count',['../classMyUnorderedMap.html#a632aa855c40b4c4c2ebaaffdae177b4f',1,'MyUnorderedMap']]],
+  ['current_5fcount_22',['current_count',['../classRPG_1_1Ammo__container.html#afd2ebcb5ab7fff39c73698c3e0415ec0',1,'RPG::Ammo_container']]],
+  ['current_5fweapon_23',['current_weapon',['../classRPG_1_1Rational.html#a460ad8c50a7dfd59ba9a049bc108aaba',1,'RPG::Rational']]]
 ];

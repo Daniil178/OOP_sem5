@@ -58,7 +58,7 @@ void Level::start(const std::string& path_to_map) {
                     auto cont = new Ammo_container(
                             (AMMO_WEIGHT) ((weapon_type <= 1) ? 6
                                                               : (weapon_type == 2) ? 5 : 7));
-                    cont->put_ammo(100);
+                    cont->put_ammo(GetRandomNumber(10, 100));
 
                     int max_ammo = 0;
                     if (weapon_type == RPG::WEAPON_TYPE::AK_74) max_ammo = 10;

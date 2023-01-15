@@ -75,7 +75,10 @@ public:
      * -1 - can't step, \n
      * 0 - successfully step
      */
-    int step(Direction new_position, Map& map_); // change position
+    int step(Direction new_position, Map& map_);
+    /**
+     * @brief update time (current time = 10)
+     */
     void update_time();
 protected:
     /**
@@ -94,7 +97,6 @@ protected:
      * @brief (coordinate) - current position of unit
      */
     coordinate position;
-    //*current time*/int change_time(int loss_time);
 };
 
 } // RPG

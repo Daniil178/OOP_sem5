@@ -55,7 +55,7 @@ protected:
     /**
      * @brief (Weapon *) - ptr to current weapon
      */
-    Weapon* current_weapon{};// = new Weapon();
+    Weapon* current_weapon{};
 };
 
 } // RPG

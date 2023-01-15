@@ -44,6 +44,9 @@ public:
      * @brief side of motion and it's correspondence to coordinate
      */
     static std::unordered_map<Direction, coordinate> DIR_POS;
+    /**
+     * @brief coordinate and it's correspondence to direction
+     */
     static std::unordered_map<coordinate, Direction, mhash> POS_DIR;
 };
 

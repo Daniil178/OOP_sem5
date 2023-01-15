@@ -60,6 +60,9 @@ public:
      */
     AMMO_WEIGHT get_type();
 
+    /**
+     * @brief map with type weapon and their name
+     */
     static std::unordered_map<AMMO_WEIGHT, std::string> TYPE_NAME_ammo;
 
 protected:

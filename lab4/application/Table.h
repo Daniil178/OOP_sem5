@@ -58,6 +58,10 @@ public:
      * @return (int) - 0 - successfully update
      */
     int update_params() noexcept;
+    /**
+     * @brief get iterator of inventory
+     * @return iterator of inventory
+     */
     std::vector<Item*>::iterator get_iter();
     /**
      * @brief destructor - delete ptr of all items

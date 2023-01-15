@@ -70,6 +70,11 @@ public:
      * nullptr - cell doesn't have this item
      */
     Item* take_item(Item* item);
+    /**
+     * @brief take first item from cell
+     * @return (Item*) pointer of item - successfully take \n
+     * nullptr - cell doesn't have this item
+     */
     Item* take_item();
     /**
      * @brief put item to cell

@@ -48,11 +48,10 @@ protected:
      * @brief (string) - name of item
      */
     const std::string name;
-    //int id; // unique id
     /**
      * @brief (int) - weight of item
      */
-    int weight; // weight of item
+    int weight;
 };
 
 } //RPG

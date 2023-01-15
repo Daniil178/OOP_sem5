@@ -40,6 +40,10 @@ public:
      * @return MED_KIT_HEALTH - type of medicine kit
      */
     [[nodiscard]] MED_KIT_HEALTH get_type();
+
+    /**
+     * @brief map with correspond of type of MedKit and name
+     */
     static std::unordered_map<MED_KIT_HEALTH, std::string> TYPE_NAME_med;
 protected:
     /**

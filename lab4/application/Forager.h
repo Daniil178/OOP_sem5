@@ -37,7 +37,10 @@ public:
      */
     [[nodiscard]] int get_weight() const noexcept;
 
-
+    /**
+     * @brief check inventory
+     * @return inventory
+     */
     [[nodiscard]] Table* see_inventory() const noexcept;
 
     /**

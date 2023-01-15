@@ -78,15 +78,17 @@ int Game::inventoryActions(Operative* currOperative, sf::Texture& texture, sf::T
     auto inventory = currOperative->see_inventory();
     int resActions = 1, sizeInventory = inventory->number_of_items(), indexCurrItem = 0;
     int inventoryWidth = 5;
-    if (sizeInventory == 0) return resActions;
+    // if (sizeInventory == 0) return resActions;
     sf::RenderWindow windowInventory(
             sf::VideoMode(inventoryWidth * RPG::tile_size.y * RPG::scale
                           , ((sizeInventory / inventoryWidth) + 1) * RPG::tile_size.x * RPG::scale)
             , "Inventory");
 
-    sf::RenderWindow windowItem(sf::VideoMode(/*inventoryWidth*/2 * RPG::tile_size.y * RPG::scale
-                                        , /*((sizeInventory / inventoryWidth) + 1)*/ 3 * RPG::tile_size.x * RPG::scale)
-            , RPG::window_title);
+//    if (sizeInventory > 0) {
+        sf::RenderWindow windowItem(sf::VideoMode(/*inventoryWidth*/
+                2 * RPG::tile_size.y * RPG::scale, /*((sizeInventory / inventoryWidth) + 1)*/
+                3 * RPG::tile_size.x * RPG::scale), RPG::window_title);
+//    }
 
     while(windowInventory.isOpen()) {
 
@@ -98,9 +100,11 @@ int Game::inventoryActions(Operative* currOperative, sf::Texture& texture, sf::T
             RPG::coordinate sprite_coord;
             if (type == WEAPON) {
                 sprite_coord = weapon_tile_coords.at(dynamic_cast<Weapon *>(*(inventoryIter + i))->get_type());
-            } else if (type == MEDICINE_KIT) {
+            }
+            else if (type == MEDICINE_KIT) {
                 sprite_coord = medicine_kit_tile_coords.at(dynamic_cast<Medicine_Kit *>(*(inventoryIter + i))->get_type());
-            } else {
+            }
+            else {
                 sprite_coord = container_tile_coord.at(type);
             }
 
@@ -124,22 +128,25 @@ int Game::inventoryActions(Operative* currOperative, sf::Texture& texture, sf::T
             itemSprites.push_back(itemSprite);
         }
 
-        itemSprites[indexCurrItem].setTextureRect({(tile_size.x + 1) * 20, (tile_size.y + 1) * 22
-                                                          , tile_size.x, tile_size.y});
-
+        if (sizeInventory > 0) {
+            itemSprites[indexCurrItem].setTextureRect(
+                    {(tile_size.x + 1) * 20, (tile_size.y + 1) * 22, tile_size.x, tile_size.y});
+        }
         RPG::TileOnMap::drawInventory(windowInventory, itemSprites);
         windowInventory.display();
 
-        itemActions(currOperative, *(inventoryIter + indexCurrItem), windowItem, texture, text);
-        windowItem.display();
+        if (sizeInventory > 0) {
+            itemActions(currOperative, *(inventoryIter + indexCurrItem), windowItem, texture, text);
+            windowItem.display();
+        }
 
         sf::Keyboard::Key choice = RPG::get_input(windowInventory);
 
         if (choice == sf::Keyboard::Escape or choice == sf::Keyboard::Tilde) {
             windowInventory.close();
-            windowItem.close();
+            /*if (sizeInventory > 0)*/ windowItem.close();
         }
-        else {
+        else if (sizeInventory > 0) {
             if (choice == sf::Keyboard::A) {
                 indexCurrItem = (indexCurrItem > 0) ? indexCurrItem - 1 : sizeInventory - 1;
             }
@@ -194,7 +201,7 @@ void Game::itemActions(Operative* currOper
     status << "weight: " << currItem->get_weight() << "\n";
     if (typeItem == MEDICINE_KIT) {
         auto medKit = dynamic_cast<Medicine_Kit*>(currItem);
-        type << RPG::TYPE_NAME_med[medKit->get_type()] << std::endl;
+        type << RPG::Medicine_Kit::TYPE_NAME_med[medKit->get_type()] << std::endl;
         status << "heal point: " << medKit->get_type() << std::endl;
         options << "use - Q\n" << "drop - T" << std::endl;
         sprite_coord = medicine_kit_tile_coords.at(medKit->get_type());
@@ -226,23 +233,23 @@ void Game::itemActions(Operative* currOper
     textName.setString(type.str());
     textName.setPosition(tile_size.y * scale, 0);
     textName.setFont(*text.getFont());
-    textName.setCharacterSize(RPG::font_size + 5);
+    textName.setCharacterSize(RPG::font_size);
 
     textParams.setString(status.str());
     textParams.setPosition(0, tile_size.x * scale);
     textParams.setFont(*text.getFont());
-    textParams.setCharacterSize(RPG::font_size + 5);
+    textParams.setCharacterSize(RPG::font_size);
 
     textOptions.setString(options.str());
     textOptions.setPosition(0, (windowSize.first - 1) * tile_size.x * scale);
     textOptions.setFont(*text.getFont());
-    textOptions.setCharacterSize(RPG::font_size + 5);
+    textOptions.setCharacterSize(RPG::font_size);
 
     int itemCount = windowSize.first * windowSize.second;
     for (int i = 1; i < itemCount; ++i) {
         sf::Sprite sprite = sf::Sprite(texture);
         sprite.setTextureRect({0, 0, tile_size.x, tile_size.y});
-        sprite.setPosition(i % windowSize.second, i / windowSize.second);
+        sprite.setPosition(i % windowSize.second * tile_size.y * scale, i / windowSize.second * tile_size.x * scale);
         sprite.setScale(scale, scale);
         itemSprites.push_back(sprite);
     }
@@ -574,6 +581,7 @@ bool Game::isSeeUnit(RPG::coordinate unitCoorFrom, RPG::coordinate coorTo) {
     }
     return false;
 }
+
 
 
 Game::~Game() {

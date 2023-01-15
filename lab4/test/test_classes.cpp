@@ -445,7 +445,7 @@ TEST(Test_level, method_shoot_step) {
 
 TEST(Test_level, config_method) {
     Level level;
-    std::string path = "/mnt/c/Users/danii/ClionProjects/OOP_sem5/lab4/TestMap.txt";
+    std::string path = "lab4/src/maps/level3.txt";
     level.start(path);
 
     EXPECT_EQ(std::make_pair(5, 5), level.get_size());
@@ -453,7 +453,7 @@ TEST(Test_level, config_method) {
     EXPECT_EQ(Wall, level.map_[std::make_pair(0, 0)]->get_type());
     EXPECT_EQ(Floor, level.map_[std::make_pair(1, 1)]->get_type());
     EXPECT_EQ(Floor, level.map_[std::make_pair(1, 2)]->get_type());
-    EXPECT_EQ(Floor, level.map_[std::make_pair(1, 3)]->get_type());
+    EXPECT_EQ(Storage_point, level.map_[std::make_pair(1, 3)]->get_type());
     EXPECT_EQ(Partition, level.map_[std::make_pair(2, 1)]->get_type());
     EXPECT_EQ(Wall, level.map_[std::make_pair(2, 2)]->get_type());
     EXPECT_EQ(Floor, level.map_[std::make_pair(2, 3)]->get_type());

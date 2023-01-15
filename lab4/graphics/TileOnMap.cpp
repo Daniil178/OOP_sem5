@@ -167,9 +167,10 @@ void TileOnMap::drawTexts(sf::RenderWindow &window) const {
         window.draw(message);
 }
 
-void TileOnMap::drawMessage(const sf::Texture &textures
+int TileOnMap::drawMessage(const sf::Texture &textures
                             , const sf::Vector2i &tile_size
                             , const std::string& message
+                            , sf::Text& text
                             , float scale) {
 
     std::vector<sf::Sprite> charSprites;
@@ -212,10 +213,25 @@ void TileOnMap::drawMessage(const sf::Texture &textures
             window.draw(sprite);
         }
     }
-    window.display();
-    std::this_thread::sleep_for(std::chrono::milliseconds(3500));
-    window.close();
+    sf::Text comment;
+    comment.setFont(*text.getFont());
+    comment.setCharacterSize(RPG::font_size);
+    std::ostringstream status;
+    status << "Press enter to continue" << std::endl;
+    comment.setString(status.str());
+    comment.setPosition(2 * tile_size.x * RPG::scale, (size.first - 1) * tile_size.y * RPG::scale);
+    window.draw(comment);
 
+    window.display();
+    sf::Keyboard::Key choice;
+    int res = 0;
+    do {
+        choice = RPG::get_input(window);
+        //std::this_thread::sleep_for(std::chrono::milliseconds(3500));
+    } while (choice != sf::Keyboard::Enter && choice != sf::Keyboard::Escape && choice != sf::Keyboard::Tilde);
+    window.close();
+    if (choice == sf::Keyboard::Enter) res = 1;
+    return res;
 }
 
 void TileOnMap::drawInventory(sf::RenderWindow &window, std::vector<sf::Sprite>& itemSprites) {

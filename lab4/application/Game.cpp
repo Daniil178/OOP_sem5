@@ -595,7 +595,13 @@ bool Game::isSeeUnit(RPG::coordinate unitCoorFrom, RPG::coordinate coorTo) {
     return false;
 }
 
+int Game::startMenu(sf::Texture &texture, sf::Text &text) {
+    int resMenu = 0;
 
+    RPG::TileOnMap::drawMessage(texture, RPG::tile_size, "operation", text);
+
+    return resMenu;
+}
 
 Game::~Game() {
     delete level;

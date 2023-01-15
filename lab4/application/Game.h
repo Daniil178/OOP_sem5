@@ -39,9 +39,18 @@ public:
      * @param text text for draw map
      * @return flag - result of turn
      */
-    int turn_enemies(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text); // return flag after change
+    int turn_enemies(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text);
 
+    /**
+     * @brief create inventory mode
+     * @param currOperative ptr to active operative
+     * @param texture textures of items
+     * @param text parameters of text
+     * @return flag of mode (finish flag of mode)
+     */
     int inventoryActions(Operative* currOperative, sf::Texture& texture, sf::Text& text);
+
+    static int startMenu(sf::Texture& texture, sf::Text& text);
 
     /**
      * @brief free pointer of level
@@ -84,6 +93,15 @@ protected:
      */
     void wildTurn(Wild* currWild, sf::RenderWindow& window, sf::Texture& texture, sf::Text& text);
 
+    /**
+     * @brief print all parameters of item
+     * @param currItem ptr to needs item
+     * @param window active window
+     * @param texture texture of items
+     * @param text parameters of text
+     * @param shift shift of row for print
+     * @param printOptions need to print options
+     */
     void itemActions(Item* currItem
                      , sf::RenderWindow& window
                      , sf::Texture& texture
@@ -92,6 +110,11 @@ protected:
                      , bool printOptions = true);
 };
 
+/**
+ * @brief get tap of keyboard
+ * @param window active window
+ * @return tapped key
+ */
 static sf::Keyboard::Key get_input(sf::RenderWindow& window) {
     sf::Event event{};
     do {

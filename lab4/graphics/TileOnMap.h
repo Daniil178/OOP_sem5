@@ -33,9 +33,10 @@ public:
 
     void drawTexts(sf::RenderWindow &window) const;
 
-    static void drawMessage(const sf::Texture &textures
+    static int drawMessage(const sf::Texture &textures
                      , const sf::Vector2i &tile_size
                      , const std::string& message
+                     , sf::Text& text
                      , float scale = 4.f);
 
     static void drawInventory(sf::RenderWindow &window, std::vector<sf::Sprite>& itemSprites);

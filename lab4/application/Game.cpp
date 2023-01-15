@@ -78,17 +78,12 @@ int Game::inventoryActions(Operative* currOperative, sf::Texture& texture, sf::T
     auto inventory = currOperative->see_inventory();
     int resActions = 1, sizeInventory = inventory->number_of_items(), indexCurrItem = 0;
     int inventoryWidth = 5;
+    coordinate sizeWindow = std::make_pair((sizeInventory / inventoryWidth) + 1 + 2, inventoryWidth);
     // if (sizeInventory == 0) return resActions;
     sf::RenderWindow windowInventory(
             sf::VideoMode(inventoryWidth * RPG::tile_size.y * RPG::scale
-                          , ((sizeInventory / inventoryWidth) + 1) * RPG::tile_size.x * RPG::scale)
+                          , sizeWindow.first * RPG::tile_size.x * RPG::scale)
             , "Inventory");
-
-//    if (sizeInventory > 0) {
-        sf::RenderWindow windowItem(sf::VideoMode(/*inventoryWidth*/
-                2 * RPG::tile_size.y * RPG::scale, /*((sizeInventory / inventoryWidth) + 1)*/
-                3 * RPG::tile_size.x * RPG::scale), RPG::window_title);
-//    }
 
     while(windowInventory.isOpen()) {
 
@@ -130,21 +125,34 @@ int Game::inventoryActions(Operative* currOperative, sf::Texture& texture, sf::T
 
         if (sizeInventory > 0) {
             itemSprites[indexCurrItem].setTextureRect(
-                    {(tile_size.x + 1) * 20, (tile_size.y + 1) * 22, tile_size.x, tile_size.y});
+                    {(tile_size.x + 1) * 20, (tile_size.y + 1) * 22
+                     , tile_size.x, tile_size.y});
         }
-        RPG::TileOnMap::drawInventory(windowInventory, itemSprites);
-        windowInventory.display();
 
+        RPG::TileOnMap::drawInventory(windowInventory, itemSprites);
         if (sizeInventory > 0) {
-            itemActions(currOperative, *(inventoryIter + indexCurrItem), windowItem, texture, text);
-            windowItem.display();
+            itemActions(currOperative
+                        , *(inventoryIter + indexCurrItem)
+                        , windowInventory
+                        , texture
+                        , text
+                        , sizeWindow);
         }
+        else {
+            itemActions(currOperative
+                        , nullptr
+                        , windowInventory
+                        , texture
+                        , text
+                        , sizeWindow);
+
+        }
+        windowInventory.display();
 
         sf::Keyboard::Key choice = RPG::get_input(windowInventory);
 
         if (choice == sf::Keyboard::Escape or choice == sf::Keyboard::Tilde) {
             windowInventory.close();
-            /*if (sizeInventory > 0)*/ windowItem.close();
         }
         else if (sizeInventory > 0) {
             if (choice == sf::Keyboard::A) {
@@ -186,78 +194,88 @@ void Game::itemActions(Operative* currOper
                        , Item* currItem
                        , sf::RenderWindow& window
                        , sf::Texture& texture
-                       , sf::Text& text) {
+                       , sf::Text& text
+                       , coordinate sizeInventory) {
 
-    coordinate windowSize = std::make_pair(3, 2);
     sf::Text textName, textParams, textOptions;
     std::vector<sf::Text> texts;
     std::ostringstream status, type, options;
-
-    ITEM_TYPE typeItem = currItem->get_type();
-    sf::Sprite itemSprite = sf::Sprite(texture);
     coordinate sprite_coord;
     std::vector<sf::Sprite> itemSprites;
+    std::vector<sf::Text> itemTexts;
 
-    status << "weight: " << currItem->get_weight() << "\n";
-    if (typeItem == MEDICINE_KIT) {
-        auto medKit = dynamic_cast<Medicine_Kit*>(currItem);
-        type << RPG::Medicine_Kit::TYPE_NAME_med[medKit->get_type()] << std::endl;
-        status << "heal point: " << medKit->get_type() << std::endl;
-        options << "use - Q\n" << "drop - T" << std::endl;
-        sprite_coord = medicine_kit_tile_coords.at(medKit->get_type());
-    }
-    else if (typeItem == WEAPON) {
-        auto weapon = dynamic_cast<Weapon*>(currItem);
-        type << RPG::Weapon::TYPE_NAME_weapon[weapon->get_type()] << std::endl;
-        status << "damage: " << weapon->get_params().bas_params.damage << "\n" << "ammo: " << weapon->get_ammo_num()
-        << " / " << weapon->get_params().bas_params.max_ammo << "\n" << "type ammo: "
-        << RPG::Ammo_container::TYPE_NAME_ammo[weapon->get_params().bas_params.ammo_type] << std::endl;
-        options << "change - H\n" << "drop - T" << std::endl;
-        sprite_coord = weapon_tile_coords.at(weapon->get_type());
-    }
-    else {
-        auto ammoCont = dynamic_cast<Ammo_container*>(currItem);
-        type << "Ammo container" << std::endl;
-        status << "ammo: " << ammoCont->num_ammo() << " / " << ammoCont->max_ammo() << "\n"
-        << "type ammo: " << RPG::Ammo_container::TYPE_NAME_ammo[ammoCont->get_type()] << std::endl;
-        options << "drop - T" << std::endl;
-        sprite_coord = container_tile_coord.at(typeItem);
-    }
-
-    itemSprite.setTextureRect({sprite_coord.first, sprite_coord.second
-                                      , tile_size.x, tile_size.y});
-    itemSprite.setPosition(0, 0);
-    itemSprite.setScale(scale, scale);
-    itemSprites.push_back(itemSprite);
-
-    textName.setString(type.str());
-    textName.setPosition(tile_size.y * scale, 0);
-    textName.setFont(*text.getFont());
-    textName.setCharacterSize(RPG::font_size);
-
-    textParams.setString(status.str());
-    textParams.setPosition(0, tile_size.x * scale);
-    textParams.setFont(*text.getFont());
-    textParams.setCharacterSize(RPG::font_size);
-
-    textOptions.setString(options.str());
-    textOptions.setPosition(0, (windowSize.first - 1) * tile_size.x * scale);
-    textOptions.setFont(*text.getFont());
-    textOptions.setCharacterSize(RPG::font_size);
-
-    int itemCount = windowSize.first * windowSize.second;
-    for (int i = 1; i < itemCount; ++i) {
+    for (int i = 0; i < sizeInventory.second; ++i) {
         sf::Sprite sprite = sf::Sprite(texture);
-        sprite.setTextureRect({0, 0, tile_size.x, tile_size.y});
-        sprite.setPosition(i % windowSize.second * tile_size.y * scale, i / windowSize.second * tile_size.x * scale);
+        sprite.setTextureRect({(tile_size.y + 1) * 23, (tile_size.x + 1) * 2
+                                      , tile_size.x, tile_size.y});
+        sprite.setPosition(i * tile_size.y * scale, (sizeInventory.first - 2) * tile_size.x * scale);
         sprite.setScale(scale, scale);
         itemSprites.push_back(sprite);
     }
-
+    for (int i = 0; i < sizeInventory.second; ++i) {
+        sf::Sprite sprite = sf::Sprite(texture);
+        sprite.setTextureRect({0, 0, tile_size.x, tile_size.y});
+        sprite.setPosition(i * tile_size.y * scale, (sizeInventory.first - 1) * tile_size.x * scale);
+        sprite.setScale(scale, scale);
+        itemSprites.push_back(sprite);
+    }
     RPG::TileOnMap::drawInventory(window, itemSprites);
-    window.draw(textName);
-    window.draw(textParams);
-    window.draw(textOptions);
+
+    if (currItem != nullptr) {
+        ITEM_TYPE typeItem = currItem->get_type();
+        sf::Sprite itemSprite = sf::Sprite(texture);
+
+        status << "weight: " << currItem->get_weight() << "\n";
+        if (typeItem == MEDICINE_KIT) {
+            auto medKit = dynamic_cast<Medicine_Kit *>(currItem);
+            type << RPG::Medicine_Kit::TYPE_NAME_med[medKit->get_type()] << std::endl;
+            status << "heal point: " << medKit->get_type() << std::endl;
+            options << "use - Q\n" << "drop - T" << std::endl;
+            sprite_coord = medicine_kit_tile_coords.at(medKit->get_type());
+        } else if (typeItem == WEAPON) {
+            auto weapon = dynamic_cast<Weapon *>(currItem);
+            type << RPG::Weapon::TYPE_NAME_weapon[weapon->get_type()] << std::endl;
+            status << "damage: " << weapon->get_params().bas_params.damage << "\n" << "ammo: " << weapon->get_ammo_num()
+                   << " / " << weapon->get_params().bas_params.max_ammo << "\n" << "type ammo: "
+                   << RPG::Ammo_container::TYPE_NAME_ammo[weapon->get_params().bas_params.ammo_type] << std::endl;
+            options << "change - H\n" << "drop - T" << std::endl;
+            sprite_coord = weapon_tile_coords.at(weapon->get_type());
+        } else {
+            auto ammoCont = dynamic_cast<Ammo_container *>(currItem);
+            type << "Ammo\ncontainer" << std::endl;
+            status << "ammo: " << ammoCont->num_ammo() << " / " << ammoCont->max_ammo() << "\n"
+                   << "type ammo: " << RPG::Ammo_container::TYPE_NAME_ammo[ammoCont->get_type()] << std::endl;
+            options << "drop - T" << std::endl;
+            sprite_coord = container_tile_coord.at(typeItem);
+        }
+
+        itemSprite.setTextureRect({(tile_size.y + 1) * 23, (tile_size.x + 1) * 2, tile_size.x, tile_size.y});
+        itemSprite.setPosition(0, (sizeInventory.first - 1) * tile_size.x * scale);
+        itemSprite.setScale(scale, scale);
+        window.draw(itemSprite);
+
+        textName.setString(type.str());
+        textName.setFillColor(sf::Color::Green);
+        itemTexts.push_back(textName);
+
+        textParams.setString(status.str());
+        itemTexts.push_back(textParams);
+
+        textOptions.setString(options.str());
+        textOptions.setFillColor(sf::Color::Black);
+        itemTexts.push_back(textOptions);
+
+        int i = 1;
+        for (auto &partText: itemTexts) {
+            partText.setPosition(i * tile_size.y * scale, (sizeInventory.first - 1) * tile_size.x * scale);
+            partText.setFont(*text.getFont());
+            partText.setCharacterSize(RPG::font_size);
+            window.draw(partText);
+            if (i == 2) ++i;
+            ++i;
+        }
+    }
+
 
 }
 

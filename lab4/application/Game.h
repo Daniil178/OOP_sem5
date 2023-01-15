@@ -88,7 +88,8 @@ protected:
                      , Item* currItem
                      , sf::RenderWindow& window
                      , sf::Texture& texture
-                     , sf::Text& text);
+                     , sf::Text& text
+                     , coordinate sizeInventory);
 
 };
 

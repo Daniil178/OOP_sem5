@@ -215,11 +215,11 @@ int TileOnMap::drawMessage(const sf::Texture &textures
     }
     sf::Text comment;
     comment.setFont(*text.getFont());
-    comment.setCharacterSize(RPG::font_size);
+    comment.setCharacterSize(RPG::font_size + 5);
     std::ostringstream status;
     status << "Press enter to continue" << std::endl;
     comment.setString(status.str());
-    comment.setPosition(2 * tile_size.x * RPG::scale, (size.first - 1) * tile_size.y * RPG::scale);
+    comment.setPosition(3.2 * tile_size.x * RPG::scale, (size.first - 1) * tile_size.y * RPG::scale);
     window.draw(comment);
 
     window.display();

@@ -69,7 +69,7 @@ int main()
             window.close();
             continue;
         }
-    } while (!level->check_flag() && choice != sf::Keyboard::Tilde);
+    } while (!level->check_flag() && choice != sf::Keyboard::Tilde && choice != sf::Keyboard::Escape);
     if (level->check_flag() > 0) {
         if (level->check_flag() == 1) {
             RPG::TileOnMap::drawMessage(texture, RPG::tile_size, "you win", text);

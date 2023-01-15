@@ -19,6 +19,7 @@ int main()
     text.setCharacterSize(RPG::font_size);
 
     if (RPG::Game::startMenu(texture, text) != 1) return 0;
+    if (RPG::Game::helpMenu(texture, text) != 1) return 0;
 
     auto* level = new RPG::Level();
     level->start(RPG::level_path);

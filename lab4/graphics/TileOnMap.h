@@ -47,6 +47,11 @@ public:
                             , coordinate tileCoord
                             , sf::Texture& texture);
 
+    static void drawString(sf::RenderWindow& window
+                           , coordinate startPoint
+                           , std::string message
+                           , std::vector<sf::Sprite>& charSprites);
+
     static std::set<RPG::coordinate>&
     LoS(RPG::Map &map_, std::set<RPG::coordinate> &visible_cells, int x1, int y1, int x2, int y2, int height);
 

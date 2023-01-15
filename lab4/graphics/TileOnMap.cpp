@@ -209,7 +209,7 @@ int TileOnMap::drawMessage(const sf::Texture &textures
         ++i;
         if (char_ != ' ') {
             sf::Sprite sprite = charSprites[(int) (char_ - 'a')];
-            sprite.setPosition(i * tile_size.y * scale, 4 * tile_size.x * scale);
+            sprite.setPosition(i * tile_size.y * scale, (size.first / 2) * tile_size.x * scale);
             window.draw(sprite);
         }
     }
@@ -219,7 +219,8 @@ int TileOnMap::drawMessage(const sf::Texture &textures
     std::ostringstream status;
     status << "Press enter to continue" << std::endl;
     comment.setString(status.str());
-    comment.setPosition(3.2 * tile_size.x * RPG::scale, (size.first - 1) * tile_size.y * RPG::scale);
+    comment.setPosition(((message.size() - 5) / 2 + 1.5) * tile_size.x * RPG::scale
+                        , (size.first - 1) * tile_size.y * RPG::scale);
     window.draw(comment);
 
     window.display();
@@ -237,6 +238,22 @@ int TileOnMap::drawMessage(const sf::Texture &textures
 void TileOnMap::drawInventory(sf::RenderWindow &window, std::vector<sf::Sprite>& itemSprites) {
     for (auto& currItem : itemSprites) {
         window.draw(currItem);
+    }
+}
+
+void TileOnMap::drawString(sf::RenderWindow& window
+        , coordinate startPoint
+        , std::string message
+        , std::vector<sf::Sprite>& charSprites) {
+
+    int i = startPoint.second;
+    for (auto char_ : message) {
+        ++i;
+        if (char_ != ' ') {
+            sf::Sprite sprite = charSprites[(int) (char_ - 'a')];
+            sprite.setPosition(i * RPG::tile_size.y * RPG::scale, startPoint.first * RPG::tile_size.x * RPG::scale);
+            window.draw(sprite);
+        }
     }
 }
 

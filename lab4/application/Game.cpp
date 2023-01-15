@@ -109,6 +109,16 @@ int Game::inventoryActions(Operative* currOperative, sf::Texture& texture, sf::T
                     , 0
                     , false);
 
+        sf::Text text_;
+        std::ostringstream status;
+        status << "stats:\n\n" << "reload:\n" << currOperative->get_current_weapon()->get_params().bas_params.reload_time
+        << " s\n\n" << "weight:\n" << currOperative->get_strength() << " / " << currOperative->get_weight() << std::endl;
+        text_.setString(status.str());
+        text_.setFillColor(sf::Color::Magenta);
+        text_.setPosition(4 * tile_size.y * scale, 0);
+        text_.setFont(*text.getFont());
+        text_.setCharacterSize(RPG::font_size);
+
         std::vector<sf::Sprite> itemSprites;
         auto inventoryIter = inventory->get_iter();
         for (int i = 0; i < sizeInventory; ++i) {
@@ -595,11 +605,113 @@ bool Game::isSeeUnit(RPG::coordinate unitCoorFrom, RPG::coordinate coorTo) {
 }
 
 int Game::startMenu(sf::Texture &texture, sf::Text &text) {
-    int resMenu = 0;
-
+    int resMenu;
     resMenu = RPG::TileOnMap::drawMessage(texture, RPG::tile_size, "operation", text);
 
+    if (resMenu == 1) return resMenu;
     return resMenu;
+}
+
+int Game::helpMenu(sf::Texture& texture, sf::Text& text) {
+    coordinate size = std::make_pair(10, 14);
+    sf::RenderWindow window(sf::VideoMode(size.second * RPG::tile_size.y * RPG::scale
+                                    , size.first * RPG::tile_size.x * RPG::scale)
+            , "Help menu");
+
+    for (int i = 0; i < size.first; ++i) {
+        RPG::TileOnMap::drawFullRow(window, i, size.second, std::make_pair(0, 0), texture);
+    }
+
+    std::vector<sf::Sprite> charSprites;
+
+    for (int i = 0; i < 2; ++i) {
+        for (int j = 0; j < 13; ++j) {
+            int x = (tile_size.x + 1) * (19 + j);
+            int y = (tile_size.x + 1) * (30 + i);
+            sf::Sprite charSprite = sf::Sprite(texture);
+            charSprite.setTextureRect({x, y, tile_size.x, tile_size.y});
+            charSprite.setScale(scale, scale);
+            charSprites.push_back(charSprite);
+        }
+    }
+
+    RPG::TileOnMap::drawString(window, std::make_pair(0, 0), "game control", charSprites);
+
+    RPG::TileOnMap::drawString(window, std::make_pair(1, 1), "fight", charSprites);
+
+    RPG::TileOnMap::drawString(window, std::make_pair((size.first - 3), 1), "inventory", charSprites);
+
+//    int i = 0;
+//    for (auto char_ : "game control") {
+//        ++i;
+//        if (char_ != ' ') {
+//            sf::Sprite sprite = charSprites[(int) (char_ - 'a')];
+//            sprite.setPosition(i * tile_size.y * scale, 0);
+//            window.draw(sprite);
+//        }
+//    }
+//    i = 1;
+//    for (auto char_ : "fight") {
+//        ++i;
+//        if (char_ != ' ') {
+//            sf::Sprite sprite = charSprites[(int) (char_ - 'a')];
+//            sprite.setPosition(i * tile_size.y * scale, 1);
+//            window.draw(sprite);
+//        }
+//    }
+//    i = 1;
+//    for (auto char_ : "inventory") {
+//        ++i;
+//        if (char_ != ' ') {
+//            sf::Sprite sprite = charSprites[(int) (char_ - 'a')];
+//            sprite.setPosition(i * tile_size.y * scale, (size.first - 3) * tile_size.x * scale);
+//            window.draw(sprite);
+//        }
+//    }
+
+    sf::Text ruleFight, ruleInventory;
+    ruleFight.setFont(*text.getFont());
+    ruleFight.setCharacterSize(RPG::font_size);
+    std::ostringstream statusFight, statusInventory;
+    statusFight << "\tA, W, S, D - left, up, down, right\n\n"
+    << "\tG - take item\n\n"
+    << "\tF - shoot (before that you need choice direction)\n\n"
+    << "\tR - reload\n\n"
+    << "\tQ - heal (choice the biggest medicine kit)\n\n"
+    << "\t1, 2, .., 9 - choice active operative\n\n"
+    << "\tI - open inventory mode" << std::endl;
+    ruleFight.setString(statusFight.str());
+    ruleFight.setPosition(0, 2 * tile_size.y * RPG::scale);
+    window.draw(ruleFight);
+
+    ruleInventory.setFont(*text.getFont());
+    ruleInventory.setCharacterSize(RPG::font_size);
+    statusInventory << "\tA, D - left, right\n\n"
+           << "\tEscape or Tilde(`) - quit" << std::endl;
+    ruleInventory.setString(statusInventory.str());
+    ruleInventory.setPosition(0, (size.first - 2) * tile_size.y * RPG::scale);
+    window.draw(ruleInventory);
+
+    sf::Text comment;
+    comment.setFont(*text.getFont());
+    comment.setCharacterSize(RPG::font_size + 5);
+    std::ostringstream status;
+    status << "Press enter to continue" << std::endl;
+    comment.setString(status.str());
+    comment.setPosition(0, (size.first - 1) * tile_size.y * RPG::scale);
+    comment.setFillColor(sf::Color::Green);
+    window.draw(comment);
+
+    window.display();
+    sf::Keyboard::Key choice;
+    int res = 0;
+    do {
+        choice = RPG::get_input(window);
+
+    } while (choice != sf::Keyboard::Enter && choice != sf::Keyboard::Escape && choice != sf::Keyboard::Tilde);
+    window.close();
+    if (choice == sf::Keyboard::Enter) res = 1;
+    return res;
 }
 
 Game::~Game() {

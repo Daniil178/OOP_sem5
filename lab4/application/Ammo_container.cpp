@@ -2,7 +2,7 @@
 
 namespace RPG {
 
-std::unordered_map<AMMO_WEIGHT, std::string> TYPE_NAME_ammo = {{machine_gun, "Machine gun ammo's"},
+std::unordered_map<AMMO_WEIGHT, std::string> Ammo_container::TYPE_NAME_ammo = {{machine_gun, "Machine gun ammo's"},
                                                                {shotgun, "Shotgun ammo's"},
                                                                {pistol, "Pistol ammo's"},
                                                                {empty, "empty"}};
@@ -39,6 +39,10 @@ bool Ammo_container::put_ammo(int number) { // put some ammo to container
 }
 
 int Ammo_container::num_ammo() const {
+    return current_count;
+}
+
+int Ammo_container::max_ammo() const {
     return current_count;
 }
 

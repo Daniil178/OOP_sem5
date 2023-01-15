@@ -18,6 +18,7 @@ enum MED_KIT_HEALTH {
     Scientific = 80
 };
 
+static std::unordered_map<MED_KIT_HEALTH, std::string> TYPE_NAME_med;
 
 /**
  * @class Medicine_kit hear of Item

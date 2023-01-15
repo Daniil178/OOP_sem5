@@ -36,6 +36,7 @@ int Operative::heal(Medicine_Kit* use_kit) {
     auto use_curr_kit = dynamic_cast<Medicine_Kit*>(curr_item);
     coordinate med_params = use_curr_kit->use();
     if (params.current_time < med_params.second) {
+        inventory->put_item(curr_item);
         return -2; //don`t have time
     }
     params.current_health += med_params.first;

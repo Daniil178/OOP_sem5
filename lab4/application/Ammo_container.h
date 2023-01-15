@@ -48,11 +48,20 @@ public:
      * @return int - number of ammo's in container
      */
     [[nodiscard]] int num_ammo() const; // show how much ammo you have
+
+    /**
+     * @brief number of maximum ammo's in container
+     * @return int - number of maximum ammo's in container
+     */
+    [[nodiscard]] int max_ammo() const;
     /**
      * @brief check type of ammo's
      * @return AMMO_WEIGHT - type of ammo's
      */
     AMMO_WEIGHT get_type();
+
+    static std::unordered_map<AMMO_WEIGHT, std::string> TYPE_NAME_ammo;
+
 protected:
     /**
      * @brief type of ammo's in container

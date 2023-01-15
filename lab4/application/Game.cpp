@@ -14,8 +14,8 @@ static std::unordered_map<char, RPG::Direction> char_direction = {
                                                                     {sf::Keyboard::D, RPG::Right}};
 
 int Game::turn_operatives(sf::Keyboard::Key choice, sf::RenderWindow &window, int *diff) {
-    int res_turn = 0;
-    auto curr_oper = level->operatives.begin() + *diff;
+    int resTurn = 0;
+    auto currOper = level->operatives.begin() + *diff;
     std::cout << choice << std::endl;
     // e - end turn
     if (choice == sf::Keyboard::E) {
@@ -23,40 +23,55 @@ int Game::turn_operatives(sf::Keyboard::Key choice, sf::RenderWindow &window, in
     }
         // r - reload weapon
     else if (choice == sf::Keyboard::R) {
-        res_turn = (*curr_oper)->reload();
+        resTurn = (*currOper)->reload();
+    }
+    else if (choice == sf::Keyboard::Q) {
+        auto scientific = new Medicine_Kit(Scientific);
+        auto army = new Medicine_Kit(Army);
+        auto basic = new Medicine_Kit(Basic);
+        resTurn = (*currOper)->heal(scientific);
+        if (resTurn == -1) {
+            resTurn = (*currOper)->heal(army);
+            if (resTurn == -1) {
+                resTurn = (*currOper)->heal(basic);
+            }
+        }
+        delete scientific;
+        delete army;
+        delete basic;
     }
         // f - choice direction and shoot
     else if (choice == sf::Keyboard::F) {
         sf::Keyboard::Key direction = get_input(window);
         if (direction == sf::Keyboard::W or direction == sf::Keyboard::S
             or direction == sf::Keyboard::A or direction == sf::Keyboard::D) {
-            res_turn = level->shoot(*curr_oper, char_direction.at(direction));
+            resTurn = level->shoot(*currOper, char_direction.at(direction));
         }
     }
         // g - take item
     else if (choice == sf::Keyboard::G) {
-        res_turn = (*curr_oper)->take_item_to_inventory(level->map_);
+        resTurn = (*currOper)->take_item_to_inventory(level->map_);
     }
         // i - inventory mode
     else if (choice == sf::Keyboard::I) {
-        res_turn = 77;
+        resTurn = 77;
     }
     else if (sf::Keyboard::Num1 <= choice and choice <= sf::Keyboard::Num9) {
         int oper_num = choice - sf::Keyboard::Num1;
         if (oper_num >= 0 and oper_num < level->operatives.size()) {
             *diff = oper_num;
-            //curr_oper = level.operatives.begin() + oper_num;
+            //currOper = level.operatives.begin() + oper_num;
         }
         else {
-            res_turn = -1;
+            resTurn = -1;
         }
     } else {
         if (choice == sf::Keyboard::W or choice == sf::Keyboard::S
             or choice == sf::Keyboard::A or choice == sf::Keyboard::D) {
-            res_turn = level->step_by_unit(*curr_oper, char_direction[choice]);
+            resTurn = level->step_by_unit(*currOper, char_direction[choice]);
         }
     }
-    return res_turn;
+    return resTurn;
 }
 
 int Game::inventoryActions(Operative* currOperative, sf::Texture& texture, sf::Text& text) {
@@ -67,10 +82,13 @@ int Game::inventoryActions(Operative* currOperative, sf::Texture& texture, sf::T
     sf::RenderWindow windowInventory(
             sf::VideoMode(inventoryWidth * RPG::tile_size.y * RPG::scale
                           , ((sizeInventory / inventoryWidth) + 1) * RPG::tile_size.x * RPG::scale)
+            , "Inventory");
+
+    sf::RenderWindow windowItem(sf::VideoMode(/*inventoryWidth*/2 * RPG::tile_size.y * RPG::scale
+                                        , /*((sizeInventory / inventoryWidth) + 1)*/ 3 * RPG::tile_size.x * RPG::scale)
             , RPG::window_title);
 
     while(windowInventory.isOpen()) {
-
 
         std::vector<sf::Sprite> itemSprites;
         auto inventoryIter = inventory->get_iter();
@@ -112,9 +130,15 @@ int Game::inventoryActions(Operative* currOperative, sf::Texture& texture, sf::T
         RPG::TileOnMap::drawInventory(windowInventory, itemSprites);
         windowInventory.display();
 
+        itemActions(currOperative, *(inventoryIter + indexCurrItem), windowItem, texture, text);
+        windowItem.display();
+
         sf::Keyboard::Key choice = RPG::get_input(windowInventory);
 
-        if (choice == sf::Keyboard::Escape or choice == sf::Keyboard::Tilde) windowInventory.close();
+        if (choice == sf::Keyboard::Escape or choice == sf::Keyboard::Tilde) {
+            windowInventory.close();
+            windowItem.close();
+        }
         else {
             if (choice == sf::Keyboard::A) {
                 indexCurrItem = (indexCurrItem > 0) ? indexCurrItem - 1 : sizeInventory - 1;
@@ -122,11 +146,112 @@ int Game::inventoryActions(Operative* currOperative, sf::Texture& texture, sf::T
             else if (choice == sf::Keyboard::D) {
                 indexCurrItem = (indexCurrItem + 1) % sizeInventory;
             }
+            else if (choice == sf::Keyboard::H) {
+                if ((*(inventoryIter + indexCurrItem))->get_type() == WEAPON) {
+                    currOperative->choice_weapon(dynamic_cast<Weapon *>(*(inventoryIter + indexCurrItem)));
+                    indexCurrItem = 0;
+                    sizeInventory = inventory->number_of_items();
+                    std::cout << "change" << std::endl;
+                }
+            }
+            else if (choice == sf::Keyboard::Q) {
+                if ((*(inventoryIter + indexCurrItem))->get_type() == MEDICINE_KIT) {
+                    currOperative->heal(dynamic_cast<Medicine_Kit*>(*(inventoryIter + indexCurrItem)));
+                    indexCurrItem = 0;
+                    sizeInventory = inventory->number_of_items();
+                    std::cout << "heal" << std::endl;
+                }
+            }
+            else if (choice == sf::Keyboard::T) {
+                currOperative->put_item_from_inventory(*(inventoryIter + indexCurrItem), level->map_);
+                sizeInventory = inventory->number_of_items();
+                indexCurrItem = 0;
+                std::cout << "drop" << std::endl;
+            }
         }
     }
 
 
     return resActions;
+}
+
+void Game::itemActions(Operative* currOper
+                       , Item* currItem
+                       , sf::RenderWindow& window
+                       , sf::Texture& texture
+                       , sf::Text& text) {
+
+    coordinate windowSize = std::make_pair(3, 2);
+    sf::Text textName, textParams, textOptions;
+    std::vector<sf::Text> texts;
+    std::ostringstream status, type, options;
+
+    ITEM_TYPE typeItem = currItem->get_type();
+    sf::Sprite itemSprite = sf::Sprite(texture);
+    coordinate sprite_coord;
+    std::vector<sf::Sprite> itemSprites;
+
+    status << "weight: " << currItem->get_weight() << "\n";
+    if (typeItem == MEDICINE_KIT) {
+        auto medKit = dynamic_cast<Medicine_Kit*>(currItem);
+        type << RPG::TYPE_NAME_med[medKit->get_type()] << std::endl;
+        status << "heal point: " << medKit->get_type() << std::endl;
+        options << "use - Q\n" << "drop - T" << std::endl;
+        sprite_coord = medicine_kit_tile_coords.at(medKit->get_type());
+    }
+    else if (typeItem == WEAPON) {
+        auto weapon = dynamic_cast<Weapon*>(currItem);
+        type << RPG::Weapon::TYPE_NAME_weapon[weapon->get_type()] << std::endl;
+        status << "damage: " << weapon->get_params().bas_params.damage << "\n" << "ammo: " << weapon->get_ammo_num()
+        << " / " << weapon->get_params().bas_params.max_ammo << "\n" << "type ammo: "
+        << RPG::Ammo_container::TYPE_NAME_ammo[weapon->get_params().bas_params.ammo_type] << std::endl;
+        options << "change - H\n" << "drop - T" << std::endl;
+        sprite_coord = weapon_tile_coords.at(weapon->get_type());
+    }
+    else {
+        auto ammoCont = dynamic_cast<Ammo_container*>(currItem);
+        type << "Ammo container" << std::endl;
+        status << "ammo: " << ammoCont->num_ammo() << " / " << ammoCont->max_ammo() << "\n"
+        << "type ammo: " << RPG::Ammo_container::TYPE_NAME_ammo[ammoCont->get_type()] << std::endl;
+        options << "drop - T" << std::endl;
+        sprite_coord = container_tile_coord.at(typeItem);
+    }
+
+    itemSprite.setTextureRect({sprite_coord.first, sprite_coord.second
+                                      , tile_size.x, tile_size.y});
+    itemSprite.setPosition(0, 0);
+    itemSprite.setScale(scale, scale);
+    itemSprites.push_back(itemSprite);
+
+    textName.setString(type.str());
+    textName.setPosition(tile_size.y * scale, 0);
+    textName.setFont(*text.getFont());
+    textName.setCharacterSize(RPG::font_size + 5);
+
+    textParams.setString(status.str());
+    textParams.setPosition(0, tile_size.x * scale);
+    textParams.setFont(*text.getFont());
+    textParams.setCharacterSize(RPG::font_size + 5);
+
+    textOptions.setString(options.str());
+    textOptions.setPosition(0, (windowSize.first - 1) * tile_size.x * scale);
+    textOptions.setFont(*text.getFont());
+    textOptions.setCharacterSize(RPG::font_size + 5);
+
+    int itemCount = windowSize.first * windowSize.second;
+    for (int i = 1; i < itemCount; ++i) {
+        sf::Sprite sprite = sf::Sprite(texture);
+        sprite.setTextureRect({0, 0, tile_size.x, tile_size.y});
+        sprite.setPosition(i % windowSize.second, i / windowSize.second);
+        sprite.setScale(scale, scale);
+        itemSprites.push_back(sprite);
+    }
+
+    RPG::TileOnMap::drawInventory(window, itemSprites);
+    window.draw(textName);
+    window.draw(textParams);
+    window.draw(textOptions);
+
 }
 
 int Game::turn_enemies(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text) {
@@ -449,7 +574,6 @@ bool Game::isSeeUnit(RPG::coordinate unitCoorFrom, RPG::coordinate coorTo) {
     }
     return false;
 }
-
 
 
 Game::~Game() {

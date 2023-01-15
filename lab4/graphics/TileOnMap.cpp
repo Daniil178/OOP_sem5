@@ -1,5 +1,4 @@
 #include "TileOnMap.h"
-#include <sstream>
 #include "help_func.h"
 
 

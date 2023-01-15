@@ -84,6 +84,12 @@ protected:
      */
     void wildTurn(Wild* currWild, sf::RenderWindow& window, sf::Texture& texture, sf::Text& text);
 
+    void itemActions(Operative* currOper
+                     , Item* currItem
+                     , sf::RenderWindow& window
+                     , sf::Texture& texture
+                     , sf::Text& text);
+
 };
 
 static sf::Keyboard::Key get_input(sf::RenderWindow& window) {

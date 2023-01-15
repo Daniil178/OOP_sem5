@@ -3,6 +3,7 @@
 
 #include "TileCoordinates.h"
 #include "../application/Game.h"
+#include <sstream>
 #include <set>
 
 namespace RPG {

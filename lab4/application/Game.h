@@ -21,7 +21,7 @@ public:
      * @param number_of_level (int) - number of level
      * @param level0 (Level&) - start level
      */
-    Game(int number_of_level, Level* level0); //initialisation of Game
+    explicit Game(Level* level0); //initialisation of Game
 
     /**
      * @brief turn of operatives - reactions of clicks
@@ -52,7 +52,9 @@ public:
 
     static int startMenu(sf::Texture& texture, sf::Text& text);
 
-    static int helpMenu(sf::Texture& texture, sf::Text& text);
+    static int helpMenu(sf::Texture& texture, sf::Text& text, bool pause = true);
+
+    static int chooseLevel(sf::Texture& texture, sf::Text& text);
 
     /**
      * @brief free pointer of level

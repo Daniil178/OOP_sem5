@@ -228,7 +228,7 @@ int TileOnMap::drawMessage(const sf::Texture &textures
     int res = 0;
     do {
         choice = RPG::get_input(window);
-        //std::this_thread::sleep_for(std::chrono::milliseconds(3500));
+
     } while (choice != sf::Keyboard::Enter && choice != sf::Keyboard::Escape && choice != sf::Keyboard::Tilde);
     window.close();
     if (choice == sf::Keyboard::Enter) res = 1;
@@ -254,6 +254,30 @@ void TileOnMap::drawString(sf::RenderWindow& window
             sprite.setPosition(i * RPG::tile_size.y * RPG::scale, startPoint.first * RPG::tile_size.x * RPG::scale);
             window.draw(sprite);
         }
+    }
+}
+
+void TileOnMap::drawStringNumbers(sf::RenderWindow &window, coordinate startPoint, std::string message,
+                                  std::vector<sf::Sprite> &charSprites, std::vector<sf::Sprite> &numSprites) {
+
+    int i = startPoint.second;
+    for (auto char_ : message) {
+        if ('a' <= char_ and char_ <= 'z') {
+            sf::Sprite sprite = charSprites[(int) (char_ - 'a')];
+            sprite.setPosition(i * RPG::tile_size.y * RPG::scale, startPoint.first * RPG::tile_size.x * RPG::scale);
+            window.draw(sprite);
+        }
+        else if ('0' <= char_ and char_ <= '9') {
+            sf::Sprite sprite = numSprites[(int) (char_ - '0')];
+            sprite.setPosition(i * RPG::tile_size.y * RPG::scale, startPoint.first * RPG::tile_size.x * RPG::scale);
+            window.draw(sprite);
+        }
+        else if (char_ == ':') {
+            sf::Sprite sprite = numSprites[10];
+            sprite.setPosition(i * RPG::tile_size.y * RPG::scale, startPoint.first * RPG::tile_size.x * RPG::scale);
+            window.draw(sprite);
+        }
+        ++i;
     }
 }
 

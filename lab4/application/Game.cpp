@@ -3,9 +3,7 @@
 
 namespace RPG {
 
-Game::Game(int num_of_levels, Level *level0) :
-                                            number_of_level(num_of_levels),
-                                            level(level0) {}
+Game::Game(Level *level0) : level(level0) {}
 
 static std::unordered_map<char, RPG::Direction> char_direction = {
                                                                     {sf::Keyboard::W, RPG::Up},
@@ -111,13 +109,15 @@ int Game::inventoryActions(Operative* currOperative, sf::Texture& texture, sf::T
 
         sf::Text text_;
         std::ostringstream status;
-        status << "stats:\n\n" << "reload:\n" << currOperative->get_current_weapon()->get_params().bas_params.reload_time
-        << " s\n\n" << "weight:\n" << currOperative->get_strength() << " / " << currOperative->get_weight() << std::endl;
+        status << "rel: " << currOperative->get_current_weapon()->get_params().bas_params.reload_time
+        << "s\n" << "weight:\n" << currOperative->get_weight() << " /\n" << currOperative->get_strength()
+        << "\nhp: " << currOperative->get_params().current_health << std::endl;
         text_.setString(status.str());
-        text_.setFillColor(sf::Color::Magenta);
+        text_.setFillColor(sf::Color::Yellow);
         text_.setPosition(4 * tile_size.y * scale, 0);
         text_.setFont(*text.getFont());
         text_.setCharacterSize(RPG::font_size);
+        windowInventory.draw(text_);
 
         std::vector<sf::Sprite> itemSprites;
         auto inventoryIter = inventory->get_iter();
@@ -289,19 +289,6 @@ int Game::turn_enemies(sf::RenderWindow& window, sf::Texture& texture, sf::Text&
             wildTurn(dynamic_cast<Wild*>(currEnemy), window, texture, text);
         }
     }
-
-//    for (auto& currEnemy: level->enemies) {
-//        if (currEnemy->get_type() == FORAGER) {
-//            wildTurn(dynamic_cast<Wild*>(currEnemy));
-//        }
-//    }
-//
-//    for (auto& currEnemy: level->enemies) {
-//        if (currEnemy->get_type() == RATIONAL) {
-//            wildTurn(dynamic_cast<Wild*>(currEnemy));
-//        }
-//    }
-
     return 0;
 }
 
@@ -543,50 +530,37 @@ bool Game::isSeeUnit(RPG::coordinate unitCoorFrom, RPG::coordinate coorTo) {
 
     if (sqrt(pow(dx, 2) + pow(dy, 2)) > level->enemies[0]->get_params().view_radius) return false;
 
-    // ax & ay: абсолютные значения dx & dy умноженные на 2
+    // ax & ay: absolute values dx & dy divided by 2
     absX = abs(dx) / 2;
     absY = abs(dy) / 2;
 
-    // sX & sY: знак от dx & dy
+    // sX & sY: signum of dx & dy
     sX = RPG::Sgn(dx);
     sY = RPG::Sgn(dy);
 
     x = coorTo.first;
     y = coorTo.second;
 
-    /* Следующее утверждение проверяет если линия
-      x доминирует над y или наоборот и соответственно зацикливает */
     if (absX > absY) {
-        // Цикл по X
-        // t = абсолютное от y минус абсолютное от x деленное на 2
+
         t = absY - (absX / 2);
         do {
             if (t >= 0) {
-                /* если t больше либо равно 0 тогда *
-                 * добавить знак от dy к y          *
-                 * вычесть абсолютное от dx из t    */
+
                 y += sY;
                 t -= absX;
             }
 
-            /* добавить знак dx к x
-               добавить абсолютное значение dy к t  */
             x += sX;
             t += absY;
 
-            /* проверить, если мы в позиции игрока */
-            if (x == unitCoorFrom.first && y == unitCoorFrom.second) {
-                /* возвращает, что чудовище может видеть игрока */
-                return true;
-            }
-            /* продолжаем цикл, пока зрение чудовища не заблокировано */
+            if (x == unitCoorFrom.first && y == unitCoorFrom.second) return true;
+
         } while (level->map_[std::make_pair(x, y)]->is_visible());
 
-        /* Цикл завершается т.к. взгляд монстра блокируется
-           возвращаем FALSE: монстр не видит игрока         */
         return false;
     } else {
-        /* Цикл по Y */
+
         t = absX - (absY / 2);
         do {
             if (t >= 0) {
@@ -595,11 +569,9 @@ bool Game::isSeeUnit(RPG::coordinate unitCoorFrom, RPG::coordinate coorTo) {
             }
             y += sY;
             t += absX;
-            if (x == unitCoorFrom.first && y == unitCoorFrom.second) {
-                return true;
-            }
-        } while (level->map_[std::make_pair(x, y)]->is_visible());
+            if (x == unitCoorFrom.first && y == unitCoorFrom.second) return true;
 
+        } while (level->map_[std::make_pair(x, y)]->is_visible());
     }
     return false;
 }
@@ -612,7 +584,7 @@ int Game::startMenu(sf::Texture &texture, sf::Text &text) {
     return resMenu;
 }
 
-int Game::helpMenu(sf::Texture& texture, sf::Text& text) {
+int Game::helpMenu(sf::Texture& texture, sf::Text& text, bool pause) {
     coordinate size = std::make_pair(10, 14);
     sf::RenderWindow window(sf::VideoMode(size.second * RPG::tile_size.y * RPG::scale
                                     , size.first * RPG::tile_size.x * RPG::scale)
@@ -637,41 +609,13 @@ int Game::helpMenu(sf::Texture& texture, sf::Text& text) {
 
     RPG::TileOnMap::drawString(window, std::make_pair(0, 0), "game control", charSprites);
 
-    RPG::TileOnMap::drawString(window, std::make_pair(1, 1), "fight", charSprites);
+    RPG::TileOnMap::drawString(window, std::make_pair(1, 3), "fight", charSprites);
 
-    RPG::TileOnMap::drawString(window, std::make_pair((size.first - 3), 1), "inventory", charSprites);
-
-//    int i = 0;
-//    for (auto char_ : "game control") {
-//        ++i;
-//        if (char_ != ' ') {
-//            sf::Sprite sprite = charSprites[(int) (char_ - 'a')];
-//            sprite.setPosition(i * tile_size.y * scale, 0);
-//            window.draw(sprite);
-//        }
-//    }
-//    i = 1;
-//    for (auto char_ : "fight") {
-//        ++i;
-//        if (char_ != ' ') {
-//            sf::Sprite sprite = charSprites[(int) (char_ - 'a')];
-//            sprite.setPosition(i * tile_size.y * scale, 1);
-//            window.draw(sprite);
-//        }
-//    }
-//    i = 1;
-//    for (auto char_ : "inventory") {
-//        ++i;
-//        if (char_ != ' ') {
-//            sf::Sprite sprite = charSprites[(int) (char_ - 'a')];
-//            sprite.setPosition(i * tile_size.y * scale, (size.first - 3) * tile_size.x * scale);
-//            window.draw(sprite);
-//        }
-//    }
+    RPG::TileOnMap::drawString(window, std::make_pair((size.first - 4), 1), "inventory", charSprites);
 
     sf::Text ruleFight, ruleInventory;
     ruleFight.setFont(*text.getFont());
-    ruleFight.setCharacterSize(RPG::font_size);
+    ruleFight.setCharacterSize(RPG::font_size + 5);
     std::ostringstream statusFight, statusInventory;
     statusFight << "\tA, W, S, D - left, up, down, right\n\n"
     << "\tG - take item\n\n"
@@ -679,26 +623,34 @@ int Game::helpMenu(sf::Texture& texture, sf::Text& text) {
     << "\tR - reload\n\n"
     << "\tQ - heal (choice the biggest medicine kit)\n\n"
     << "\t1, 2, .., 9 - choice active operative\n\n"
-    << "\tI - open inventory mode" << std::endl;
+    << "\tI - open inventory mode\n\n"
+    << "\tEscape - open help menu, "
+    << "\tTilde - quit from game" << std::endl;
     ruleFight.setString(statusFight.str());
     ruleFight.setPosition(0, 2 * tile_size.y * RPG::scale);
     window.draw(ruleFight);
 
     ruleInventory.setFont(*text.getFont());
-    ruleInventory.setCharacterSize(RPG::font_size);
+    ruleInventory.setCharacterSize(RPG::font_size + 5);
     statusInventory << "\tA, D - left, right\n\n"
-           << "\tEscape or Tilde(`) - quit" << std::endl;
+           << "\tEscape or Tilde - quit" << std::endl;
     ruleInventory.setString(statusInventory.str());
-    ruleInventory.setPosition(0, (size.first - 2) * tile_size.y * RPG::scale);
+    ruleInventory.setPosition(0, (size.first - 3) * tile_size.y * RPG::scale);
     window.draw(ruleInventory);
 
     sf::Text comment;
     comment.setFont(*text.getFont());
     comment.setCharacterSize(RPG::font_size + 5);
     std::ostringstream status;
-    status << "Press enter to continue" << std::endl;
+
+    if (pause) {
+        status << "Press enter or escape or tilde to continue" << std::endl;
+    }
+    else {
+        status << "Press enter to continue" << std::endl;
+    }
     comment.setString(status.str());
-    comment.setPosition(0, (size.first - 1) * tile_size.y * RPG::scale);
+    comment.setPosition(4 * tile_size.x * RPG::scale, (size.first - 1) * tile_size.y * RPG::scale);
     comment.setFillColor(sf::Color::Green);
     window.draw(comment);
 
@@ -711,6 +663,78 @@ int Game::helpMenu(sf::Texture& texture, sf::Text& text) {
     } while (choice != sf::Keyboard::Enter && choice != sf::Keyboard::Escape && choice != sf::Keyboard::Tilde);
     window.close();
     if (choice == sf::Keyboard::Enter) res = 1;
+    return res;
+}
+
+int Game::chooseLevel(sf::Texture& texture, sf::Text& text) {
+
+    coordinate size = std::make_pair(RPG::levels.size() * 2 + 4, 14);
+    sf::RenderWindow window(sf::VideoMode(size.second * RPG::tile_size.y * RPG::scale
+                                    , size.first * RPG::tile_size.x * RPG::scale)
+            , "Level menu");
+
+    for (int i = 0; i < size.first; ++i) {
+        RPG::TileOnMap::drawFullRow(window, i, size.second, std::make_pair(0, 0), texture);
+    }
+
+    std::vector<sf::Sprite> charSprites;
+
+    for (int i = 0; i < 2; ++i) {
+        for (int j = 0; j < 13; ++j) {
+            int x = (tile_size.x + 1) * (19 + j);
+            int y = (tile_size.x + 1) * (30 + i);
+            sf::Sprite charSprite = sf::Sprite(texture);
+            charSprite.setTextureRect({x, y, tile_size.x, tile_size.y});
+            charSprite.setScale(scale, scale);
+            charSprites.push_back(charSprite);
+        }
+    }
+
+    std::vector<sf::Sprite> numSprites;
+    for (int j = 0; j < 11; ++j) {
+        int x = (tile_size.x + 1) * (19 + j);
+        int y = (tile_size.y + 1) * (29);
+        sf::Sprite numSprite = sf::Sprite(texture);
+        numSprite.setTextureRect({x, y, tile_size.x, tile_size.y});
+        numSprite.setScale(scale, scale);
+        numSprites.push_back(numSprite);
+    }
+
+    RPG::TileOnMap::drawString(window, std::make_pair(0, 0), "choose level", charSprites);
+
+    for (int i = 0; i < levels.size(); ++i) {
+        RPG::TileOnMap::drawStringNumbers(window
+                                          , std::make_pair((i + 1) * 2, 0)
+                                          , RPG::levels[i]
+                                          , charSprites
+                                          , numSprites);
+    }
+
+    sf::Text comment;
+    comment.setFont(*text.getFont());
+    comment.setCharacterSize(RPG::font_size + 5);
+    std::ostringstream status;
+
+    status << "Enter level number" << std::endl;
+
+    comment.setString(status.str());
+    comment.setPosition(4 * tile_size.x * RPG::scale, (size.first - 1) * tile_size.y * RPG::scale);
+    comment.setFillColor(sf::Color::Green);
+    window.draw(comment);
+
+    window.display();
+
+    sf::Keyboard::Key choice;
+    int res = -1;
+    do {
+        choice = RPG::get_input(window);
+
+    } while ((sf::Keyboard::Num0 > choice || choice > (levels.size() + sf::Keyboard::Num0 - 1)) && choice != sf::Keyboard::Escape && choice != sf::Keyboard::Tilde);
+
+    window.close();
+    if (sf::Keyboard::Num0 <= choice && choice <= levels.size() + sf::Keyboard::Num0 - 1) {
+        res = choice - sf::Keyboard::Num0;
+    }
     return res;
 }
 

@@ -2,7 +2,7 @@
 
 namespace RPG {
 
-std::unordered_map<MED_KIT_HEALTH, std::string> TYPE_NAME_med = {{Basic, "Basic med"},
+std::unordered_map<MED_KIT_HEALTH, std::string> Medicine_Kit::TYPE_NAME_med = {{Basic, "Basic med"},
                                                                  {Army, "Army med"},
                                                                  {Scientific, "Scientific med"}};
 

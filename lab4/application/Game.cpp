@@ -16,7 +16,6 @@ static std::unordered_map<char, RPG::Direction> char_direction = {
 int Game::turn_operatives(sf::Keyboard::Key choice, sf::RenderWindow &window, int *diff) {
     int resTurn = 0;
     auto currOper = level->operatives.begin() + *diff;
-    std::cout << choice << std::endl;
     // e - end turn
     if (choice == sf::Keyboard::E) {
         return -100;

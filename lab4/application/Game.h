@@ -125,7 +125,7 @@ static sf::Keyboard::Key get_input(sf::RenderWindow& window) {
         if (event.type == sf::Event::KeyPressed) {
             return event.key.code;
         }
-    }while (true);
+    } while (true);
 }
 
 } // RPG

@@ -172,15 +172,14 @@ int Level::shoot(Wild* who, Direction where) {
             dynamic_cast<Operative*>(curr_unit)->put_all_items_from_inventory(map_);
             operatives.erase(std::find(operatives.begin(), operatives.end(), dynamic_cast<Operative*>(curr_unit)));
             delete dynamic_cast<Operative*>(curr_unit);
-            if (operatives.empty()) {
-                finish_flag = 2;
-            }
-        }
-        if (enemies.empty()) {
-            finish_flag = 1;
         }
     }
-
+    if (operatives.empty()) {
+        finish_flag = 2;
+    }
+    else if (enemies.empty()) {
+        finish_flag = 1;
+    }
     return (res_attack < 0 ? 0: res_attack);
 }
 

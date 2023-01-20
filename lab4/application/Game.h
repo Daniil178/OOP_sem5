@@ -112,6 +112,15 @@ protected:
     void wildTurn(Wild* currWild, sf::RenderWindow& window, sf::Texture& texture, sf::Text& text);
 
     /**
+     * @brief turn of all enemies with type == forager
+     * @param currForager current forager
+     * @param window window for draw map
+     * @param texture texture for draw map
+     * @param text text for draw map
+     */
+    void foragerTurn(Forager* currForager, sf::RenderWindow& window, sf::Texture& texture, sf::Text& text);
+
+    /**
      * @brief print all parameters of item
      * @param currItem ptr to needs item
      * @param window active window

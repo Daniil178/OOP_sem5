@@ -35,6 +35,26 @@ int Level::change_size(coordinate new_size) {
     return 0;
 }
 
+void Level::updateChests() {
+    std::vector<coordinate> deleteChests;
+    for (auto& chest: chestsCoord) {
+        if (map_[chest]->get_type() != Storage_point) {
+            deleteChests.push_back(chest);
+        }
+    }
+    for (auto& chestCoord: deleteChests) {
+        chestsCoord.erase(std::find(chestsCoord.begin(), chestsCoord.end(), chestCoord));
+    }
+}
+
+std::vector<coordinate> Level::getChestsCoord() const noexcept{
+    return chestsCoord;
+}
+
+[[nodiscard]] coordinate Level::getStorageCoord() const noexcept {
+    return storageCoord;
+}
+
 void Level::start(const std::string& path_to_map) {
     std::ifstream fin(path_to_map);
     if (fin.is_open()) {
@@ -45,13 +65,17 @@ void Level::start(const std::string& path_to_map) {
             for (int j = 0; j < size.second; ++j) {
                 if (str[j] == '.') {
                     map_[std::make_pair(i, j)] = new Cell(Floor);
-                } else if (str[j] == '#') {
+                }
+                else if (str[j] == '#') {
                     map_[std::make_pair(i, j)] = new Cell(Wall);
-                } else if (str[j] == '=') {
+                }
+                else if (str[j] == '=') {
                     map_[std::make_pair(i, j)] = new Cell(Partition);
-                } else if (str[j] == '-') {
+                }
+                else if (str[j] == '-') {
                     map_[std::make_pair(i, j)] = new Cell(Glass);
-                } else if (str[j] == ')') {
+                }
+                else if (str[j] == ')') {
                     int med_type = GetRandomNumber(0, 80), weapon_type = GetRandomNumber(0, 3);
                     auto med = (MED_KIT_HEALTH) ((med_type <= 20) ? 20 : ((med_type <= 50) ? 50 : 80));
 
@@ -73,20 +97,26 @@ void Level::start(const std::string& path_to_map) {
                                                  dynamic_cast<Item *>(cont)};
 
                     map_[std::make_pair(i, j)] = new Cell(Storage_point, items);
-                } else if ('a' <= str[j] and str[j] <= 'z') {
+                    chestsCoord.push_back(std::make_pair(i, j));
+                }
+                else if ('a' <= str[j] and str[j] <= 'i') {
                     map_[std::make_pair(i, j)] = new Cell(Floor);
                     operatives.push_back(new Operative(std::make_pair(i, j)
                                                        , new Weapon(AK_74, 10)
                                                        , "player"));
-                } else if ('W' == str[j]) {
+                }
+                else if ('W' == str[j]) {
                     map_[std::make_pair(i, j)] = new Cell(Floor);
                     enemies.push_back(dynamic_cast<Unit *>(new Wild("wild", std::make_pair(i, j))));
-                } else if ('R' == str[j]) {
+                }
+                else if ('R' == str[j]) {
                     map_[std::make_pair(i, j)] = new Cell(Floor);
                     enemies.push_back(dynamic_cast<Unit *>(new Rational("rational", std::make_pair(i, j))));
-                } else if ('F' == str[j]) {
+                }
+                else if ('F' == str[j]) {
                     map_[std::make_pair(i, j)] = new Cell(Floor);
                     enemies.push_back(dynamic_cast<Unit *>(new Forager("forager", std::make_pair(i, j))));
+                    storageCoord = std::make_pair(i, j);
                 }
             }
         }

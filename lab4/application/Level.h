@@ -60,6 +60,12 @@ public:
      * 0 - successfully step
      */
     int step_by_unit(Unit* who, Direction where);
+
+    void updateChests();
+
+    [[nodiscard]] std::vector<coordinate> getChestsCoord() const noexcept;
+
+    [[nodiscard]] coordinate getStorageCoord() const noexcept;
     /**
      * @brief initialize basic params
      * @param path_to_map (string) - path fo config file
@@ -103,6 +109,10 @@ protected:
      * 2 - lose
      */
     int finish_flag;
+
+    std::vector<coordinate> chestsCoord;
+
+    coordinate storageCoord;
 };
 
 } // RPG

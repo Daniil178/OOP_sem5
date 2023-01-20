@@ -290,6 +290,13 @@ int Game::turn_enemies(sf::RenderWindow& window, sf::Texture& texture, sf::Text&
         }
     }
     return 0;
+
+    for (auto& currEnemy: level->enemies) {
+        if (currEnemy->get_type() == FORAGER) {
+            foragerTurn(dynamic_cast<Forager*>(currEnemy), window, texture, text);
+        }
+    }
+    return 0;
 }
 
 void Game::wildTurn(Wild* currWild, sf::RenderWindow& window, sf::Texture& texture, sf::Text& text) {
@@ -302,10 +309,11 @@ void Game::wildTurn(Wild* currWild, sf::RenderWindow& window, sf::Texture& textu
     for (auto& operative : level->operatives) {
         operativesPos.push_back((*operative).get_position());
     }
-    int flagDie;
+    int flagDie, currTime;
     bool flagOperAround;
 
-    while(currWild->get_params().current_time > 0) {
+    do {
+        currTime = currWild->get_params().current_time;
         RPG::draw(window, texture, text, *level);
         flagOperAround = true;
         while (flagOperAround) {
@@ -420,7 +428,124 @@ void Game::wildTurn(Wild* currWild, sf::RenderWindow& window, sf::Texture& textu
                 }
             }
         }
-    }
+    } while (currTime - currWild->get_params().current_time > 0 && currWild->get_params().current_time > 0);
+}
+
+void Game::foragerTurn(Forager* currForager, sf::RenderWindow& window, sf::Texture& texture, sf::Text& text) {
+    int timeWait = 300;
+    currForager->update_time();
+    RPG::GenerateTables();
+    int currTimeBeforeTurn;
+    do {
+        currTimeBeforeTurn = currForager->get_params().current_time;
+        level->updateChests();
+        std::vector<coordinate> chests = level->getChestsCoord();
+        if (!chests.empty()) {
+            std::vector<std::vector<Direction>> path2Chests;
+            for (int i = 0; i < chests.size(); ++i) {
+                path2Chests.emplace_back();
+                pathToPoint(path2Chests[i], currForager->get_position(), chests[i]);
+            }
+            std::sort(path2Chests.begin(), path2Chests.end(),
+                      [](std::vector<Direction> &first, std::vector<Direction> &second) {
+                          return first.size() > second.size();
+                      }
+            );
+
+            int i = 0, currTime, chestsNum;
+            while (path2Chests[i].empty()) ++i;
+            do {
+                currTime = currForager->get_params().current_time;
+                chestsNum = chests.size();
+                std::vector<Direction> path = path2Chests[i];
+                for (auto &stepDirection: path) {
+                    level->step_by_unit(currForager, stepDirection);
+                    RPG::draw(window, texture, text, *level);
+                    std::this_thread::sleep_for(std::chrono::milliseconds( timeWait));
+                    if (currForager->get_params().current_time <= 0) break;
+                }
+                while (currForager->take_item_to_inventory(level->map_) == 0);
+                ++i;
+            } while ((currTime - currForager->get_params().current_time > 0) &&
+                     currForager->get_params().current_time > 0
+                     && (chestsNum - chests.size() > 0) && (i < path2Chests.size()));
+
+            if (currForager->get_params().current_time <= 0) break;
+        }
+        else {
+            // destroy all objects
+            RPG::coordinate c;
+            std::set<coordinate> visibleCells;
+            int x = currForager->get_position().first, y = currForager->get_position().second;
+            int height = level->get_size().first, width = level->get_size().second;
+            for (int i = 0; i < RPG::numOfRays; ++i) {
+                c = RPG::CastRay(y, height - x - 1
+                        , currForager->get_params().view_radius
+                        , i * RPG::graduate
+                        , height, width);
+
+                visibleCells = RPG::TileOnMap::LoS(level->map_
+                        , visibleCells
+                        , y, height - x - 1
+                        , c.first, c.second
+                        , height);
+            }
+
+            int timeBeforeActions = currForager->get_params().current_time;
+            for (auto currCellCoord: visibleCells) {
+                if (currForager->get_params().current_time <= 0
+                    || timeBeforeActions != currForager->get_params().current_time) break;
+
+                else if (level->map_[currCellCoord]->get_type() == Have_item && currCellCoord != level->getStorageCoord()) {
+                    std::vector<Direction> path2Cell;
+                    if (pathToPoint(path2Cell, currForager->get_position(), currCellCoord)) {
+                        for (auto whereStep: path2Cell) {
+                            if (currForager->get_params().current_time <= 0) break;
+                            level->step_by_unit(currForager, whereStep);
+                            RPG::draw(window, texture, text, *level);
+                            std::this_thread::sleep_for(std::chrono::milliseconds( timeWait));
+                        }
+                        while (currForager->take_item_to_inventory(level->map_) == 0);
+                    }
+                }
+            }
+            // go to random point
+            if (timeBeforeActions == currForager->get_params().current_time) {
+                if (currForager->get_params().current_time <= 0) break;
+                std::vector<coordinate> canGoCoord;
+                for (auto currCellCoord: visibleCells) {
+                    if (level->map_[currCellCoord]->can_go_through()) {
+                        canGoCoord.push_back(currCellCoord);
+                    }
+                }
+                coordinate goalCellCoord = canGoCoord[RPG::GetRandomNumber(0, canGoCoord.size())];
+                std::vector<Direction> path2Cell;
+                if (pathToPoint(path2Cell, currForager->get_position(), goalCellCoord)) {
+                    for (auto whereStep: path2Cell) {
+                        if (currForager->get_params().current_time <= 0) break;
+                        else level->step_by_unit(currForager, whereStep);
+                        RPG::draw(window, texture, text, *level);
+                        std::this_thread::sleep_for(std::chrono::milliseconds(timeWait));
+                    }
+                }
+            }
+        }
+        if (currForager->get_weight() > currForager->get_strength() * 0.9) {
+            std::vector<Direction> path2Storage;
+            pathToPoint(path2Storage, currForager->get_position(), level->getStorageCoord());
+            for (auto &stepDirection: path2Storage) {
+                level->step_by_unit(currForager, stepDirection);
+                RPG::draw(window, texture, text, *level);
+                std::this_thread::sleep_for(std::chrono::milliseconds( timeWait));
+                if (currForager->get_params().current_time <= 0) break;
+            }
+            if (currForager->get_position() == level->getStorageCoord()) {
+                currForager->put_all_items_from_inventory(level->map_);
+            }
+        }
+
+    } while ((currTimeBeforeTurn - currForager->get_params().current_time > 0) &&
+            currForager->get_params().current_time > 0);
 }
 
 bool Game::pathToPoint(std::vector<Direction> &path, coordinate from, coordinate to) {

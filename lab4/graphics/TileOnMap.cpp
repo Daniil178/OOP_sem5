@@ -96,13 +96,15 @@ void TileOnMap::load(RPG::Level &level, int currOperInd) {
     if (currOperInd >= (int) operatives.size()) {
         currOperInd -= (currOperInd - (int) operatives.size() + 1);
     }
+    int i = 1;
     for (auto &oper: operatives) {
         sf::Text text(text_);
         std::ostringstream status;
         status << "HP: " << oper->get_params().current_health << " / " << oper->get_params().max_health << "\n"
                << "Time: " << oper->get_params().current_time << " / " << oper->get_params().max_time << "\n"
                << "Ammo: " << oper->get_current_weapon()->get_ammo_num() << " / "
-               << oper->get_current_weapon()->get_params().bas_params.max_ammo << std::endl;
+               << oper->get_current_weapon()->get_params().bas_params.max_ammo
+               << "\n\n\t\t  " << i << std::endl;
         text.setString(status.str());
         text.setPosition(oper->get_position().second * tile_size.y * scale,
                          oper->get_position().first * tile_size.x * scale);
@@ -119,6 +121,7 @@ void TileOnMap::load(RPG::Level &level, int currOperInd) {
                                 oper->get_position().first * tile_size.x * scale);
         oper_sprite.setScale(scale, scale);
         sprite_units.push_back(oper_sprite);
+        ++i;
     }
 
     for (auto &enemy: enemies) {

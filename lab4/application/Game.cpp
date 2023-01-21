@@ -294,6 +294,11 @@ int Game::turn_enemies(sf::RenderWindow& window, sf::Texture& texture, sf::Text&
             foragerTurn(dynamic_cast<Forager*>(currEnemy), window, texture, text);
         }
     }
+    for (auto& currEnemy: level->enemies) {
+        if (currEnemy->get_type() == RATIONAL) {
+            rationalTurn(dynamic_cast<Rational*>(currEnemy), window, texture, text);
+        }
+    }
     return 0;
 }
 
@@ -413,7 +418,7 @@ void Game::wildTurn(Wild* currWild, sf::RenderWindow& window, sf::Texture& textu
                         canGoCoord.push_back(currCellCoord);
                     }
                 }
-                coordinate goalCellCoord = canGoCoord[RPG::GetRandomNumber(0, canGoCoord.size())];
+                coordinate goalCellCoord = canGoCoord[RPG::GetRandomNumber(0, (int) canGoCoord.size())];
                 std::vector<Direction> path2Cell;
                 if (pathToPoint(path2Cell, currWild->get_position(), goalCellCoord)) {
                     for (auto whereStep: path2Cell) {
@@ -438,7 +443,7 @@ void Game::foragerTurn(Forager* currForager, sf::RenderWindow& window, sf::Textu
         currTimeBeforeTurn = currForager->get_params().current_time;
         level->updateChests();
         std::vector<coordinate> chests = level->getChestsCoord();
-        if (!chests.empty()) {
+        if (!chests.empty() && currForager->get_weight() < currForager->get_strength() * 0.5) {
             std::vector<std::vector<Direction>> path2Chests;
             for (int i = 0; i < chests.size(); ++i) {
                 path2Chests.emplace_back();
@@ -457,7 +462,7 @@ void Game::foragerTurn(Forager* currForager, sf::RenderWindow& window, sf::Textu
             if (i < path2Chests.size()) {
                 do {
                     currTime = currForager->get_params().current_time;
-                    chestsNum = chests.size();
+                    chestsNum = (int) chests.size();
                     std::vector<Direction> path = path2Chests[i];
                     for (auto &stepDirection: path) {
                         level->step_by_unit(currForager, stepDirection);
@@ -485,7 +490,7 @@ void Game::foragerTurn(Forager* currForager, sf::RenderWindow& window, sf::Textu
 
             if (currForager->get_params().current_time <= 0) break;
         }
-        else {
+        else if (currForager->get_weight() < currForager->get_strength() * 0.5) {
             // find money
             RPG::coordinate c;
             std::set<coordinate> visibleCells;
@@ -531,7 +536,7 @@ void Game::foragerTurn(Forager* currForager, sf::RenderWindow& window, sf::Textu
                         canGoCoord.push_back(currCellCoord);
                     }
                 }
-                coordinate goalCellCoord = canGoCoord[RPG::GetRandomNumber(0, canGoCoord.size())];
+                coordinate goalCellCoord = canGoCoord[RPG::GetRandomNumber(0, (int) canGoCoord.size())];
                 std::vector<Direction> path2Cell;
                 if (pathToPoint(path2Cell, currForager->get_position(), goalCellCoord)) {
                     for (auto whereStep: path2Cell) {
@@ -543,7 +548,7 @@ void Game::foragerTurn(Forager* currForager, sf::RenderWindow& window, sf::Textu
                 }
             }
         }
-        if (currForager->get_weight() > currForager->get_strength() * 0.9) {
+        else {
             std::vector<Direction> path2Storage;
             pathToPoint(path2Storage, currForager->get_position(), level->getStorageCoord());
             for (auto &stepDirection: path2Storage) {
@@ -559,6 +564,159 @@ void Game::foragerTurn(Forager* currForager, sf::RenderWindow& window, sf::Textu
 
     } while ((currTimeBeforeTurn - currForager->get_params().current_time > 0) &&
             currForager->get_params().current_time > 0);
+}
+
+void Game::rationalTurn(Rational* currRational, sf::RenderWindow& window, sf::Texture& texture, sf::Text& text) {
+    int timeWait = 300;
+    currRational->update_time();
+    RPG::GenerateTables();
+    RPG::coordinate c;
+    std::set<coordinate> visibleCells;
+    int x, y;
+    int height = level->get_size().first, width = level->get_size().second;
+
+    std::vector<coordinate> operativesPos;
+    for (auto& operative : level->operatives) {
+        operativesPos.push_back((*operative).get_position());
+    }
+    int flagDie, currTime;
+    bool flagOperAround;
+
+    do {
+        currTime = currRational->get_params().current_time;
+        RPG::draw(window, texture, text, *level);
+        if (currRational->get_current_weapon() != nullptr && currRational->get_current_weapon()->get_ammo_num() > 0) {
+            flagOperAround = true;
+            while (flagOperAround) {
+                flagDie = 0;  // operator is live
+                for (auto operPos: operativesPos) {
+                    coordinate currPos = currRational->get_position();
+                    coordinate diffCoor = operPos - currPos;
+                    int distance = coord2Dir(diffCoor).second;
+                    coordinate diff = coord2Dir(diffCoor).first;
+                    // if operative around rational - attack
+                    if ((distance > 0 && distance <= currRational->get_range())
+                    && (diff == RPG_Object::DIR_POS[Left] || diff == RPG_Object::DIR_POS[Down]
+                        || diff == RPG_Object::DIR_POS[Up] || diff == RPG_Object::DIR_POS[Right])) {
+
+                        while (currRational->get_params().current_time > 0
+                        && currRational->get_current_weapon()->get_ammo_num() > 0
+                        && flagDie != 100) {
+                            flagDie = level->shoot(currRational, RPG_Object::POS_DIR[diff]);
+                            RPG::draw(window, texture, text, *level);
+                            std::this_thread::sleep_for(std::chrono::milliseconds( timeWait));
+                        }
+                        if (flagDie == 100) {
+                            operativesPos.erase(std::find(operativesPos.begin(), operativesPos.end(), operPos));
+                            break;
+                        }
+                    }
+                }
+                if (level->check_flag() > 0) break;
+                flagOperAround = false;
+
+                if (currRational->get_params().current_time <= 0 || currRational->get_current_weapon()->get_ammo_num() == 0) break;
+                for (auto operPos: operativesPos) {
+                    // if wild can see operative - go to him
+                    if (isSeeUnit(currRational->get_position(), operPos)) {
+                        std::vector<Direction> path2Oper;
+                        if (pathToPoint(path2Oper, currRational->get_position(), operPos)) {
+                            for (auto whereStep: path2Oper) {
+                                if (currRational->get_params().current_time <= 0) break;
+                                coordinate currPos = currRational->get_position();
+                                coordinate diffCoor = operPos - currPos;
+                                int distance = coord2Dir(diffCoor).second;
+                                coordinate diff = coord2Dir(diffCoor).first;
+
+                                if (diff == RPG_Object::DIR_POS[whereStep] && (distance > 0 && distance <= currRational->get_range())) {
+                                    level->shoot(currRational, whereStep);
+                                    flagOperAround = true;
+                                }
+                                else level->step_by_unit(currRational, whereStep);
+
+                                RPG::draw(window, texture, text, *level);
+                                std::this_thread::sleep_for(std::chrono::milliseconds( timeWait));
+                            }
+                        }
+                    }
+                    if (flagOperAround) break;
+                }
+            }
+            if (currRational->get_params().current_time <= 0 || level->check_flag() > 0) break;
+        }
+        if (currRational->get_current_weapon() != nullptr && currRational->get_current_weapon()->get_ammo_num() == 0) {
+            currRational->put_current_weapon(level->map_);
+        }
+        if (currRational->get_current_weapon() == nullptr) {
+
+            x = currRational->get_position().first;
+            y = currRational->get_position().second;
+            for (int i = 0; i < RPG::numOfRays; ++i) {
+                c = RPG::CastRay(y, height - x - 1, currRational->get_params().view_radius, i * RPG::graduate, height,
+                                 width);
+
+                visibleCells = RPG::TileOnMap::LoS(level->map_, visibleCells, y, height - x - 1, c.first, c.second,
+                                                   height);
+            }
+            for (auto& currCellCoord: visibleCells) {
+                if (currRational->get_params().current_time <= 0) break;
+                else if (level->map_[currCellCoord]->get_type() == Have_item
+                || level->map_[level->getStorageCoord()]->get_type() == Storage_point) {
+                    std::vector<Direction> path2Cell;
+                    if (pathToPoint(path2Cell, currRational->get_position(), currCellCoord)) {
+                        for (auto& whereStep: path2Cell) {
+                            if (currRational->get_params().current_time <= 0) break;
+                            level->step_by_unit(currRational, whereStep);
+                            RPG::draw(window, texture, text, *level);
+                            std::this_thread::sleep_for(std::chrono::milliseconds( timeWait));
+                        }
+                        currRational->take_weapon(level->map_);
+                    }
+                }
+            }
+            if (currRational->get_current_weapon() == nullptr
+            && level->map_[level->getStorageCoord()]->get_type() == Have_item) {
+                std::vector<Direction> path2Storage;
+                if (pathToPoint(path2Storage, currRational->get_position(), level->getStorageCoord())) {
+                    for (auto& whereStep: path2Storage) {
+                        if (currRational->get_params().current_time <= 0) break;
+                        level->step_by_unit(currRational, whereStep);
+                        RPG::draw(window, texture, text, *level);
+                        std::this_thread::sleep_for(std::chrono::milliseconds( timeWait));
+                    }
+                    currRational->take_weapon(level->map_);
+                }
+            }
+        }
+
+        x = currRational->get_position().first;
+        y = currRational->get_position().second;
+        for (int i = 0; i < RPG::numOfRays; ++i) {
+            c = RPG::CastRay(y, height - x - 1, currRational->get_params().view_radius, i * RPG::graduate, height,
+                             width);
+
+            visibleCells = RPG::TileOnMap::LoS(level->map_, visibleCells, y, height - x - 1, c.first, c.second,
+                                               height);
+        }
+        // go to random point
+        std::vector<coordinate> canGoCoord;
+        for (auto currCellCoord: visibleCells) {
+            if (level->map_[currCellCoord]->can_go_through()) {
+                canGoCoord.push_back(currCellCoord);
+            }
+        }
+        coordinate goalCellCoord = canGoCoord[RPG::GetRandomNumber(0, (int) canGoCoord.size())];
+        std::vector<Direction> path2Cell;
+        if (pathToPoint(path2Cell, currRational->get_position(), goalCellCoord)) {
+            for (auto whereStep: path2Cell) {
+                if (currRational->get_params().current_time <= 0) break;
+                else level->step_by_unit(currRational, whereStep);
+
+                RPG::draw(window, texture, text, *level);
+                std::this_thread::sleep_for(std::chrono::milliseconds(timeWait));
+            }
+        }
+    } while (currTime - currRational->get_params().current_time > 0 && currRational->get_params().current_time > 0);
 }
 
 bool Game::pathToPoint(std::vector<Direction> &path, coordinate from, coordinate to) {

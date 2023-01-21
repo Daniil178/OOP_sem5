@@ -29,24 +29,37 @@ int Rational::attack() {
     return 0;
 }
 
-int Rational::take_item(Item* item, Map& map_) {
+int Rational::take_weapon(Map& map_) {
+    std::vector<Weapon*> weapons = {new Weapon(RPK_74), new Weapon(AK_74)
+                                    , new Weapon(PM), new Weapon(TO3_34)};
 
-    if (item->get_type() != WEAPON) {
-        return -2; // bad type
+    Item* probably_weapon = nullptr;
+    for (auto& weapon : weapons) {
+        probably_weapon = map_[position]->take_item(dynamic_cast<Item*>(weapon));
+        if (probably_weapon != nullptr) break;
     }
-    Item* probably_weapon = map_[position]->take_item(item);
+
     if (probably_weapon == nullptr) {
+        for (auto currWeapon: weapons) {
+            delete currWeapon;
+        }
         return -1; // bad take
+    }
+    if (current_weapon != nullptr) {
+        (*this).put_current_weapon(map_);
     }
     current_weapon = dynamic_cast<Weapon*>(probably_weapon);
     damage = current_weapon->get_damage();
     range = current_weapon->get_params().bas_params.range;
     time_to_attack = current_weapon->time_to_shot();
+    for (auto currWeapon: weapons) {
+        delete currWeapon;
+    }
     return 0;
 }
 
-int Rational::put_item(Item* item, Map &map_) {
-    if (map_[position]->put_item(item)) {
+int Rational::put_current_weapon(RPG::Map &map_){
+    if (map_[position]->put_item(current_weapon)) {
         return -1; // bad put ?wtf?
     }
     current_weapon = nullptr;

@@ -57,6 +57,18 @@ static coordinate operator*(coordinate& frst, int& scnd) {
     return new_pos;
 }
 
+static std::pair<coordinate, int> coord2Dir(coordinate& coor) {
+    if (coor.first == 0 && coor.second != 0) {
+        return std::make_pair(std::make_pair(coor.first, coor.second / abs(coor.second)), abs(coor.second));
+    }
+    else if (coor.first != 0 && coor.second == 0) {
+        return std::make_pair(std::make_pair(coor.first / abs(coor.first), coor.second), abs(coor.first));
+    }
+    else {
+        return std::make_pair(coor, -1);
+    }
+}
+
 struct mhash {
     std::size_t operator()(std::pair <int, int> const &coor) const noexcept {
         std::size_t h1 = std::hash < int > {}(coor.first);

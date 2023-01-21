@@ -29,7 +29,7 @@ public:
      * -1 - not on floor, \n
      * 0 - successfully take
      */
-    int take_item(Item* item, Map& map_);
+    int take_weapon(Map& map_);
     /**
      * @brief put item on Floor
      * @param item (Item *) - ptr with similar item
@@ -37,7 +37,7 @@ public:
      * @return - -1 - don't put (?wtf? don't real), \n
      * 0 - successfully put
      */
-    int put_item(Item* item, Map& map_);
+    int put_current_weapon(Map& map_);
     /**
      * @brief method attack: loss time and check accuracy
      * @return int - result of attack: \n

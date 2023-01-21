@@ -84,7 +84,7 @@ protected:
     /**
      * @brief (const int) - strength - maximum of weight = 100 kg
      */
-    const int strength = 6000;
+    const int strength = 10000;
     /**
      * (Table *) - inventory with all items
      */

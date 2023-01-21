@@ -204,15 +204,15 @@ TEST(Test_rational, all_methods) {
     EXPECT_EQ(nullptr, rat.get_current_weapon());
     EXPECT_EQ(-1, rat.attack());
 
-    EXPECT_EQ(0, rat.take_item(pm, map_));
+    EXPECT_EQ(0, rat.take_weapon(map_));
     EXPECT_EQ(pm, rat.get_current_weapon());
     EXPECT_EQ(0, rat.attack());
     EXPECT_EQ(9, rat.get_params().current_time);
     EXPECT_EQ(4, rat.get_current_weapon()->get_ammo_num());
-    EXPECT_EQ(0, rat.put_item(rat.get_current_weapon(), map_));
+    EXPECT_EQ(0, rat.put_current_weapon(map_));
 
     EXPECT_EQ(nullptr, rat.get_current_weapon());
-    EXPECT_EQ(0, rat.take_item(pm1, map_));
+    EXPECT_EQ(0, rat.take_weapon(map_));
     EXPECT_EQ(-2, rat.attack());
 
     delete have_item;
@@ -418,7 +418,7 @@ TEST(Test_level, method_shoot_step) {
     level.map_[std::make_pair(2, 1)] = new Cell(Floor);
     level.map_[std::make_pair(0, 2)] = new Cell(Have_item, items);
     Weapon rpk(RPK_74);
-    EXPECT_EQ(0, dynamic_cast<Rational*>(level.enemies[1])->take_item(&rpk, level.map_));
+    EXPECT_EQ(0, dynamic_cast<Rational*>(level.enemies[1])->take_weapon(level.map_));
 
     EXPECT_EQ(100, level.operatives[0]->get_params().current_health);
     EXPECT_EQ(0, level.shoot(dynamic_cast<Wild*>(level.enemies[1]), Down));

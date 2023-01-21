@@ -76,7 +76,7 @@ int main() {
             } catch (exception &error) {
                 std::cout << "\n\t\tUnexpected error... " << error.what() << std::endl;
                 window.close();
-                continue;
+                break;
             }
         } while (!level->check_flag() && choice != sf::Keyboard::Tilde);
         if (level->check_flag() > 0) {

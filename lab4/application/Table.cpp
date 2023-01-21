@@ -62,8 +62,8 @@ Item* Table::get_item(Item* item) {
 }
 
 int Table::put_item(Item* item) {
-    inventory.push_back(item);
     weight += item->get_weight();
+    (*this).inventory.push_back(item);
     return 0;
 }
 

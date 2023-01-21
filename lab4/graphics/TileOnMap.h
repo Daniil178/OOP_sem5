@@ -26,7 +26,7 @@ class TileOnMap {
 public:
     TileOnMap(const sf::Texture &textures, const sf::Text &text, const sf::Vector2i &tile_size, float scale = 4.f);
 
-    void load(RPG::Level &level, int currOperInd);
+    void load(RPG::Level &level, int currOperInd = -1);
 
     void drawCells(sf::RenderWindow &window) const;
 

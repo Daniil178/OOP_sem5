@@ -93,6 +93,9 @@ void TileOnMap::load(RPG::Level &level, int currOperInd) {
     }
 
     RPG::coordinate sprite_coord;
+    if (currOperInd >= (int) operatives.size()) {
+        currOperInd -= (currOperInd - (int) operatives.size() + 1);
+    }
     for (auto &oper: operatives) {
         sf::Text text(text_);
         std::ostringstream status;
@@ -103,6 +106,8 @@ void TileOnMap::load(RPG::Level &level, int currOperInd) {
         text.setString(status.str());
         text.setPosition(oper->get_position().second * tile_size.y * scale,
                          oper->get_position().first * tile_size.x * scale);
+        text.setFillColor(sf::Color::White);
+
         if (currOperInd != -1 && operatives[currOperInd] == oper) {
             text.setFillColor(sf::Color::Red);
         }
@@ -124,7 +129,7 @@ void TileOnMap::load(RPG::Level &level, int currOperInd) {
                 break;
             }
         }
-        if (flag_see == false) {
+        if (!flag_see) {
             continue;
         }
 

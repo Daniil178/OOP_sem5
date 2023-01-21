@@ -30,7 +30,7 @@ struct basic_unit_parameters {
     int time_to_step = 1;
     int max_time = 10;
     int current_time = 10;
-    int view_radius = 3;
+    int view_radius = 4;
 };
 
 /**

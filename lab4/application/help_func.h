@@ -4,7 +4,6 @@
 #include <iostream>
 //#include <fstream>
 //#include <unordered_map>
-#include "my_unordered_map.hpp"
 #include <string>
 #include <vector>
 //#include <cstdlib>
@@ -18,6 +17,10 @@ using coordinate = std::pair<int, int>;
 
 static bool operator==(const coordinate &frst, const coordinate &scnd) {
     return ((frst.first == scnd.first) && (frst.second == scnd.second));
+}
+
+static bool operator!=(const coordinate &frst, const coordinate &scnd) {
+    return ((frst.first != scnd.first) || (frst.second != scnd.second));
 }
 
 

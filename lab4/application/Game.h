@@ -64,7 +64,7 @@ public:
      * @param text parameters of text
      * @return flag of result
      */
-    int helpMenu(sf::Texture& texture, sf::Text& text, bool pause = true);
+    static int helpMenu(sf::Texture& texture, sf::Text& text, bool pause = true);
 
     /**
      * @brief create menu with level choice
@@ -145,9 +145,9 @@ protected:
                      , int shift
                      , bool printOptions = true);
 
-    void manageMenu(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text, coordinate size);
-    void charactersMenu(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text, coordinate size);
-    void objectsMenu(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text, coordinate size);
+    static void manageMenu(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text, coordinate size);
+    static void charactersMenu(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text, coordinate size);
+    static void objectsMenu(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text, coordinate size);
 };
 
 /**

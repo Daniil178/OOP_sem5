@@ -910,13 +910,13 @@ int Game::helpMenu(sf::Texture& texture, sf::Text& text, bool pause) {
         std::ostringstream status;
 
         if (pause) {
-            status << "<- A\t\t\tPress enter or escape or tilde to continue\t\t\tD ->" << std::endl;
+            status << "--- A\t\t\t\t\tPress enter or escape or tilde to continue\t\t\t\t\tD ---" << std::endl;
         }
         else {
-            status << "<- A\t\t\tPress enter to continue\t\t\tD ->" << std::endl;
+            status << "--- A\t\t\t\t\t\t\t\tPress enter to continue\t\t\t\t\t\t\t\tD ---" << std::endl;
         }
         comment.setString(status.str());
-        comment.setPosition(tile_size.x * RPG::scale, (size.first - 1) * tile_size.y * RPG::scale);
+        comment.setPosition(tile_size.x * RPG::scale, (float) ((float) size.first - 0.5) * tile_size.y * RPG::scale);
         comment.setFillColor(sf::Color::Green);
         window.draw(comment);
 
@@ -936,9 +936,9 @@ int Game::helpMenu(sf::Texture& texture, sf::Text& text, bool pause) {
 
 void Game::manageMenu(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text, coordinate size) {
 
-    RPG::TileOnMap::drawStringNumbers(window, texture, std::make_pair(0, 0), "game control");
-    RPG::TileOnMap::drawStringNumbers(window, texture, std::make_pair(1, 3), "fight");
-    RPG::TileOnMap::drawStringNumbers(window, texture, std::make_pair((size.first - 4), 1), "inventory");
+    RPG::TileOnMap::drawStringNumbers(window, texture, std::make_pair(0, 1), "game control");
+    RPG::TileOnMap::drawStringNumbers(window, texture, std::make_pair(1, 4), "fight");
+    RPG::TileOnMap::drawStringNumbers(window, texture, std::make_pair((size.first - 3), 1), "inventory");
 
     sf::Text ruleFight, ruleInventory;
     ruleFight.setFont(*text.getFont());
@@ -959,18 +959,18 @@ void Game::manageMenu(sf::RenderWindow& window, sf::Texture& texture, sf::Text& 
     window.draw(ruleFight);
 
     ruleInventory.setFont(*text.getFont());
-    ruleInventory.setCharacterSize(RPG::font_size + 5);
+    ruleInventory.setCharacterSize(RPG::font_size + 4);
     statusInventory << "\tA, D - left, right\n\n"
                     << "\tEscape or Tilde - quit" << std::endl;
     ruleInventory.setString(statusInventory.str());
-    ruleInventory.setPosition(0, (size.first - 3) * tile_size.y * RPG::scale);
+    ruleInventory.setPosition(0, (size.first - 2) * tile_size.y * RPG::scale);
     window.draw(ruleInventory);
 
 }
 
 void Game::charactersMenu(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text, coordinate size) {
 
-    RPG::TileOnMap::drawStringNumbers(window, texture, std::make_pair(0, 0), "characters");
+    RPG::TileOnMap::drawStringNumbers(window, texture, std::make_pair(0, 2), "characters");
     std::vector<sf::Sprite> charactersSprites;
     sf::Sprite operative(texture), wild(texture), forager(texture), rational(texture);
     operative.setTextureRect({unit_tile_coords.at(OPERATIVE).first
@@ -993,13 +993,13 @@ void Game::charactersMenu(sf::RenderWindow& window, sf::Texture& texture, sf::Te
     std::ostringstream describe1, describe2, describe3, describe4;
 
     describe1 << "\nOperative - your character." << std::endl;
-    comment1.setString(describe1.str());
-    describe2 << "\nWild - basic enemy. Can attack in close distance." << std::endl;
-    comment2.setString(describe2.str());
-    describe3 << "\nForager - searches for and steals items, after which he takes them to the base." << std::endl;
-    comment3.setString(describe3.str());
-    describe4 << "\nRational - an enemy that can only attack with a weapon, but cannot reload it." << std::endl;
-    comment4.setString(describe4.str());
+    comments[0].setString(describe1.str());
+    describe2 << "\nWild - basic enemy.\nCan attack in close distance." << std::endl;
+    comments[1].setString(describe2.str());
+    describe3 << "\nForager - searches for and steals items,\nafter which he takes them to the base." << std::endl;
+    comments[2].setString(describe3.str());
+    describe4 << "\nRational - an enemy that can only attack with a weapon,\nbut cannot reload it." << std::endl;
+    comments[3].setString(describe4.str());
 
     for (int i = 2; i < size.first; i += 2) {
         charactersSprites[(i - 2) / 2].setPosition(0, i * tile_size.y * scale);
@@ -1014,24 +1014,30 @@ void Game::charactersMenu(sf::RenderWindow& window, sf::Texture& texture, sf::Te
 }
 
 void Game::objectsMenu(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text, coordinate size) {
-    RPG::TileOnMap::drawStringNumbers(window, texture, std::make_pair(0, 0), "objects");
+    RPG::TileOnMap::drawStringNumbers(window, texture, std::make_pair(0, 3), "objects");
     std::vector<sf::Sprite> objectsSprites;
     std::vector<sf::Text> comments;
 
-    int i = 2;
+//    int i = 2;
+    for (int j = 0; j < cell_tile_coords.size(); ++j) {
+        objectsSprites.emplace_back();
+        comments.emplace_back();
+    }
+
     for (auto& cell: cell_tile_coords) {
         sf::Sprite cellSprite(texture);
         cellSprite.setTextureRect({cell.second.first, cell.second.second
                                    , tile_size.x, tile_size.y});
-        cellSprite.setPosition(0, i * tile_size.y * scale);
+        cellSprite.setPosition(0, ((int) cell.first + 2) * tile_size.y * scale);
         cellSprite.setScale(scale, scale);
-        objectsSprites.push_back(cellSprite);
+        objectsSprites[(int) cell.first] = cellSprite;
 
         sf::Text comment;
         comment.setFont(*text.getFont());
         comment.setCharacterSize(RPG::font_size + 4);
-        comment.setPosition(2 * tile_size.x * scale, i * tile_size.y * scale);
-        ++i;
+        comment.setPosition(2 * tile_size.x * scale, ((int) cell.first + 2) * tile_size.y * scale);
+        comments[(int) cell.first] = comment;
+//        ++i;
     }
 
     std::ostringstream describeFloor, describeWall, describeGlass, describePartition, describeStorage, describeHave;
@@ -1040,16 +1046,16 @@ void Game::objectsMenu(sf::RenderWindow& window, sf::Texture& texture, sf::Text&
     comments[0].setString(describeFloor.str());
     describeWall << "\nWall - you can't see through it and can't destroy it." << std::endl;
     comments[1].setString(describeWall.str());
-    describeGlass << "\nGlass - you can see through it and can destroy it, but can't go through." << std::endl;
+    describeGlass << "\nGlass - you can see through it and can destroy it,\nbut can't go through." << std::endl;
     comments[2].setString(describeGlass.str());
-    describePartition << "\nPartition - you can't see through it, but can destroy it and can't go through." << std::endl;
+    describePartition << "\nPartition - you can't see through it,\nbut can destroy it and can't go through." << std::endl;
     comments[3].setString(describePartition.str());
-    describeStorage << "\nChest - inside is a weapon, ammo and a medicine kit. Disappears if you take everything." << std::endl;
+    describeStorage << "\nChest - inside is a weapon, ammo and a medicine kit.\nDisappears if you take everything." << std::endl;
     comments[4].setString(describeStorage.str());
     describeHave << "\nMoney - a cell that contains a valuable item." << std::endl;
     comments[5].setString(describeHave.str());
 
-    for (i = 0; i < objectsSprites.size(); ++i) {
+    for (int i = 0; i < objectsSprites.size(); ++i) {
         window.draw(objectsSprites[i]);
         window.draw(comments[i]);
     }
@@ -1066,7 +1072,7 @@ int Game::chooseLevel(sf::Texture& texture, sf::Text& text) {
         RPG::TileOnMap::drawFullRow(window, i, size.second, std::make_pair(0, 0), texture);
     }
 
-    RPG::TileOnMap::drawStringNumbers(window, texture, std::make_pair(0, 0), "choose level");
+    RPG::TileOnMap::drawStringNumbers(window, texture, std::make_pair(0, 1), "choose level");
 
     for (int i = 0; i < levels.size(); ++i) {
         RPG::TileOnMap::drawStringNumbers(window

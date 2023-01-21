@@ -886,42 +886,74 @@ int Game::helpMenu(sf::Texture& texture, sf::Text& text, bool pause) {
                                     , size.first * RPG::tile_size.x * RPG::scale)
             , "Help menu");
 
-    for (int i = 0; i < size.first; ++i) {
-        RPG::TileOnMap::drawFullRow(window, i, size.second, std::make_pair(0, 0), texture);
-    }
-
-    std::vector<sf::Sprite> charSprites;
-
-    for (int i = 0; i < 2; ++i) {
-        for (int j = 0; j < 13; ++j) {
-            int x = (tile_size.x + 1) * (19 + j);
-            int y = (tile_size.x + 1) * (30 + i);
-            sf::Sprite charSprite = sf::Sprite(texture);
-            charSprite.setTextureRect({x, y, tile_size.x, tile_size.y});
-            charSprite.setScale(scale, scale);
-            charSprites.push_back(charSprite);
+    int num = 0, res = 0;
+    sf::Keyboard::Key choice;
+    do {
+        for (int i = 0; i < size.first; ++i) {
+            RPG::TileOnMap::drawFullRow(window, i, size.second, std::make_pair(0, 0), texture);
         }
-    }
+    //    std::vector<std::function<void(sf::RenderWindow&, sf::Texture&, sf::Text&, coordinate)>> helpMenuFunctions =
+    //            {manageMenu, charactersMenu, objectsMenu};
+        if (num == 0) {
+            manageMenu(window, texture, text, size);
+        }
+        else if (num == 1) {
+            charactersMenu(window, texture, text, size);
+        }
+        else if (num == 2) {
+            objectsMenu(window, texture, text, size);
+        }
 
-    RPG::TileOnMap::drawString(window, std::make_pair(0, 0), "game control", charSprites);
+        sf::Text comment;
+        comment.setFont(*text.getFont());
+        comment.setCharacterSize(RPG::font_size + 4);
+        std::ostringstream status;
 
-    RPG::TileOnMap::drawString(window, std::make_pair(1, 3), "fight", charSprites);
+        if (pause) {
+            status << "<- A\t\t\tPress enter or escape or tilde to continue\t\t\tD ->" << std::endl;
+        }
+        else {
+            status << "<- A\t\t\tPress enter to continue\t\t\tD ->" << std::endl;
+        }
+        comment.setString(status.str());
+        comment.setPosition(tile_size.x * RPG::scale, (size.first - 1) * tile_size.y * RPG::scale);
+        comment.setFillColor(sf::Color::Green);
+        window.draw(comment);
 
-    RPG::TileOnMap::drawString(window, std::make_pair((size.first - 4), 1), "inventory", charSprites);
+        window.display();
+        choice = RPG::get_input(window);
+        if (sf::Keyboard::A == choice) {
+            num = (num > 0) ? num - 1 : 2;
+        }
+        else if (sf::Keyboard::D == choice) {
+            num = (num + 1) % 3;
+        }
+    } while (choice != sf::Keyboard::Enter && choice != sf::Keyboard::Escape && choice != sf::Keyboard::Tilde);
+    window.close();
+    if (choice == sf::Keyboard::Enter) res = 1;
+    return res;
+}
+
+void Game::manageMenu(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text, coordinate size) {
+
+    RPG::TileOnMap::drawStringNumbers(window, texture, std::make_pair(0, 0), "game control");
+    RPG::TileOnMap::drawStringNumbers(window, texture, std::make_pair(1, 3), "fight");
+    RPG::TileOnMap::drawStringNumbers(window, texture, std::make_pair((size.first - 4), 1), "inventory");
 
     sf::Text ruleFight, ruleInventory;
     ruleFight.setFont(*text.getFont());
     ruleFight.setCharacterSize(RPG::font_size + 5);
     std::ostringstream statusFight, statusInventory;
     statusFight << "\tA, W, S, D - left, up, down, right\n\n"
-    << "\tG - take item\n\n"
-    << "\tF - shoot (before that you need choice direction)\n\n"
-    << "\tR - reload\n\n"
-    << "\tQ - heal (choice the biggest medicine kit)\n\n"
-    << "\t1, 2, .., 9 - choice active operative\n\n"
-    << "\tI - open inventory mode\n\n"
-    << "\tEscape - open help menu, "
-    << "\tTilde - quit from game" << std::endl;
+                << "\tG - take item\n\n"
+                << "\tF - shoot (before that you need choice direction)\n\n"
+                << "\tR - reload\n\n"
+                << "\tQ - heal (choice the biggest medicine kit)\n\n"
+                << "\t1, 2, .., 9 - choice active operative\n\n"
+                << "\tI - open inventory mode\n\n"
+                << "\tE - change turn\n\n"
+                << "\tEscape - open help menu, "
+                << "\tTilde - quit from game" << std::endl;
     ruleFight.setString(statusFight.str());
     ruleFight.setPosition(0, 2 * tile_size.y * RPG::scale);
     window.draw(ruleFight);
@@ -929,37 +961,98 @@ int Game::helpMenu(sf::Texture& texture, sf::Text& text, bool pause) {
     ruleInventory.setFont(*text.getFont());
     ruleInventory.setCharacterSize(RPG::font_size + 5);
     statusInventory << "\tA, D - left, right\n\n"
-           << "\tEscape or Tilde - quit" << std::endl;
+                    << "\tEscape or Tilde - quit" << std::endl;
     ruleInventory.setString(statusInventory.str());
     ruleInventory.setPosition(0, (size.first - 3) * tile_size.y * RPG::scale);
     window.draw(ruleInventory);
 
-    sf::Text comment;
-    comment.setFont(*text.getFont());
-    comment.setCharacterSize(RPG::font_size + 5);
-    std::ostringstream status;
+}
 
-    if (pause) {
-        status << "Press enter or escape or tilde to continue" << std::endl;
+void Game::charactersMenu(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text, coordinate size) {
+
+    RPG::TileOnMap::drawStringNumbers(window, texture, std::make_pair(0, 0), "characters");
+    std::vector<sf::Sprite> charactersSprites;
+    sf::Sprite operative(texture), wild(texture), forager(texture), rational(texture);
+    operative.setTextureRect({unit_tile_coords.at(OPERATIVE).first
+                              , unit_tile_coords.at(OPERATIVE).second
+                              , tile_size.x, tile_size.y});
+    wild.setTextureRect({unit_tile_coords.at(WILD).first
+                              , unit_tile_coords.at(WILD).second
+                              , tile_size.x, tile_size.y});
+    forager.setTextureRect({unit_tile_coords.at(FORAGER).first
+                              , unit_tile_coords.at(FORAGER).second
+                              , tile_size.x, tile_size.y});
+    rational.setTextureRect({unit_tile_coords.at(RATIONAL).first
+                              , unit_tile_coords.at(RATIONAL).second
+                              , tile_size.x, tile_size.y});
+    charactersSprites.push_back(operative), charactersSprites.push_back(wild);
+    charactersSprites.push_back(forager), charactersSprites.push_back(rational);
+
+    sf::Text comment1, comment2, comment3, comment4;
+    std::vector<sf::Text> comments = {comment1, comment2, comment3, comment4};
+    std::ostringstream describe1, describe2, describe3, describe4;
+
+    describe1 << "\nOperative - your character." << std::endl;
+    comment1.setString(describe1.str());
+    describe2 << "\nWild - basic enemy. Can attack in close distance." << std::endl;
+    comment2.setString(describe2.str());
+    describe3 << "\nForager - searches for and steals items, after which he takes them to the base." << std::endl;
+    comment3.setString(describe3.str());
+    describe4 << "\nRational - an enemy that can only attack with a weapon, but cannot reload it." << std::endl;
+    comment4.setString(describe4.str());
+
+    for (int i = 2; i < size.first; i += 2) {
+        charactersSprites[(i - 2) / 2].setPosition(0, i * tile_size.y * scale);
+        charactersSprites[(i - 2) / 2].setScale(scale, scale);
+        comments[(i - 2) / 2].setFont(*text.getFont());
+        comments[(i - 2) / 2].setCharacterSize(RPG::font_size + 4);
+        comments[(i - 2) / 2].setPosition(2 * tile_size.x * scale, i * tile_size.y * scale);
+        window.draw(charactersSprites[(i - 2) / 2]);
+        window.draw(comments[(i - 2) / 2]);
     }
-    else {
-        status << "Press enter to continue" << std::endl;
+
+}
+
+void Game::objectsMenu(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text, coordinate size) {
+    RPG::TileOnMap::drawStringNumbers(window, texture, std::make_pair(0, 0), "objects");
+    std::vector<sf::Sprite> objectsSprites;
+    std::vector<sf::Text> comments;
+
+    int i = 2;
+    for (auto& cell: cell_tile_coords) {
+        sf::Sprite cellSprite(texture);
+        cellSprite.setTextureRect({cell.second.first, cell.second.second
+                                   , tile_size.x, tile_size.y});
+        cellSprite.setPosition(0, i * tile_size.y * scale);
+        cellSprite.setScale(scale, scale);
+        objectsSprites.push_back(cellSprite);
+
+        sf::Text comment;
+        comment.setFont(*text.getFont());
+        comment.setCharacterSize(RPG::font_size + 4);
+        comment.setPosition(2 * tile_size.x * scale, i * tile_size.y * scale);
+        ++i;
     }
-    comment.setString(status.str());
-    comment.setPosition(4 * tile_size.x * RPG::scale, (size.first - 1) * tile_size.y * RPG::scale);
-    comment.setFillColor(sf::Color::Green);
-    window.draw(comment);
 
-    window.display();
-    sf::Keyboard::Key choice;
-    int res = 0;
-    do {
-        choice = RPG::get_input(window);
+    std::ostringstream describeFloor, describeWall, describeGlass, describePartition, describeStorage, describeHave;
 
-    } while (choice != sf::Keyboard::Enter && choice != sf::Keyboard::Escape && choice != sf::Keyboard::Tilde);
-    window.close();
-    if (choice == sf::Keyboard::Enter) res = 1;
-    return res;
+    describeFloor << "\nThis is floor." << std::endl;
+    comments[0].setString(describeFloor.str());
+    describeWall << "\nWall - you can't see through it and can't destroy it." << std::endl;
+    comments[1].setString(describeWall.str());
+    describeGlass << "\nGlass - you can see through it and can destroy it, but can't go through." << std::endl;
+    comments[2].setString(describeGlass.str());
+    describePartition << "\nPartition - you can't see through it, but can destroy it and can't go through." << std::endl;
+    comments[3].setString(describePartition.str());
+    describeStorage << "\nChest - inside is a weapon, ammo and a medicine kit. Disappears if you take everything." << std::endl;
+    comments[4].setString(describeStorage.str());
+    describeHave << "\nMoney - a cell that contains a valuable item." << std::endl;
+    comments[5].setString(describeHave.str());
+
+    for (i = 0; i < objectsSprites.size(); ++i) {
+        window.draw(objectsSprites[i]);
+        window.draw(comments[i]);
+    }
 }
 
 int Game::chooseLevel(sf::Texture& texture, sf::Text& text) {
@@ -973,37 +1066,13 @@ int Game::chooseLevel(sf::Texture& texture, sf::Text& text) {
         RPG::TileOnMap::drawFullRow(window, i, size.second, std::make_pair(0, 0), texture);
     }
 
-    std::vector<sf::Sprite> charSprites;
-
-    for (int i = 0; i < 2; ++i) {
-        for (int j = 0; j < 13; ++j) {
-            int x = (tile_size.x + 1) * (19 + j);
-            int y = (tile_size.x + 1) * (30 + i);
-            sf::Sprite charSprite = sf::Sprite(texture);
-            charSprite.setTextureRect({x, y, tile_size.x, tile_size.y});
-            charSprite.setScale(scale, scale);
-            charSprites.push_back(charSprite);
-        }
-    }
-
-    std::vector<sf::Sprite> numSprites;
-    for (int j = 0; j < 11; ++j) {
-        int x = (tile_size.x + 1) * (19 + j);
-        int y = (tile_size.y + 1) * (29);
-        sf::Sprite numSprite = sf::Sprite(texture);
-        numSprite.setTextureRect({x, y, tile_size.x, tile_size.y});
-        numSprite.setScale(scale, scale);
-        numSprites.push_back(numSprite);
-    }
-
-    RPG::TileOnMap::drawString(window, std::make_pair(0, 0), "choose level", charSprites);
+    RPG::TileOnMap::drawStringNumbers(window, texture, std::make_pair(0, 0), "choose level");
 
     for (int i = 0; i < levels.size(); ++i) {
         RPG::TileOnMap::drawStringNumbers(window
+                                          , texture
                                           , std::make_pair((i + 1) * 2, 0)
-                                          , RPG::levels[i]
-                                          , charSprites
-                                          , numSprites);
+                                          , RPG::levels[i]);
     }
 
     sf::Text comment;

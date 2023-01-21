@@ -246,24 +246,30 @@ void TileOnMap::drawInventory(sf::RenderWindow &window, std::vector<sf::Sprite>&
     }
 }
 
-void TileOnMap::drawString(sf::RenderWindow& window
-        , coordinate startPoint
-        , std::string message
-        , std::vector<sf::Sprite>& charSprites) {
+void TileOnMap::drawStringNumbers(sf::RenderWindow &window, sf::Texture& texture
+                                  , coordinate startPoint, std::string message) {
 
-    int i = startPoint.second;
-    for (auto char_ : message) {
-        ++i;
-        if (char_ != ' ') {
-            sf::Sprite sprite = charSprites[(int) (char_ - 'a')];
-            sprite.setPosition(i * RPG::tile_size.y * RPG::scale, startPoint.first * RPG::tile_size.x * RPG::scale);
-            window.draw(sprite);
+    std::vector<sf::Sprite> charSprites;
+    for (int i = 0; i < 2; ++i) {
+        for (int j = 0; j < 13; ++j) {
+            int x = (RPG::tile_size.x + 1) * (19 + j);
+            int y = (RPG::tile_size.x + 1) * (30 + i);
+            sf::Sprite charSprite = sf::Sprite(texture);
+            charSprite.setTextureRect({x, y, RPG::tile_size.x, RPG::tile_size.y});
+            charSprite.setScale(RPG::scale, RPG::scale);
+            charSprites.push_back(charSprite);
         }
     }
-}
 
-void TileOnMap::drawStringNumbers(sf::RenderWindow &window, coordinate startPoint, std::string message,
-                                  std::vector<sf::Sprite> &charSprites, std::vector<sf::Sprite> &numSprites) {
+    std::vector<sf::Sprite> numSprites;
+    for (int j = 0; j < 11; ++j) {
+        int x = (RPG::tile_size.x + 1) * (19 + j);
+        int y = (RPG::tile_size.y + 1) * (29);
+        sf::Sprite numSprite = sf::Sprite(texture);
+        numSprite.setTextureRect({x, y, RPG::tile_size.x, RPG::tile_size.y});
+        numSprite.setScale(RPG::scale, RPG::scale);
+        numSprites.push_back(numSprite);
+    }
 
     int i = startPoint.second;
     for (auto char_ : message) {

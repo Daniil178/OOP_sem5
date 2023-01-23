@@ -53,8 +53,9 @@ int Game::turn_operatives(sf::Keyboard::Key choice, sf::RenderWindow &window, in
     else if (choice == sf::Keyboard::I) {
         resTurn = 77;
     }
-    else if (sf::Keyboard::Num1 <= choice and choice <= sf::Keyboard::Num9) {
-        int oper_num = choice - sf::Keyboard::Num1;
+    else if ((sf::Keyboard::Num1 <= choice and choice <= sf::Keyboard::Num9)
+            or (sf::Keyboard::Numpad1 <= choice and choice <= sf::Keyboard::Numpad9)) {
+        int oper_num = (choice > sf::Keyboard::Numpad0) ? choice - sf::Keyboard::Numpad1 : choice - sf::Keyboard::Num1;
         if (oper_num >= 0 and oper_num < level->operatives.size()) {
             *diff = oper_num;
             //currOper = level.operatives.begin() + oper_num;
@@ -617,7 +618,7 @@ void Game::rationalTurn(Rational* currRational, sf::RenderWindow& window, sf::Te
 
                 if (currRational->get_params().current_time <= 0 || currRational->get_current_weapon()->get_ammo_num() == 0) break;
                 for (auto operPos: operativesPos) {
-                    // if wild can see operative - go to him
+                    // if rational can see operative - go to him
                     if (isSeeUnit(currRational->get_position(), operPos)) {
                         std::vector<Direction> path2Oper;
                         if (pathToPoint(path2Oper, currRational->get_position(), operPos)) {
@@ -628,7 +629,9 @@ void Game::rationalTurn(Rational* currRational, sf::RenderWindow& window, sf::Te
                                 int distance = coord2Dir(diffCoor).second;
                                 coordinate diff = coord2Dir(diffCoor).first;
 
-                                if (diff == RPG_Object::DIR_POS[whereStep] && (distance > 0 && distance <= currRational->get_range())) {
+                                if (diff == RPG_Object::DIR_POS[whereStep]
+                                && (distance > 0 && distance <= currRational->get_range())
+                                && isSeeUnit(currPos, operPos)) {
                                     level->shoot(currRational, whereStep);
                                     flagOperAround = true;
                                 }
@@ -802,7 +805,7 @@ bool Game::pathToPoint(std::vector<Direction> &path, coordinate from, coordinate
 
     coorPath[0] = from;
 
-    // заполнение пути для юнита
+    // заполнение пути для персонажа
     for (int i = 0; i < len; ++i) {
         if (coorPath[i] + RPG_Object::DIR_POS[Left] == coorPath[i + 1]) {
             path.push_back(Left);
@@ -1100,11 +1103,15 @@ int Game::chooseLevel(sf::Texture& texture, sf::Text& text) {
     do {
         choice = RPG::get_input(window);
 
-    } while ((sf::Keyboard::Num0 > choice || choice > (levels.size() + sf::Keyboard::Num0 - 1)) && choice != sf::Keyboard::Escape && choice != sf::Keyboard::Tilde);
+    } while ((sf::Keyboard::Num0 > choice || choice > (levels.size() + sf::Keyboard::Num0 - 1))
+    && (sf::Keyboard::Numpad0 > choice || choice > (levels.size() + sf::Keyboard::Numpad0 - 1))
+    && choice != sf::Keyboard::Escape
+    && choice != sf::Keyboard::Tilde);
 
     window.close();
-    if (sf::Keyboard::Num0 <= choice && choice <= levels.size() + sf::Keyboard::Num0 - 1) {
-        res = choice - sf::Keyboard::Num0;
+    if ((sf::Keyboard::Num0 <= choice && choice <= levels.size() + sf::Keyboard::Num0 - 1)
+    || (sf::Keyboard::Numpad0 <= choice && choice <= levels.size() + sf::Keyboard::Numpad0 - 1)) {
+        res = (choice >= sf::Keyboard::Numpad0) ? choice - sf::Keyboard::Numpad0 : choice - sf::Keyboard::Num0;
     }
     return res;
 }

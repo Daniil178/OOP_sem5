@@ -73,7 +73,7 @@ public:
      * @return flag of result
      */
     static int chooseLevel(sf::Texture& texture, sf::Text& text);
-
+    static int saveMenu(std::string message, sf::Texture& texture, sf::Text& text);
     /**
      * @brief free pointer of level
      */
@@ -148,6 +148,7 @@ protected:
     static void manageMenu(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text, coordinate size);
     static void charactersMenu(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text, coordinate size);
     static void objectsMenu(sf::RenderWindow& window, sf::Texture& texture, sf::Text& text, coordinate size);
+
 };
 
 /**

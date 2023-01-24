@@ -29,8 +29,7 @@ int main() {
         int save = 1;
         if (fin.is_open()) {
             fin.close();
-            std::cout << "\t\tYou have saved level. Would you like load it?\n";
-            RPG::get_int("\t\t0 - yes, 1 - no\n", save, 0, 1);
+            save = RPG::Game::saveMenu("You have saved level. Would you like load it?", texture, text);
         }
         auto *level = new RPG::Level();
         if (save == 0) {
@@ -57,9 +56,8 @@ int main() {
                         choice = RPG::get_input(window);
                         //~ - exit to main menu
                         if (choice == sf::Keyboard::Tilde) {
-                            int saveLevel = 0;
-                            std::cout << "would you like save this level?\n(other save will be delete)" << std::endl;
-                            RPG::get_int("0 - yes, 1 - no\n", saveLevel, 0, 1);
+                            int saveLevel;
+                            saveLevel = RPG::Game::saveMenu("Save this level? (other save will be delete)", texture, text);
                             if (saveLevel == 0) level->save(RPG::save_path);
                             window.close();
                             break;

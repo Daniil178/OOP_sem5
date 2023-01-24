@@ -1062,6 +1062,57 @@ void Game::objectsMenu(sf::RenderWindow& window, sf::Texture& texture, sf::Text&
     }
 }
 
+int Game::saveMenu(std::string message, sf::Texture& texture, sf::Text& text) {
+    coordinate size = std::make_pair(6, 10);
+    int res = 0;
+    sf::RenderWindow window(sf::VideoMode(size.second * RPG::tile_size.y * RPG::scale
+                                    , size.first * RPG::tile_size.x * RPG::scale)
+            , "Configuration level");
+
+    for (int i = 0; i < size.first; ++i) {
+        RPG::TileOnMap::drawFullRow(window, i, size.second, std::make_pair(0, 0), texture);
+    }
+
+    sf::Text mainText(text), yesText(text), noText(text), helpText(text);
+    std::ostringstream status, yesStr, noStr, helpStr;
+    status << message << std::endl;
+    mainText.setString(status.str());
+    mainText.setPosition((size.first / 4) * tile_size.y * scale,
+                     (size.second / 4) * tile_size.x * scale);
+    window.draw(mainText);
+
+    yesStr << "Yes" << std::endl;
+    yesText.setString(yesStr.str());
+    noStr << "No" << std::endl;
+    noText.setString(noStr.str());
+    helpStr << "Enter 'enter' to confirm" << std::endl;
+    helpText.setString(helpStr.str());
+    helpText.setPosition((size.first - 1) * RPG::tile_size.x * RPG::scale
+                         , ((size.second- 6) / 2) * RPG::tile_size.y * RPG::scale);
+    helpText.setFillColor(sf::Color::Yellow);
+    window.draw(helpText);
+
+    sf::Keyboard::Key choice;
+    do {
+        if (res == 0) {
+            yesText.setFillColor(sf::Color::Green);
+        }
+        else {
+            noText.setFillColor(sf::Color::Green);
+        }
+        window.draw(yesText);
+        window.draw(noText);
+        window.display();
+        choice = RPG::get_input(window);
+        if (choice == sf::Keyboard::A || choice == sf::Keyboard::D) {
+            res ^= 1;
+        }
+    } while(choice != sf::Keyboard::Enter);
+
+    window.close();
+    return res;
+}
+
 int Game::chooseLevel(sf::Texture& texture, sf::Text& text) {
 
     coordinate size = std::make_pair(RPG::levels.size() * 2 + 4, 14);

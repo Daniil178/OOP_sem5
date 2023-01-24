@@ -20,7 +20,7 @@ Operative::Operative(coordinate position, Weapon* basic_weapon
                                         Unit(std::move(name), OPERATIVE, position),
                                         Forager(std::move(name), position, items),
                                         Rational(std::move(name), position),
-                                        time_to_reload(basic_weapon->get_params().bas_params.reload_time),
+                                        time_to_reload(basic_weapon->get_params().bas_params.reload_time)
 {
     current_weapon = basic_weapon;
     damage = current_weapon->get_damage();

@@ -241,7 +241,11 @@ void Level::save(const std::string& savePath) {
             UNIT_TYPE type = currEnemy->get_type();
             if (type == RATIONAL) {
                 Weapon *currWeapon = dynamic_cast<Rational*>(currEnemy)->get_current_weapon();
-                fout << currWeapon->get_type() << " " << currWeapon->get_ammo_num() << "\n";
+                if (currWeapon == nullptr) fout << 0 << "\n";
+                else {
+                    fout << 1 << "\n";
+                    fout << currWeapon->get_type() << " " << currWeapon->get_ammo_num() << "\n";
+                }
             }
             else if (type == FORAGER) {
                 auto forager = dynamic_cast<Forager*>(currEnemy);
@@ -313,7 +317,7 @@ void Level::load(const std::string& loadPath) {
             for (int j = 0; j < size.second; ++j) {
                 if (str[j] == '.' || str[j] == 'W' || str[j] == 'R' || str[j] == 'F'
                 || ('a' <= str[j] && str[j] <= 'i')) {
-                    if (map_[std::make_pair(i, j)]->get_type() != Floor) continue;
+                    if (map_[std::make_pair(i, j)] != nullptr) continue;
                     map_[std::make_pair(i, j)] = new Cell(Floor);
                 }
                 else if (str[j] == '#') {
@@ -388,10 +392,20 @@ void Level::load(const std::string& loadPath) {
                 wild->setParams(health, time);
                 enemies.push_back(dynamic_cast<Unit *>(wild));
             } else if (typeEnemy == RATIONAL) {
-                int typeWeapon, ammoNum;
-                fin >> typeWeapon >> ammoNum;
-                auto currWeapon = new Weapon((WEAPON_TYPE) typeWeapon, ammoNum);
-                auto rational = new Rational("rational", std::make_pair(x, y), currWeapon);
+                int typeWeapon, ammoNum, flag;
+                fin >> flag;
+                Weapon* currWeapon = nullptr;
+                if (flag > 0) {
+                    fin >> typeWeapon >> ammoNum;
+                    currWeapon = new Weapon((WEAPON_TYPE) typeWeapon, ammoNum);
+                }
+                Rational* rational;
+                if (currWeapon != nullptr) {
+                    rational = new Rational("rational", std::make_pair(x, y), currWeapon);
+                }
+                else {
+                    rational = new Rational("rational", std::make_pair(x, y));
+                }
                 rational->setParams(health, time);
                 enemies.push_back(dynamic_cast<Unit *>(rational));
             } else if (typeEnemy == FORAGER) {

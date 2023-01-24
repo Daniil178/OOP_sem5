@@ -29,7 +29,8 @@ int main() {
         int save = 1;
         if (fin.is_open()) {
             fin.close();
-            RPG::get_int("\t\tYou have saved level. Would you like load it?\n\t\t0 - yes, 1 - no", save, 0, 1);
+            std::cout << "\t\tYou have saved level. Would you like load it?\n";
+            RPG::get_int("\t\t0 - yes, 1 - no\n", save, 0, 1);
         }
         auto *level = new RPG::Level();
         if (save == 0) {
@@ -56,7 +57,10 @@ int main() {
                         choice = RPG::get_input(window);
                         //~ - exit to main menu
                         if (choice == sf::Keyboard::Tilde) {
-                            level->save(RPG::save_path);
+                            int saveLevel = 0;
+                            std::cout << "would you like save this level?\n(other save will be delete)" << std::endl;
+                            RPG::get_int("0 - yes, 1 - no\n", saveLevel, 0, 1);
+                            if (saveLevel == 0) level->save(RPG::save_path);
                             window.close();
                             break;
                         } else if (choice == sf::Keyboard::Escape) {
@@ -98,7 +102,6 @@ int main() {
             } else if (level->check_flag() == 2) {
                 res = RPG::TileOnMap::drawMessage(texture, RPG::tile_size, "you lose", text);
             }
-            if (res == 1) delete level;
         }
     } while (res == 1);
     return 0;

@@ -5,6 +5,18 @@
 
 namespace RPG {
 
+std::unordered_map<CELL_TYPE, char> Level::cell2Char = {{Floor, '.'}
+                                                                    , {Wall, '#'}
+                                                                    , {Glass, '-'}
+                                                                    , {Partition, '='}
+                                                                    , {Storage_point, ')'}
+                                                                    , {Have_item, '('}};
+
+std::unordered_map<UNIT_TYPE, char> Level::enemy2Char = {{WILD, 'W'}
+                                                                , {FORAGER, 'F'}
+                                                                , {RATIONAL, 'R'}};
+
+
 Level::Level(): size(std::make_pair(0, 0)), finish_flag(0) {
 //    enemies = std::vector<Unit*>();
 //    operatives = std::vector<Operative*>();
@@ -97,7 +109,7 @@ void Level::start(const std::string& path_to_map) {
                                                  dynamic_cast<Item *>(cont)};
 
                     map_[std::make_pair(i, j)] = new Cell(Storage_point, items);
-                    chestsCoord.push_back(std::make_pair(i, j));
+                    chestsCoord.emplace_back(i, j);
                 }
                 else if ('a' <= str[j] and str[j] <= 'i') {
                     map_[std::make_pair(i, j)] = new Cell(Floor);
@@ -122,6 +134,298 @@ void Level::start(const std::string& path_to_map) {
         }
     }
     fin.close();
+    finish_flag = 0;
+}
+
+void Level::save(const std::string& savePath) {
+    const std::string saveCell = "cells";
+    const std::string saveOperatives = "operatives";
+    const std::string saveEnemies = "enemies";
+    const std::string saveMap = "map";
+    std::string mapInfo;
+//    std::ifstream fin(path_to_map);
+
+    int numOper = 0, numCells = 0;
+    std::string operName = "abcdefghi";
+    for (int i = 0; i < size.first; ++i) {
+        for (int j = 0; j < size.second; ++j) {
+            mapInfo += cell2Char[map_[std::make_pair(i, j)]->get_type()];
+            if (map_[std::make_pair(i, j)]->get_type() == Have_item
+            || map_[std::make_pair(i, j)]->get_type() == Storage_point) {
+                ++numCells;
+            }
+        }
+        mapInfo += "\n";
+    }
+    for (auto& currEnemy: enemies) {
+        int x = currEnemy->get_position().first, y = currEnemy->get_position().second;
+        mapInfo[x * (size.second + 1) + y] = enemy2Char[currEnemy->get_type()];
+    }
+    for (auto& currOper: operatives) {
+        int x = currOper->get_position().first, y = currOper->get_position().second;
+        mapInfo[x * (size.second + 1) + y] = operName[numOper];
+        ++numOper;
+    }
+    std::ofstream fout(savePath + saveMap + ".txt");
+    if (fout.is_open()) {
+        fout << size.first << " " << size.second << "\n" << mapInfo;
+    }
+    fout.close();
+
+    fout.open(savePath + saveCell + ".txt");
+    if (fout.is_open()) {
+        fout << numCells << "\n";
+        if (numCells > 0) {
+            for (int i = 0; i < size.first; ++i) {
+                for (int j = 0; j < size.second; ++j) {
+                    CELL_TYPE type = map_[std::make_pair(i, j)]->get_type();
+                    if (type != Have_item && type != Storage_point) continue;
+
+                    Cell *currCell = map_[std::make_pair(i, j)];
+                    fout << (int) type << " " << i << " " << j << " " << currCell->getItems().size() << "\n";
+                    for (auto &currItem: currCell->getItems()) {
+                        fout << currItem->get_type() << " ";
+                        if (currItem->get_type() == MEDICINE_KIT) {
+                            fout << (int) dynamic_cast<Medicine_Kit *>(currItem)->get_type() << "\n";
+                        } else if (currItem->get_type() == AMMO_CONTAINER) {
+                            auto cont = dynamic_cast<Ammo_container *>(currItem);
+                            fout << cont->get_type() << " " << cont->num_ammo() << "\n";
+                        } else {
+                            auto weapon = dynamic_cast<Weapon *>(currItem);
+                            fout << weapon->get_type() << " " << weapon->get_ammo_num() << "\n";
+                        }
+                    }
+                }
+            }
+        }
+    }
+    fout.close();
+
+    fout.open(savePath + saveOperatives + ".txt");
+    if (fout.is_open()) {
+        fout << operatives.size() << "\n";
+        for (auto currOper: operatives) {
+            fout << currOper->get_position().first << " " << currOper->get_position().second << " "
+            << currOper->get_params().current_health << " " << currOper->get_params().current_time << "\n";
+            Weapon* currWeapon = currOper->get_current_weapon();
+            fout << currWeapon->get_type() << " " << currWeapon->get_ammo_num() << "\n";
+            int numItems = currOper->get_num_of_items();
+            fout << numItems << "\n";
+            if (numItems > 0) {
+                auto inventoryIter = currOper->see_inventory()->get_iter();
+                for (int i = 0; i < numItems; ++i) {
+                    auto currItem = *(inventoryIter + i);
+                    fout << currItem->get_type() << " ";
+                    if (currItem->get_type() == MEDICINE_KIT) {
+                        fout << (int) dynamic_cast<Medicine_Kit *>(currItem)->get_type() << "\n";
+                    } else if (currItem->get_type() == AMMO_CONTAINER) {
+                        auto cont = dynamic_cast<Ammo_container *>(currItem);
+                        fout << cont->get_type() << " " << cont->num_ammo() << "\n";
+                    } else {
+                        auto weapon = dynamic_cast<Weapon *>(currItem);
+                        fout << weapon->get_type() << " " << weapon->get_ammo_num() << "\n";
+                    }
+                }
+            }
+        }
+    }
+    fout.close();
+
+    fout.open(savePath + saveEnemies + ".txt");
+    if (fout.is_open()) {
+        fout << enemies.size() << "\n";
+        for (auto currEnemy: enemies) {
+            fout << currEnemy->get_type() << " "
+            << currEnemy->get_position().first << " " << currEnemy->get_position().second << " "
+            << currEnemy->get_params().current_health << " " << currEnemy->get_params().current_time << "\n";
+            UNIT_TYPE type = currEnemy->get_type();
+            if (type == RATIONAL) {
+                Weapon *currWeapon = dynamic_cast<Rational*>(currEnemy)->get_current_weapon();
+                fout << currWeapon->get_type() << " " << currWeapon->get_ammo_num() << "\n";
+            }
+            else if (type == FORAGER) {
+                auto forager = dynamic_cast<Forager*>(currEnemy);
+                int numItems = forager->get_num_of_items();
+                fout << numItems << "\n";
+                if (numItems > 0) {
+                    auto inventoryIter = forager->see_inventory()->get_iter();
+                    for (int i = 0; i < numItems; ++i) {
+                        auto currItem = *(inventoryIter + i);
+                        fout << currItem->get_type() << " ";
+                        if (currItem->get_type() == MEDICINE_KIT) {
+                            fout << (int) dynamic_cast<Medicine_Kit *>(currItem)->get_type() << "\n";
+                        } else if (currItem->get_type() == AMMO_CONTAINER) {
+                            auto cont = dynamic_cast<Ammo_container *>(currItem);
+                            fout << cont->get_type() << " " << cont->num_ammo() << "\n";
+                        } else {
+                            auto weapon = dynamic_cast<Weapon *>(currItem);
+                            fout << weapon->get_type() << " " << weapon->get_ammo_num() << "\n";
+                        }
+                    }
+                }
+            }
+        }
+    }
+    fout.close();
+}
+
+void Level::load(const std::string& loadPath) {
+    const std::string loadCell = "cells";
+    const std::string loadOperatives = "operatives";
+    const std::string loadEnemies = "enemies";
+    const std::string loadMap = "map";
+    std::ifstream fin(loadPath + loadCell + ".txt");
+
+    if (fin.is_open()) {
+        int numCells;
+        fin >> numCells;
+        if (numCells > 0) {
+            int typeCell, x, y, numItems;
+            fin >> typeCell >> x >> y >> numItems;
+            std::vector<Item*> items;
+            int typeItem, type, ammoNum;
+            for (int i = 0; i < numItems; ++i) {
+                fin >> typeItem >> type;
+                if (typeItem > 0) fin >> ammoNum;
+                if (typeItem == MEDICINE_KIT) {
+                    items.push_back(dynamic_cast<Item*>(new Medicine_Kit((MED_KIT_HEALTH) type)));
+                }
+                else if (typeItem == AMMO_CONTAINER) {
+                    auto cont = new Ammo_container((AMMO_WEIGHT) type);
+                    cont->put_ammo(ammoNum);
+                    items.push_back(dynamic_cast<Item*>(cont));
+                }
+                else {
+                    items.push_back(dynamic_cast<Item*>(new Weapon((WEAPON_TYPE) type, ammoNum)));
+                }
+            }
+            map_[std::make_pair(x, y)] = new Cell((CELL_TYPE) typeCell, items);
+        }
+    }
+    fin.close();
+
+    fin.open(loadPath + loadMap + ".txt");
+    if (fin.is_open()) {
+        fin >> size.first >> size.second;
+        for (int i = 0; i < size.first; ++i) {
+            std::string str;
+            fin >> str;
+            for (int j = 0; j < size.second; ++j) {
+                if (str[j] == '.' || str[j] == 'W' || str[j] == 'R' || str[j] == 'F'
+                || ('a' <= str[j] && str[j] <= 'i')) {
+                    if (map_[std::make_pair(i, j)]->get_type() != Floor) continue;
+                    map_[std::make_pair(i, j)] = new Cell(Floor);
+                }
+                else if (str[j] == '#') {
+                    map_[std::make_pair(i, j)] = new Cell(Wall);
+                }
+                else if (str[j] == '=') {
+                    map_[std::make_pair(i, j)] = new Cell(Partition);
+                }
+                else if (str[j] == '-') {
+                    map_[std::make_pair(i, j)] = new Cell(Glass);
+                }
+            }
+        }
+    }
+    fin.close();
+
+
+    fin.open(loadPath + loadOperatives + ".txt");
+    if (fin.is_open()) {
+        int numOperatives;
+       fin >> numOperatives;
+       int x, y, health, time;
+       for (int i = 0; i < numOperatives; ++i) {
+           fin >> x >> y >> health >> time;
+           int typeWeapon, ammoNum, itemsNum;
+           fin >> typeWeapon >> ammoNum;
+           auto currWeapon = new Weapon((WEAPON_TYPE) typeWeapon, ammoNum);
+           fin >> itemsNum;
+           if (itemsNum > 0) {
+               std::vector<Item*> items;
+               int typeItem, type;
+               for (int j = 0; j < itemsNum; ++j) {
+                   fin >> typeItem >> type;
+                   if (typeItem > 0) fin >> ammoNum;
+                   if (typeItem == MEDICINE_KIT) {
+                       items.push_back(dynamic_cast<Item*>(new Medicine_Kit((MED_KIT_HEALTH) type)));
+                   }
+                   else if (typeItem == AMMO_CONTAINER) {
+                       auto cont = new Ammo_container((AMMO_WEIGHT) type);
+                       cont->put_ammo(ammoNum);
+                       items.push_back(dynamic_cast<Item*>(cont));
+                   }
+                   else {
+                       items.push_back(dynamic_cast<Item*>(new Weapon((WEAPON_TYPE) type, ammoNum)));
+                   }
+               }
+               operatives.push_back(new Operative(std::make_pair(x, y)
+                       , currWeapon
+                       , items
+                       , "player"));
+           }
+           else {
+               operatives.push_back(new Operative(std::make_pair(x, y)
+                                                  , currWeapon
+                                                  , "player"));
+           }
+           operatives[i]->setParams(health, time);
+       }
+    }
+    fin.close();
+
+
+    fin.open(loadPath + loadEnemies + ".txt");
+    if (fin.is_open()) {
+        int numEnemies;
+        fin >> numEnemies;
+        int typeEnemy, x, y, health, time;
+        for (int i = 0; i < numEnemies; ++i) {
+            fin >> typeEnemy >> x >> y >> health >> time;
+            if (typeEnemy == WILD) {
+                auto wild = new Wild("wild", std::make_pair(x, y));
+                wild->setParams(health, time);
+                enemies.push_back(dynamic_cast<Unit *>(wild));
+            } else if (typeEnemy == RATIONAL) {
+                int typeWeapon, ammoNum;
+                fin >> typeWeapon >> ammoNum;
+                auto currWeapon = new Weapon((WEAPON_TYPE) typeWeapon, ammoNum);
+                auto rational = new Rational("rational", std::make_pair(x, y), currWeapon);
+                rational->setParams(health, time);
+                enemies.push_back(dynamic_cast<Unit *>(rational));
+            } else if (typeEnemy == FORAGER) {
+                int itemsNum, ammoNum;
+                fin >> itemsNum;
+                if (itemsNum > 0) {
+                    std::vector<Item *> items;
+                    int typeItem, type;
+                    for (int j = 0; j < itemsNum; ++j) {
+                        fin >> typeItem >> type;
+                        if (typeItem > 0) fin >> ammoNum;
+                        if (typeItem == MEDICINE_KIT) {
+                            items.push_back(dynamic_cast<Item*>(new Medicine_Kit((MED_KIT_HEALTH) type)));
+                        } else if (typeItem == AMMO_CONTAINER) {
+                            auto cont = new Ammo_container((AMMO_WEIGHT) type);
+                            cont->put_ammo(ammoNum);
+                            items.push_back(dynamic_cast<Item*>(cont));
+                        } else {
+                            items.push_back(dynamic_cast<Item*>(new Weapon((WEAPON_TYPE) type, ammoNum)));
+                        }
+                    }
+                    auto forager = new Forager("forager", std::make_pair(x, y), items);
+                    forager->setParams(health, time);
+                    enemies.push_back(dynamic_cast<Unit*>(forager));
+                } else {
+                    auto forager = new Forager("forager", std::make_pair(x, y));
+                    forager->setParams(health, time);
+                    enemies.push_back(dynamic_cast<Unit*>(forager));
+                }
+            }
+        }
+    }
+    fin.close();
+
     finish_flag = 0;
 }
 

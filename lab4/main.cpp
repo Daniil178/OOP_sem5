@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "graphics/TileOnMap.h"
 
 using namespace sf;
@@ -24,11 +25,21 @@ int main() {
     std::string nums = "0123456789";
     do {
         res = 0;
-        int menuRes = RPG::Game::chooseLevel(texture, text);
-        if (menuRes == -1) return 0;
-
+        std::ifstream fin(RPG::save_path + "map" + ".txt");
+        int save = 1;
+        if (fin.is_open()) {
+            fin.close();
+            RPG::get_int("\t\tYou have saved level. Would you like load it?\n\t\t0 - yes, 1 - no", save, 0, 1);
+        }
         auto *level = new RPG::Level();
-        level->start(RPG::level_path + nums[menuRes] + ".txt");
+        if (save == 0) {
+            level->load(RPG::save_path);
+        }
+        else {
+            int menuRes = RPG::Game::chooseLevel(texture, text);
+            if (menuRes == -1) return 0;
+            level->start(RPG::level_path + nums[menuRes] + ".txt");
+        }
         RPG::Game game = RPG::Game(level);
 
         sf::RenderWindow window(sf::VideoMode(level->get_size().second * RPG::tile_size.y * RPG::scale,
@@ -45,6 +56,7 @@ int main() {
                         choice = RPG::get_input(window);
                         //~ - exit to main menu
                         if (choice == sf::Keyboard::Tilde) {
+                            level->save(RPG::save_path);
                             window.close();
                             break;
                         } else if (choice == sf::Keyboard::Escape) {
@@ -86,6 +98,7 @@ int main() {
             } else if (level->check_flag() == 2) {
                 res = RPG::TileOnMap::drawMessage(texture, RPG::tile_size, "you lose", text);
             }
+            if (res == 1) delete level;
         }
     } while (res == 1);
     return 0;

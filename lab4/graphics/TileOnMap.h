@@ -12,6 +12,7 @@ namespace RPG {
 static const std::string root_path = "/home/usik-dan";
 //static const std::string level_path = "/ClionProjects/OOP_sem5/lab4/src/maps/level3.txt";
 static const std::string level_path = "src/maps/level";
+static const std::string save_path = "src/maps/savedLevel/";
 //static const std::string tileset_path = "/ClionProjects/OOP_sem5/lab4/src/textures/tileset.png";
 static const std::string tileset_path = "src/textures/tileset.png";
 //static const std::string font_path = "/ClionProjects/OOP_sem5/lab4/src/textures/solo5.ttf";

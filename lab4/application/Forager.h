@@ -18,6 +18,7 @@ public:
      * @param pos (coordinate) - start position of forager
      */
     Forager(std::string name, coordinate pos); // initialisation inventory
+    Forager(std::string name, coordinate pos, std::vector<Item*>& items); // initialisation inventory
 
     /**
      * @brief check strength of forager

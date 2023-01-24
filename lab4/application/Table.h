@@ -17,6 +17,7 @@ public:
      * @brief default constructor of Table
      */
     Table();
+    Table(std::vector<Item*> items);
     /**
      * @brief return number of current things
      * @return (int) - number of items

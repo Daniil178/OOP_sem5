@@ -63,11 +63,10 @@ int Game::turn_operatives(sf::Keyboard::Key choice, sf::RenderWindow &window, in
         else {
             resTurn = -1;
         }
-    } else {
-        if (choice == sf::Keyboard::W or choice == sf::Keyboard::S
+    }
+    else if (choice == sf::Keyboard::W or choice == sf::Keyboard::S
             or choice == sf::Keyboard::A or choice == sf::Keyboard::D) {
-            resTurn = level->step_by_unit(*currOper, char_direction[choice]);
-        }
+        resTurn = level->step_by_unit(*currOper, char_direction[choice]);
     }
     return resTurn;
 }
@@ -879,7 +878,6 @@ int Game::startMenu(sf::Texture &texture, sf::Text &text) {
     int resMenu;
     resMenu = RPG::TileOnMap::drawMessage(texture, RPG::tile_size, "operation", text);
 
-    if (resMenu == 1) return resMenu;
     return resMenu;
 }
 

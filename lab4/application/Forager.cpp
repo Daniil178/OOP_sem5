@@ -1,5 +1,7 @@
 #include "Forager.h"
 
+#include <utility>
+
 namespace RPG {
 
 Forager::Forager(std::string name, RPG::coordinate pos):
@@ -10,6 +12,14 @@ Forager::Forager(std::string name, RPG::coordinate pos):
                                                         {
     //inventory = new Table();
                                                         }
+
+Forager::Forager(std::string name, coordinate pos, std::vector<Item*>& items): Unit(std::move(name),
+                                                                                   FORAGER,
+                                                                                   pos),
+                                                                              inventory(new Table(std::move(items)))
+{
+    //inventory = new Table();
+}
 
 int Forager::get_strength() const noexcept{
     return strength;

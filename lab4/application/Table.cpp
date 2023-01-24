@@ -1,8 +1,14 @@
 #include "Table.h"
 
+#include <utility>
+
 namespace RPG {
 
 Table::Table(): weight(0), inventory() {}
+
+Table::Table(std::vector<Item*> items): weight(0), inventory(std::move(items)) {
+    (*this).update_params();
+}
 
 int Table::number_of_items() {
     return (int) inventory.size();

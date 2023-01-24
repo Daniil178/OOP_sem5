@@ -16,6 +16,7 @@ public:
      * @param pos (coordinate) - start position
      */
     explicit Rational(std::string name, coordinate pos);
+    explicit Rational(std::string name, coordinate pos, Weapon* currentWeapon);
     /**
      * @brief check current weapon
      * @return (Weapon *) - ptr to current weapon

@@ -100,6 +100,10 @@ int Cell::put_item(Item* item) {
     return 0;
 }
 
+std::vector<Item*> Cell::getItems() {
+    return all_items;
+}
+
 Cell::~Cell() {
     for (auto curr_item: all_items) {
         ITEM_TYPE type_curr_item = curr_item->get_type();

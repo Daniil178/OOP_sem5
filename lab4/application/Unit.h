@@ -79,6 +79,7 @@ public:
     /**
      * @brief update time (current time = 10)
      */
+    void setParams(int health, int time);
     void update_time();
 protected:
     /**

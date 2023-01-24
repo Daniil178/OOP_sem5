@@ -11,6 +11,16 @@ Rational::Rational(std::string name, coordinate pos):
     time_to_attack = 0;
                                                     }
 
+Rational::Rational(std::string name, coordinate pos, Weapon* currentWeapon):
+                                                    Unit(std::move(name), RATIONAL, pos)
+                                                    , Wild(std::move(name), pos)
+                                                    , current_weapon(currentWeapon)
+                                                    {
+    damage = current_weapon->get_damage();
+    range = current_weapon->get_params().bas_params.range;
+    time_to_attack = current_weapon->time_to_shot();
+                                                    }
+
 int Rational::attack() {
     if (params.current_time <= 0) {
         return -3; // haven't time

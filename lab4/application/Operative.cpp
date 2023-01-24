@@ -15,6 +15,19 @@ Operative::Operative(coordinate position, Weapon* basic_weapon,
     time_to_attack = current_weapon->time_to_shot();
 }
 
+Operative::Operative(coordinate position, Weapon* basic_weapon
+                     , std::vector<Item*>& items, std::string name):
+                                        Unit(std::move(name), OPERATIVE, position),
+                                        Forager(std::move(name), position, items),
+                                        Rational(std::move(name), position),
+                                        time_to_reload(basic_weapon->get_params().bas_params.reload_time),
+{
+    current_weapon = basic_weapon;
+    damage = current_weapon->get_damage();
+    range = current_weapon->get_params().bas_params.range;
+    time_to_attack = current_weapon->time_to_shot();
+}
+
 int Operative::choice_weapon(Weapon* new_weapon) {
     auto probably_weapon = inventory->change_item(current_weapon, new_weapon);
     if (probably_weapon == nullptr) {

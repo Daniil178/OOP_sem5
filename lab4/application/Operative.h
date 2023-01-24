@@ -19,6 +19,7 @@ public:
      * @param name (string) - name of operative
      */
     explicit Operative(coordinate position, Weapon* basic_weapon, std::string name);
+    explicit Operative(coordinate position, Weapon* basic_weapon, std::vector<Item*>& items, std::string name);
     /**
      * @brief change current weapon to weapon from inventory
      * @param new_weapon (Weapon*) ptr to similar weapon

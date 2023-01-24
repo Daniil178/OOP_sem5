@@ -104,6 +104,7 @@ public:
      * @brief table with type of cell and their correspondence to parameters
      */
     static std::unordered_map<CELL_TYPE, cell_params> CELL_TYPE_PARAMS;
+    std::vector<Item*> getItems();
     /**
      * @brief just destructor which delete items in cell
      */

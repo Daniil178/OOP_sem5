@@ -5,6 +5,8 @@
 
 namespace RPG {
 
+
+
 /**
  * @brief Level - has map, operatives and enemies and manage to they
  */
@@ -71,6 +73,9 @@ public:
      * @param path_to_map (string) - path fo config file
      */
     void start(const std::string& path_to_map);
+
+    void save(const std::string& savePath);
+    void load(const std::string& loadPath);
     /**
      * @brief check finish flag
      * @return (int) - finish flag: \n
@@ -92,7 +97,8 @@ public:
      * @brief all enemies on level
      */
     std::vector<Unit *> enemies;
-
+    static std::unordered_map<CELL_TYPE, char> cell2Char;
+    static std::unordered_map<UNIT_TYPE, char> enemy2Char;
     /**
      * @brief destructor - delete all Cells, operatives and enemies
      */

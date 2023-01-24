@@ -61,4 +61,9 @@ void Unit::update_time() {
     params.current_time = params.max_time;
 }
 
+void Unit::setParams(int health, int time) {
+    params.current_health = health;
+    params.current_time = time;
+}
+
 } // RPG

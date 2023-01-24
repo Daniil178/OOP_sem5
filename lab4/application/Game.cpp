@@ -1077,18 +1077,23 @@ int Game::saveMenu(std::string message, sf::Texture& texture, sf::Text& text) {
     std::ostringstream status, yesStr, noStr, helpStr;
     status << message << std::endl;
     mainText.setString(status.str());
-    mainText.setPosition((size.first / 4) * tile_size.y * scale,
-                     (size.second / 4) * tile_size.x * scale);
+    mainText.setPosition((size.second / 4) * tile_size.y * scale,
+                     (size.first / 4) * tile_size.x * scale);
+    mainText.setCharacterSize(12);
     window.draw(mainText);
 
     yesStr << "Yes" << std::endl;
     yesText.setString(yesStr.str());
+    yesText.setPosition(RPG::tile_size.x * RPG::scale
+            , (size.first - 2) * RPG::tile_size.y * RPG::scale);
     noStr << "No" << std::endl;
     noText.setString(noStr.str());
+    noText.setPosition((size.second - 1) * RPG::tile_size.x * RPG::scale
+            , (size.first - 2) * RPG::tile_size.y * RPG::scale);
     helpStr << "Enter 'enter' to confirm" << std::endl;
     helpText.setString(helpStr.str());
-    helpText.setPosition((size.first - 1) * RPG::tile_size.x * RPG::scale
-                         , ((size.second- 6) / 2) * RPG::tile_size.y * RPG::scale);
+    helpText.setPosition(((size.second - 3) / 2) * RPG::tile_size.x * RPG::scale
+                         , (size.first - 1) * RPG::tile_size.y * RPG::scale);
     helpText.setFillColor(sf::Color::Yellow);
     window.draw(helpText);
 
@@ -1096,8 +1101,10 @@ int Game::saveMenu(std::string message, sf::Texture& texture, sf::Text& text) {
     do {
         if (res == 0) {
             yesText.setFillColor(sf::Color::Green);
+            noText.setFillColor(sf::Color::White);
         }
         else {
+            yesText.setFillColor(sf::Color::White);
             noText.setFillColor(sf::Color::Green);
         }
         window.draw(yesText);

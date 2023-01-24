@@ -284,26 +284,26 @@ void Level::load(const std::string& loadPath) {
         int numCells;
         fin >> numCells;
         if (numCells > 0) {
-            int typeCell, x, y, numItems;
-            fin >> typeCell >> x >> y >> numItems;
-            std::vector<Item*> items;
-            int typeItem, type, ammoNum;
-            for (int i = 0; i < numItems; ++i) {
-                fin >> typeItem >> type;
-                if (typeItem > 0) fin >> ammoNum;
-                if (typeItem == MEDICINE_KIT) {
-                    items.push_back(dynamic_cast<Item*>(new Medicine_Kit((MED_KIT_HEALTH) type)));
+            for (int j = 0; j < numCells; ++j) {
+                int typeCell, x, y, numItems;
+                fin >> typeCell >> x >> y >> numItems;
+                std::vector<Item *> items;
+                int typeItem, type, ammoNum;
+                for (int i = 0; i < numItems; ++i) {
+                    fin >> typeItem >> type;
+                    if (typeItem > 0) fin >> ammoNum;
+                    if (typeItem == MEDICINE_KIT) {
+                        items.push_back(dynamic_cast<Item *>(new Medicine_Kit((MED_KIT_HEALTH) type)));
+                    } else if (typeItem == AMMO_CONTAINER) {
+                        auto cont = new Ammo_container((AMMO_WEIGHT) type);
+                        cont->put_ammo(ammoNum);
+                        items.push_back(dynamic_cast<Item *>(cont));
+                    } else {
+                        items.push_back(dynamic_cast<Item *>(new Weapon((WEAPON_TYPE) type, ammoNum)));
+                    }
                 }
-                else if (typeItem == AMMO_CONTAINER) {
-                    auto cont = new Ammo_container((AMMO_WEIGHT) type);
-                    cont->put_ammo(ammoNum);
-                    items.push_back(dynamic_cast<Item*>(cont));
-                }
-                else {
-                    items.push_back(dynamic_cast<Item*>(new Weapon((WEAPON_TYPE) type, ammoNum)));
-                }
+                map_[std::make_pair(x, y)] = new Cell((CELL_TYPE) typeCell, items);
             }
-            map_[std::make_pair(x, y)] = new Cell((CELL_TYPE) typeCell, items);
         }
     }
     fin.close();
@@ -317,7 +317,7 @@ void Level::load(const std::string& loadPath) {
             for (int j = 0; j < size.second; ++j) {
                 if (str[j] == '.' || str[j] == 'W' || str[j] == 'R' || str[j] == 'F'
                 || ('a' <= str[j] && str[j] <= 'i')) {
-                    if (map_[std::make_pair(i, j)] != nullptr) continue;
+                    if (map_[std::make_pair(i, j)]) continue;
                     map_[std::make_pair(i, j)] = new Cell(Floor);
                 }
                 else if (str[j] == '#') {
